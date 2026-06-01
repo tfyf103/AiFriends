@@ -9,12 +9,15 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@tailwindcss/vite": "^4.3.0",
     "pinia": "^3.0.4",
+    "tailwindcss": "^4.3.0",
     "vue": "^3.5.32",
     "vue-router": "^5.0.4"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^6.0.6",
+    "daisyui": "^5.5.20",
     "vite": "^8.0.8",
     "vite-plugin-vue-devtools": "^8.1.1"
   },
