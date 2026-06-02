@@ -29,9 +29,9 @@ import SearchIcon from "@/components/navbar/icons/SearchIcon.vue";
           </div>
         </div>
         <div class="navbar-end">
-          <button class="btn btn-ghost text-lg">
+          <RouterLink :to="{name:'user-account-login-index'}" active-class="btn-active" class="btn btn-ghost text-lg">
             登录
-          </button>
+          </RouterLink>
         </div>
       </nav>
       <!-- Page content here -->
@@ -46,25 +46,25 @@ import SearchIcon from "@/components/navbar/icons/SearchIcon.vue";
         <ul class="menu w-full grow">
           <!-- List item -->
           <li>
-            <button class="is-drawer-close:tooltip is-drawer-close:tooltip-right py-3" data-tip="首页">
+            <RouterLink :to="{name:'homepage-index'}" active-class="menu-focus" class="is-drawer-close:tooltip is-drawer-close:tooltip-right py-3" data-tip="首页">
               <!-- Home icon -->
               <HomepageIcon />
               <span class="is-drawer-close:hidden text-base ml-2 whitespace-nowrap">首页</span>
-            </button>
+            </RouterLink>
           </li>
           <li>
-            <button class="is-drawer-close:tooltip is-drawer-close:tooltip-right py-3" data-tip="好友">
+            <RouterLink :to="{name:'friend-index'}" active-class="menu-focus" class="is-drawer-close:tooltip is-drawer-close:tooltip-right py-3" data-tip="好友">
               <!-- Home icon -->
               <FriendIcon />
               <span class="is-drawer-close:hidden text-base ml-2 whitespace-nowrap">好友</span>
-            </button>
+            </RouterLink>
           </li>
           <li>
-            <button class="is-drawer-close:tooltip is-drawer-close:tooltip-right py-3" data-tip="创作">
+            <RouterLink :to="{name:'create-index'}" active-class="menu-focus" class="is-drawer-close:tooltip is-drawer-close:tooltip-right py-3" data-tip="创作">
               <!-- Home icon -->
               <CreateIcon />
               <span class="is-drawer-close:hidden text-base ml-2 whitespace-nowrap">创作</span>
-            </button>
+            </RouterLink>
           </li>
         </ul>
       </div>
