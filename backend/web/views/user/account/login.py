@@ -10,8 +10,8 @@ from web.models.user import UserProfile
 class LoginView(APIView):
     def post(self, request, *args, **kwargs):
         try:
-            username = request.get("username").strip()
-            password = request.get("password").strip()
+            username = request.data.get("username").strip()
+            password = request.data.get("password").strip()
             if not username or not password:
                 return Response({
                     'result': '用户名和密码不能为空'
