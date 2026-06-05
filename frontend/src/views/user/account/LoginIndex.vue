@@ -38,7 +38,7 @@ async function handleLogin(){
       }
       }
     catch (err){
-      console.log(err)
+
     }
   }
 }

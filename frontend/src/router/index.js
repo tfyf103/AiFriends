@@ -8,6 +8,7 @@ import ProfileIndex from "@/views/profile/ProfileIndex.vue";
 // 补上缺失导入
 import SpaceIndex from "@/views/user/space/SpaceIndex.vue";
 import CreateIndex from "@/views/create/CreateIndex.vue";
+import {useUserStore} from "@/stores/user.js";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -16,49 +17,86 @@ const router = createRouter({
       path: '/',
       component: HomepageIndex,
       name: 'homepage-index',
+      meta: {
+        needLogin: false,
+      },
     },
     {
       path: '/user/profile',
       component: ProfileIndex,
       name: 'user-profile-index',
+      meta: {
+        needLogin: true,
+      },
     },
     {
       path: '/user/space/:user_id',
       component: SpaceIndex,
       name: 'user-space-index',
+      meta: {
+        needLogin: false,
+      },
     },
     {
       path: '/user/account/register',
       component: RegisterIndex,
       name: 'user-account-register-index',
+      meta: {
+        needLogin: false,
+      },
     },
     {
       path: '/user/account/login',
       component: LoginIndex,
       name: 'user-account-login-index',
+      meta: {
+        needLogin: false,
+      },
     },
     {
       path: '/friend',
       component: FriendIndex,
       name: 'friend-index',
+      meta: {
+        needLogin: true,
+      },
     },
     {
       path: '/create',
       component: CreateIndex,
       name: 'create-index',
+      meta: {
+        needLogin: true,
+      },
     },
     {
       path: '/404',
       component: NotFoundIndex,
       name: '404',
+      meta: {
+        needLogin: false,
+      },
     },
     // 兜底404固定最后
     {
       path: '/:pathMatch(.*)*',
       component: NotFoundIndex,
       name: 'not-found',
+      meta: {
+        needLogin: false,
+      },
     },
   ],
+})
+
+router.beforeEach((to,from) =>{
+  const user = useUserStore()
+  if (to.meta.needLogin && user.hasPulledUserInfo && !user.isLogin()) {
+    return {
+      name: 'user-account-login-index'
+    }
+  }
+  return true
 })
 
 export default router
