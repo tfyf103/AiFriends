@@ -1,4 +1,6 @@
-from langchain_core.messages import HumanMessage
+import json
+
+from langchain_core.messages import HumanMessage, BaseMessageChunk
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
@@ -27,8 +29,20 @@ class MessageChatView(APIView):
         inputs = {
             'messages': [HumanMessage(message)],
         }
-        res = app.invoke(inputs)
-        print(res['messages'][-1].content)
+
+        def event_stream():
+            final_usage = {}
+            for msg, metadata in app.stream(inputs, stream_mode="messages"):
+                if isinstance(msg, BaseMessageChunk):
+                    if msg.content:
+                        yield f"data: {json.dumps({'content': msg.content}, ensure_ascii=False)}\n\n"
+                    if hasattr(msg, 'usage_metadata') and msg.usage_metadata:
+                        final_usage = msg.usage_metadata
+            yield "data: [DONE]\n\n"
+            print(final_usage)
+
+        for data in event_stream():
+            print(data)
 
         return Response({
             'result': 'success',

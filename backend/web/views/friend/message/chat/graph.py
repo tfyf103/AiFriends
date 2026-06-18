@@ -14,6 +14,12 @@ class CharGraph:
             model="deepseek-v4-pro",
             openai_api_key=os.getenv('API_KEY'),
             openai_api_base=os.getenv('API_BASE'),
+            streaming=True,
+            model_kwargs = {
+                "stream_options": {
+                    "include_usage": True,  # 输出token消耗数量
+                }
+            }
         )
 
         class AgentState(TypedDict):
