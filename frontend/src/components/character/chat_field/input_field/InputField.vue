@@ -2,29 +2,45 @@
 import SendIcon from "@/components/character/icons/SendIcon.vue";
 import MicIcon from "@/components/character/icons/MicIcon.vue";
 import {ref, useTemplateRef} from "vue";
-import api from "@/js/http/api.js";
+import streamApi from "@/js/http/streamApi.js";
 
 const props = defineProps(['friendId'])
 const inputRef = useTemplateRef('input-ref')
 const message = ref('')
+let isProcessing = false
 
 function focus() {
   inputRef.value.focus()
 }
 
 async function handleSend() {
+  if (isProcessing) return
+  isProcessing = true
+
   const content = message.value.trim()
   if (!content) return
   message.value = ''
 
   try {
-    const res = await api.post('/api/friend/message/chat/',{
-      friend_id: props.friendId,
-      message:content,
+    await streamApi('/api/friend/message/chat/', {
+      body: {
+        friend_id: props.friendId,
+        message: content,
+      },
+      onmessage(data, isDone) {
+        if (isDone) {
+          isProcessing = false
+        } else if (data.content) {
+          console.log(data.content)
+        }
+      },
+      onerror(err) {
+        isProcessing = false
+      },
     })
-    console.log(res.data)
   } catch (err) {
     console.log(err)
+    isProcessing = false
   }
 }
 

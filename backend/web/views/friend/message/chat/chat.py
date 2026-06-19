@@ -1,6 +1,9 @@
 import json
 
+from django.http import StreamingHttpResponse
 from langchain_core.messages import HumanMessage, BaseMessageChunk
+from rest_framework import response
+from rest_framework.renderers import BaseRenderer
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
@@ -8,9 +11,15 @@ from rest_framework.permissions import IsAuthenticated
 from web.models.friend import Friend
 from web.views.friend.message.chat.graph import CharGraph
 
+class SSERenderer(BaseRenderer):
+    media_type = 'text/event-stream'
+    format = 'txt'
+    def render(self, data, accepted_media_type=None, renderer_context=None):
+        return data
 
 class MessageChatView(APIView):
     permission_classes = [IsAuthenticated]
+    renderer_classes = [SSERenderer]
     def post(self, request):
         friend_id = request.data['friend_id']
         message = request.data['message'].strip()
@@ -41,9 +50,6 @@ class MessageChatView(APIView):
             yield "data: [DONE]\n\n"
             print(final_usage)
 
-        for data in event_stream():
-            print(data)
-
-        return Response({
-            'result': 'success',
-        })
+        response = StreamingHttpResponse(event_stream(), content_type="text/event-stream")
+        response['Cache-Control'] = 'no-cache'
+        return response
