@@ -14,7 +14,7 @@ class GetHistoryView(APIView):
             queryset = Message.objects.filter(friend_id=friend_id, friend__me__user=request.user)
             if last_message_id > 0:
                 queryset = queryset.filter(pk__lt=last_message_id)
-            messages_raw = queryset.order_by('-id')[:1]
+            messages_raw = queryset.order_by('-id')[:10]
             messages = []
             for m in messages_raw:
                 messages.append({
