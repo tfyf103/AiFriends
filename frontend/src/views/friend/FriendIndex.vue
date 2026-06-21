@@ -2,11 +2,13 @@
 import {nextTick, onBeforeUnmount, onMounted, ref, useTemplateRef} from "vue";
 import api from "@/js/http/api.js";
 import Character from "@/components/character/Character.vue";
+import {useUserStore} from "@/stores/user.js";
 
 const friends = ref([])
 const isLoading = ref(false)
 const hasFriends = ref(true)
 const sentinelRef = useTemplateRef('sentinel-ref')
+const user = useUserStore()
 
 function checkSentinelVisible() {  // 判断哨兵是否能被看到
   if (!sentinelRef.value) return false
@@ -81,6 +83,7 @@ onBeforeUnmount(() => {
         v-for="friend in friends"
         :key="friend.id"
         :character="friend.character"
+        :canEdit="friend.character.author.user_id === user.id"
         :canRemoveFriend="true"
         :friendId="friend.id"
         @remove="removeFriend"

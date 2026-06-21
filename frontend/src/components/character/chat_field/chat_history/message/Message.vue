@@ -14,7 +14,7 @@ const user = useUserStore()
           <img :src="character.photo" alt="">
         </div>
       </div>
-      <div class="chat-bubble whitespace-pre-wrap">{{ message.content }}</div>
+      <div class="chat-bubble bg-white text-black whitespace-pre-wrap">{{ message.content }}</div>
     </div>
     <div v-else class="chat chat-end">
       <div class="chat-image avatar">
