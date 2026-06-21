@@ -1,5 +1,4 @@
 import os
-from pprint import pprint
 from typing import TypedDict, Annotated, Sequence
 
 from django.utils.timezone import localtime, now
@@ -37,7 +36,6 @@ class CharGraph:
             messages: Annotated[Sequence[BaseMessage], add_messages]
 
         def model_call(state: AgentState) -> AgentState:
-            pprint(state)
             res = llm.invoke(state['messages'])
             return {'messages': [res]}
 
@@ -65,3 +63,4 @@ class CharGraph:
         graph.add_edge('tools','agent')
 
         return graph.compile()
+    
