@@ -120,7 +120,7 @@ class MessageChatView(APIView):
                 if event in ['task-finished','task-failed']:
                     break
 
-    async def run_tts_tasks(self,app,inputs,mq):
+    async def run_tts_tasks(self,app,inputs,mq, voice_id):
         task_id = uuid.uuid4().hex
         api_key = os.getenv('API_KEY')
         wss_url = os.getenv('WSS_URL')
@@ -141,7 +141,7 @@ class MessageChatView(APIView):
                     "model": "cosyvoice-v3-flash",
                     "parameters": {
                         "text_type": "PlainText",
-                        "voice": "longanyang",
+                        "voice": voice_id,
                         "format": "mp3",
                         "sample_rate": 22050,
                         "volume": 50,
@@ -159,15 +159,15 @@ class MessageChatView(APIView):
                 self.tts_receiver(mq,ws),
             )
 
-    def work(self,app,inputs,mq):
+    def work(self,app,inputs,mq,voice_id):
         try:
-            asyncio.run(self.run_tts_tasks(app,inputs,mq))
+            asyncio.run(self.run_tts_tasks(app,inputs,mq,voice_id))
         finally:
             mq.put_nowait(None)
 
     def event_stream(self,app,inputs,friend,message):
         mq = Queue()
-        thread = threading.Thread(target=self.work,args=(app,inputs,mq))
+        thread = threading.Thread(target=self.work,args=(app,inputs,mq,friend.character.voice.voice_id))
         thread.start()
 
         final_output = ''
