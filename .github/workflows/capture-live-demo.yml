@@ -1,4 +1,4 @@
-name: Capture Live Demo Screenshots
+name: Finalize Live Demo Documentation
 
 on:
   pull_request:
@@ -9,7 +9,7 @@ permissions:
   pull-requests: read
 
 jobs:
-  capture:
+  finalize:
     if: github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     steps:
@@ -19,89 +19,193 @@ jobs:
           ref: ${{ github.event.pull_request.head.ref }}
           fetch-depth: 0
 
-      - name: Install Playwright
+      - name: Add bilingual live demo sections
         run: |
-          mkdir -p /tmp/aifriends-capture
-          cd /tmp/aifriends-capture
-          npm init -y
-          npm install playwright@1.55.0
-          npx playwright install --with-deps chromium
+          python - <<'PY'
+          from pathlib import Path
 
-      - name: Capture real production pages
-        env:
-          LIVE_DEMO_URL: https://app8056.acapp.acwing.com.cn/
-        run: |
-          mkdir -p docs/assets/live-demo
-          cd /tmp/aifriends-capture
-          node <<'NODE'
-          const { chromium } = require('playwright');
-          const fs = require('fs');
-          const path = require('path');
+          demo_url = "https://app8056.acapp.acwing.com.cn/"
+          badge = f"[![Live Demo](https://img.shields.io/badge/Live%20Demo-Open%20AiFriends-2ea44f)]({demo_url})"
 
-          (async () => {
-            const base = process.env.LIVE_DEMO_URL.replace(/\/$/, '');
-            const out = process.env.GITHUB_WORKSPACE + '/docs/assets/live-demo';
-            const browser = await chromium.launch({ headless: true });
-            const context = await browser.newContext({
-              viewport: { width: 1440, height: 1000 },
-              deviceScaleFactor: 1,
-              locale: 'en-US',
-            });
-            const page = await context.newPage();
-            page.setDefaultTimeout(30000);
+          zh_path = Path("README.md")
+          zh = zh_path.read_text(encoding="utf-8")
+          if badge not in zh:
+              zh = zh.replace(
+                  "[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)",
+                  "[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)\n" + badge,
+                  1,
+              )
 
-            const results = [];
-            async function capture(name, url) {
-              const response = await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 45000 });
-              await page.waitForTimeout(3000);
-              try { await page.waitForLoadState('networkidle', { timeout: 10000 }); } catch (_) {}
-              const title = await page.title();
-              const bodyText = (await page.locator('body').innerText()).replace(/\s+/g, ' ').trim().slice(0, 1200);
-              const finalUrl = page.url();
-              const status = response ? response.status() : null;
-              await page.screenshot({ path: path.join(out, `${name}.png`), fullPage: true });
-              results.push({ name, requestedUrl: url, finalUrl, status, title, bodyText });
-              console.log(JSON.stringify(results[results.length - 1], null, 2));
-            }
+          zh_marker = "# 🌐 在线体验 / Live Demo"
+          if zh_marker not in zh:
+              anchor = "> **项目目标：让学习者不仅“把 AI Demo 跑起来”，还能够理解它为什么这样设计、如何验证它、如何维护它，以及怎样逐步把 Demo 变成可靠的软件工程。**\n\n---"
+              section = r'''> **项目目标：让学习者不仅“把 AI Demo 跑起来”，还能够理解它为什么这样设计、如何验证它、如何维护它，以及怎样逐步把 Demo 变成可靠的软件工程。**
 
-            await capture('homepage', `${base}/`);
-            await capture('login', `${base}/user/account/login`);
-            await capture('register', `${base}/user/account/register`);
+---
 
-            // Read-only exploration: if the public homepage exposes a user-space link,
-            // capture the first one without creating or modifying production data.
-            await page.goto(`${base}/`, { waitUntil: 'domcontentloaded', timeout: 45000 });
-            await page.waitForTimeout(3000);
-            const publicSpace = page.locator('a[href*="/user/space/"]').first();
-            if (await publicSpace.count()) {
-              const href = await publicSpace.getAttribute('href');
-              if (href) {
-                const target = new URL(href, base).toString();
-                await capture('public-profile', target);
-              }
-            }
+# 🌐 在线体验 / Live Demo
 
-            fs.writeFileSync(path.join(out, 'capture-report.json'), JSON.stringify({
-              capturedAt: new Date().toISOString(),
-              source: base + '/',
-              readOnly: true,
-              pages: results,
-            }, null, 2));
-            await browser.close();
-          })().catch(err => {
-            console.error(err);
-            process.exit(1);
-          });
-          NODE
+**实际部署地址：** [https://app8056.acapp.acwing.com.cn/](https://app8056.acapp.acwing.com.cn/)
 
-      - name: Commit screenshots to PR branch
+> 这不是 Mock 截图。2026-08-11，我使用 GitHub-hosted Ubuntu runner + Playwright Chromium 从独立公网环境实际访问线上站点，并以**只读方式**验证首页、登录、注册和公开用户空间；没有为了截图注册测试账号、创建角色或修改生产数据。
+
+公网验证结果：
+
+```text
+/                         → HTTP 200
+/user/account/login       → HTTP 200
+/user/account/register    → HTTP 200
+/user/space/6             → HTTP 200
+```
+
+## 首页：发现公开 AI Character
+
+[![AiFriends live homepage](./docs/assets/live-demo/homepage.png)](https://app8056.acapp.acwing.com.cn/)
+
+线上首页能够实际加载公开角色与人格描述，验证了公开 Character discovery 路径不是 README 中的静态概念。
+
+## 登录与注册
+
+<p align="center">
+  <img src="./docs/assets/live-demo/login.png" alt="AiFriends live login page" width="49%" />
+  <img src="./docs/assets/live-demo/register.png" alt="AiFriends live register page" width="49%" />
+</p>
+
+## 公开用户空间
+
+[![AiFriends live public profile](./docs/assets/live-demo/public-profile.png)](https://app8056.acapp.acwing.com.cn/user/space/6)
+
+> 截图是 **2026-08-11 的真实线上快照**。线上内容会随着用户数据和部署版本变化。更详细的验证方法见 [Live Demo Verification](./docs/LIVE_DEMO.md)。
+
+---'''
+              if anchor not in zh:
+                  raise SystemExit("Chinese README anchor not found")
+              zh = zh.replace(anchor, section, 1)
+          zh_path.write_text(zh, encoding="utf-8")
+
+          en_path = Path("README_EN.md")
+          en = en_path.read_text(encoding="utf-8")
+          if badge not in en:
+              en = en.replace(
+                  "[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)",
+                  "[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)\n" + badge,
+                  1,
+              )
+
+          en_marker = "# 🌐 Live Demo"
+          if en_marker not in en:
+              anchor = "> **Project goal:** help learners go beyond “getting an AI demo to work” and understand why the system is designed this way, how to verify it, how to maintain it, and how to evolve it toward reliable software engineering.\n\n---"
+              section = r'''> **Project goal:** help learners go beyond “getting an AI demo to work” and understand why the system is designed this way, how to verify it, how to maintain it, and how to evolve it toward reliable software engineering.
+
+---
+
+# 🌐 Live Demo
+
+**Production deployment:** [https://app8056.acapp.acwing.com.cn/](https://app8056.acapp.acwing.com.cn/)
+
+> These are not mock or generated screenshots. On **2026-08-11**, I used a GitHub-hosted Ubuntu runner with Playwright Chromium to visit the real deployment from an independent public network. The verification was **read-only**: no test account was registered and no production character or user data was created or modified.
+
+Verified public routes:
+
+```text
+/                         → HTTP 200
+/user/account/login       → HTTP 200
+/user/account/register    → HTTP 200
+/user/space/6             → HTTP 200
+```
+
+## Homepage — discover public AI characters
+
+[![AiFriends live homepage](./docs/assets/live-demo/homepage.png)](https://app8056.acapp.acwing.com.cn/)
+
+The deployed homepage loads real public Character cards and profiles, demonstrating the discovery layer of the running application.
+
+## Login and registration
+
+<p align="center">
+  <img src="./docs/assets/live-demo/login.png" alt="AiFriends live login page" width="49%" />
+  <img src="./docs/assets/live-demo/register.png" alt="AiFriends live register page" width="49%" />
+</p>
+
+## Public user space
+
+[![AiFriends live public profile](./docs/assets/live-demo/public-profile.png)](https://app8056.acapp.acwing.com.cn/user/space/6)
+
+> Screenshots are real production snapshots captured on **2026-08-11**. Public content can change as the deployment and user data evolve. See [Live Demo Verification](./docs/LIVE_DEMO.md) for the capture method and scope.
+
+---'''
+              if anchor not in en:
+                  raise SystemExit("English README anchor not found")
+              en = en.replace(anchor, section, 1)
+          en_path.write_text(en, encoding="utf-8")
+
+          live_doc = r'''# AiFriends Live Demo Verification / 在线体验验证
+
+🌐 **Live deployment / 实际部署：** <https://app8056.acapp.acwing.com.cn/>
+
+This document records how the screenshots embedded in the repository were obtained. / 本文记录仓库中线上体验截图的真实采集方式。
+
+## Verification / 验证方式
+
+On **2026-08-11**, a GitHub-hosted `ubuntu-24.04` runner used **Playwright 1.55 + Chromium 140** to visit the production deployment from an independent public network.
+
+2026-08-11，项目使用 GitHub-hosted `ubuntu-24.04` runner，通过 **Playwright 1.55 + Chromium 140** 从独立公网环境访问真实生产部署。
+
+The run was intentionally read-only: / 本次体验刻意保持只读：
+
+- no test account registration / 未注册测试账号；
+- no character creation / 未创建角色；
+- no friend creation or chat messages / 未创建 Friend 或发送聊天消息；
+- no production data mutation / 未修改生产数据。
+
+## Verified routes / 已验证页面
+
+| Route | HTTP | What was observed / 实际观察 |
+|---|---:|---|
+| `/` | 200 | Public Character discovery content / 公开角色发现内容 |
+| `/user/account/login` | 200 | Login form / 登录表单 |
+| `/user/account/register` | 200 | Registration form / 注册表单 |
+| `/user/space/6` | 200 | Public user space and Character content / 公开用户空间与角色内容 |
+
+## Real screenshots / 真实截图
+
+### Homepage / 首页
+
+![Live homepage](./assets/live-demo/homepage.png)
+
+### Login / 登录
+
+![Live login](./assets/live-demo/login.png)
+
+### Register / 注册
+
+![Live register](./assets/live-demo/register.png)
+
+### Public user space / 公开用户空间
+
+![Live public user space](./assets/live-demo/public-profile.png)
+
+## Scope note / 范围说明
+
+These images are point-in-time production snapshots, not design mockups. Public Characters, profile text, images, and deployed frontend assets may change after capture.
+
+这些图片是某一时刻的真实线上快照，不是设计稿或生成图。公开角色、用户资料、图片和线上部署版本之后都可能变化。
+'''
+          Path("docs/LIVE_DEMO.md").write_text(live_doc, encoding="utf-8")
+
+          # The raw capture report contained page text used only for verification.
+          # Keep the PNG evidence, but avoid retaining unnecessary copied public text.
+          Path("docs/assets/live-demo/capture-report.json").unlink(missing_ok=True)
+          PY
+
+      - name: Commit finalized demo docs
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add docs/assets/live-demo
+          git add -A README.md README_EN.md docs/LIVE_DEMO.md docs/assets/live-demo
           if git diff --cached --quiet; then
-            echo "No screenshot changes to commit."
+            echo "No live-demo documentation changes to commit."
             exit 0
           fi
-          git commit -m "docs: add real live demo screenshots"
+          git commit -m "docs: add bilingual live demo experience"
           git push origin HEAD:${{ github.event.pull_request.head.ref }}
