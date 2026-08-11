@@ -1,0 +1,107 @@
+name: Capture Live Demo Screenshots
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: write
+  pull-requests: read
+
+jobs:
+  capture:
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout PR branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          fetch-depth: 0
+
+      - name: Install Playwright
+        run: |
+          mkdir -p /tmp/aifriends-capture
+          cd /tmp/aifriends-capture
+          npm init -y
+          npm install playwright@1.55.0
+          npx playwright install --with-deps chromium
+
+      - name: Capture real production pages
+        env:
+          LIVE_DEMO_URL: https://app8056.acapp.acwing.com.cn/
+        run: |
+          mkdir -p docs/assets/live-demo
+          cd /tmp/aifriends-capture
+          node <<'NODE'
+          const { chromium } = require('playwright');
+          const fs = require('fs');
+          const path = require('path');
+
+          (async () => {
+            const base = process.env.LIVE_DEMO_URL.replace(/\/$/, '');
+            const out = process.env.GITHUB_WORKSPACE + '/docs/assets/live-demo';
+            const browser = await chromium.launch({ headless: true });
+            const context = await browser.newContext({
+              viewport: { width: 1440, height: 1000 },
+              deviceScaleFactor: 1,
+              locale: 'en-US',
+            });
+            const page = await context.newPage();
+            page.setDefaultTimeout(30000);
+
+            const results = [];
+            async function capture(name, url) {
+              const response = await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 45000 });
+              await page.waitForTimeout(3000);
+              try { await page.waitForLoadState('networkidle', { timeout: 10000 }); } catch (_) {}
+              const title = await page.title();
+              const bodyText = (await page.locator('body').innerText()).replace(/\s+/g, ' ').trim().slice(0, 1200);
+              const finalUrl = page.url();
+              const status = response ? response.status() : null;
+              await page.screenshot({ path: path.join(out, `${name}.png`), fullPage: true });
+              results.push({ name, requestedUrl: url, finalUrl, status, title, bodyText });
+              console.log(JSON.stringify(results[results.length - 1], null, 2));
+            }
+
+            await capture('homepage', `${base}/`);
+            await capture('login', `${base}/user/account/login`);
+            await capture('register', `${base}/user/account/register`);
+
+            // Read-only exploration: if the public homepage exposes a user-space link,
+            // capture the first one without creating or modifying production data.
+            await page.goto(`${base}/`, { waitUntil: 'domcontentloaded', timeout: 45000 });
+            await page.waitForTimeout(3000);
+            const publicSpace = page.locator('a[href*="/user/space/"]').first();
+            if (await publicSpace.count()) {
+              const href = await publicSpace.getAttribute('href');
+              if (href) {
+                const target = new URL(href, base).toString();
+                await capture('public-profile', target);
+              }
+            }
+
+            fs.writeFileSync(path.join(out, 'capture-report.json'), JSON.stringify({
+              capturedAt: new Date().toISOString(),
+              source: base + '/',
+              readOnly: true,
+              pages: results,
+            }, null, 2));
+            await browser.close();
+          })().catch(err => {
+            console.error(err);
+            process.exit(1);
+          });
+          NODE
+
+      - name: Commit screenshots to PR branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/assets/live-demo
+          if git diff --cached --quiet; then
+            echo "No screenshot changes to commit."
+            exit 0
+          fi
+          git commit -m "docs: add real live demo screenshots"
+          git push origin HEAD:${{ github.event.pull_request.head.ref }}
