@@ -1,0 +1,18 @@
+services:
+  aifriends:
+    build:
+      context: .
+      dockerfile: Dockerfile.learning
+    ports:
+      - "8000:8000"
+    environment:
+      AI_MODE: mock
+      ENABLE_RAG: "false"
+      ENABLE_ASR: "false"
+      ENABLE_TTS: "false"
+      DJANGO_DEBUG: "true"
+      DJANGO_ALLOWED_HOSTS: "127.0.0.1,localhost,0.0.0.0"
+
+# This compose file is intentionally ephemeral and beginner-oriented.
+# It is not a production deployment recipe: database/media persistence, HTTPS,
+# production WSGI/ASGI, reverse proxy and secret management are Chapter 20 work.
