@@ -8,7 +8,10 @@ Keeping retrieval outside the LangGraph Tool has two benefits:
 
 from __future__ import annotations
 
+from pathlib import Path
+
 import lancedb
+from django.conf import settings
 from langchain_community.vectorstores import LanceDB
 from langchain_core.documents import Document
 
@@ -16,7 +19,8 @@ from web.documents.utils.custom_embeddings import CustomEmbeddings
 
 
 def get_vector_store() -> LanceDB:
-    connection = lancedb.connect('./web/documents/lancedb_storage')
+    storage = Path(settings.BASE_DIR) / 'web' / 'documents' / 'lancedb_storage'
+    connection = lancedb.connect(str(storage))
     return LanceDB(
         connection=connection,
         embedding=CustomEmbeddings(),
@@ -30,14 +34,16 @@ def search_documents(query: str, k: int = 3) -> list[Document]:
 
 
 def document_source(document: Document) -> str:
-    """Choose a stable human-readable source label from LangChain metadata."""
+    """Return a stable source label without leaking an absolute server path."""
     metadata = document.metadata or {}
-    return str(
+    source = (
         metadata.get('source')
         or metadata.get('file_path')
         or metadata.get('filename')
-        or 'unknown-source'
     )
+    if not source:
+        return 'unknown-source'
+    return Path(str(source)).name
 
 
 def format_documents_for_tool(documents: list[Document]) -> str:
