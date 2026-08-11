@@ -1,0 +1,11 @@
+{
+  "name": "aifriends-browser-e2e",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node browser-smoke.mjs"
+  },
+  "devDependencies": {
+    "playwright": "1.55.0"
+  }
+}
