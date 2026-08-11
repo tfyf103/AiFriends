@@ -1,24 +1,23 @@
 """聊天 Agent 的 LangGraph 定义。
 
 本文件只负责“AI 大脑”：LLM、Tool 与图路由。运行模式、模型名和功能开关
-统一由 ``web.ai.config`` 管理，避免新手为了换模型到处修改源码。
+统一由 ``web.ai.config`` 管理；RAG 的向量检索细节则下沉到
+``web.documents.retrieval``，便于 Chapter 19 单独评测 retrieval。
 """
 
 import os
-from typing import TypedDict, Annotated, Sequence
+from typing import Annotated, Sequence, TypedDict
 
-import lancedb
 from django.utils.timezone import localtime, now
-from langchain_community.vectorstores import LanceDB
 from langchain_core.messages import BaseMessage
 from langchain_core.tools import tool
 from langchain_openai import ChatOpenAI
-from langgraph.constants import START, END
-from langgraph.graph import add_messages, StateGraph
+from langgraph.constants import END, START
+from langgraph.graph import StateGraph, add_messages
 from langgraph.prebuilt import ToolNode
 
 from web.ai.config import get_ai_settings
-from web.documents.utils.custom_embeddings import CustomEmbeddings
+from web.documents.retrieval import format_documents_for_tool, search_documents
 
 
 class CharGraph:
@@ -35,20 +34,10 @@ class CharGraph:
 
         @tool
         def search_knowledge_base(query: str) -> str:
-            """当问题需要查询当前项目私有知识库时调用，返回最相关的资料片段。"""
-            db = lancedb.connect('./web/documents/lancedb_storage')
-            embeddings = CustomEmbeddings()
-            vector_db = LanceDB(
-                connection=db,
-                embedding=embeddings,
-                table_name='my_knowledge_base',
-            )
-            docs = vector_db.similarity_search(query, k=3)
-            context = '\n\n'.join([
-                f'内容片段：{i + 1}\n{doc.page_content}'
-                for i, doc in enumerate(docs)
-            ])
-            return f'从知识库中找到以下相关信息：\n\n{context}\n'
+            """当问题需要查询当前项目私有知识库时调用，返回带来源的相关资料。"""
+            documents = search_documents(query, k=3)
+            evidence = format_documents_for_tool(documents)
+            return f'从知识库中找到以下相关信息：\n\n{evidence}\n'
 
         # text 模式默认只有不依赖外部向量库的时间工具；full 或显式开启 RAG 才注册检索工具。
         tools = [get_time]
@@ -61,10 +50,10 @@ class CharGraph:
             openai_api_base=os.getenv('API_BASE'),
             streaming=True,
             model_kwargs={
-                "stream_options": {
-                    "include_usage": True,
-                }
-            }
+                'stream_options': {
+                    'include_usage': True,
+                },
+            },
         ).bind_tools(tools)
 
         class AgentState(TypedDict):
@@ -77,8 +66,8 @@ class CharGraph:
         def should_continue(state: AgentState) -> str:
             last_message = state['messages'][-1]
             if last_message.tool_calls:
-                return "tools"
-            return "end"
+                return 'tools'
+            return 'end'
 
         graph = StateGraph(AgentState)
         graph.add_node('agent', model_call)
@@ -90,7 +79,7 @@ class CharGraph:
             {
                 'tools': 'tools',
                 'end': END,
-            }
+            },
         )
         graph.add_edge('tools', 'agent')
         return graph.compile()
