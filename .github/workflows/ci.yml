@@ -24,7 +24,10 @@ jobs:
       - name: Compile Python
         run: python -m compileall -q backend scripts
       - name: Course structural grader
-        run: python scripts/grade.py --chapter 13
+        run: python scripts/grade.py --chapter 20
+      - name: Django migration drift check
+        working-directory: backend
+        run: python manage.py makemigrations --check --dry-run
       - name: Django checks
         working-directory: backend
         run: python manage.py check
