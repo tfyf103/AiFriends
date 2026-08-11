@@ -81,6 +81,22 @@ class AuthFlowTests(TestCase):
         self.assertIn('refresh_token', refresh.cookies)
 
 
+class HealthTests(TestCase):
+    def test_health_is_public_and_has_request_id(self):
+        with patch.dict(os.environ, {'AI_MODE': 'mock'}, clear=False):
+            response = APIClient().get('/api/health/')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['status'], 'ok')
+        self.assertEqual(response.data['ai_mode'], 'mock')
+        self.assertTrue(response['X-Request-ID'])
+        self.assertEqual(response.data['request_id'], response['X-Request-ID'])
+
+    def test_client_request_id_is_preserved(self):
+        response = APIClient().get('/api/health/', HTTP_X_REQUEST_ID='learn-123')
+        self.assertEqual(response['X-Request-ID'], 'learn-123')
+        self.assertEqual(response.data['request_id'], 'learn-123')
+
+
 class MockChatTests(TestCase):
     def setUp(self):
         self.tmp_media = tempfile.TemporaryDirectory()
