@@ -68,10 +68,16 @@ class Command(BaseCommand):
         else:
             warn("SystemPrompt title='记忆' missing; run python manage.py seed_demo")
 
-        if Voice.objects.exists():
-            ok('Voice data exists')
-        elif config.enable_tts:
-            fail('No Voice rows while TTS is enabled')
+        voices = Voice.objects.all()
+        if config.enable_tts:
+            if not voices.exists():
+                fail('No Voice rows while TTS is enabled')
+            elif not voices.exclude(voice_id='demo-voice').exists():
+                fail('Only demo-voice exists; replace it with a real provider voice_id before enabling TTS')
+            else:
+                ok('Real Voice data exists')
+        elif voices.exists():
+            ok('Voice data exists (optional in current mode)')
         else:
             warn('No Voice rows; fine for mock/text-only learning')
 
