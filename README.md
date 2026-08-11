@@ -1,34 +1,94 @@
 # 🤖 AiFriends
 
-> **从 0 做出一个有角色、记忆、RAG、语音能力的 AI 伙伴，并一路学到测试、CI、数据安全与部署。**
+[![AiFriends CI](https://github.com/tfyf103/AiFriends/actions/workflows/ci.yml/badge.svg)](https://github.com/tfyf103/AiFriends/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
+
+> **从 0 做出一个有角色、长期记忆、RAG、Agent 与语音能力的 AI 伙伴，并一路学到测试、安全、CI 与部署。**
 >
-> 技术栈：**Vue 3 + Django + DRF + JWT + LangChain + LangGraph + LanceDB + SSE + WebSocket**。
+> **An open-source, project-based full-stack AI curriculum and reference application for learning how modern AI products are actually engineered and maintained.**
 
-AiFriends 既是一个真实可运行的 AI 全栈项目，也是一套项目制课程。
+AiFriends 使用 **Vue 3 + Django + DRF + JWT + LangChain + LangGraph + LanceDB + SSE + WebSocket**，把一个真实 AI 应用拆成可运行、可复刻、可测试、可继续工程化的学习路径。
 
-你可以先把最终项目跑起来，再沿真实 Git 历史重新实现它，最后继续学习“如何把 AI Demo 做成可靠工程”。
+它不是“只调用一次大模型 API”的示例。项目覆盖从浏览器 UI、认证、数据库、流式协议，到 Agent、RAG、Memory、ASR/TTS，再到自动测试、数据约束、安全边界、CI 和构建发布。
 
 ---
 
-## 🌱 完全零基础？只走这一条路线
+## 30 秒项目快照
+
+| 项目维度 | 当前状态 |
+| --- | --- |
+| 开源许可 | **MIT** |
+| 维护状态 | **Active development**，由 `@tfyf103` 主要维护 |
+| 学习语言 | 中文优先，代码/工程术语保留英文原名 |
+| 入门门槛 | `AI_MODE=mock` 可 **零 API Key** 跑通核心 Web/SSE 链路 |
+| 课程 | Chapter **00–20**，从零基础到工程化 |
+| 自动反馈 | Django tests + Node tests + structural grader + GitHub Actions |
+| AI 能力 | LangGraph Agent / Tool Calling / Memory / RAG / ASR / TTS |
+| 工程能力 | Serializer / cancellation / migration checks / Health / Request-ID / Docker learning image |
+| 安全入口 | [SECURITY.md](./SECURITY.md) |
+| 贡献入口 | [CONTRIBUTING.md](./CONTRIBUTING.md) |
+
+> **项目目标：让学习者不仅“把 AI Demo 跑起来”，还能够理解它为什么这样设计、如何验证它、如何维护它，以及怎样逐步把 Demo 变成可靠的软件工程。**
+
+---
+
+# 为什么做 AiFriends？
+
+很多 AI 教程停在：
 
 ```text
-README：知道项目是什么
+输入 Prompt
+   ↓
+调用模型 API
+   ↓
+打印答案
+```
+
+真实 AI 产品却往往是：
+
+```text
+Frontend
+  ↓
+Authentication
+  ↓
+HTTP / SSE / WebSocket
+  ↓
+Backend / ORM
+  ↓
+LLM / Agent / Tools
+  ↓
+RAG / Memory
+  ↓
+Speech
+  ↓
+Persistence / Tests / CI / Security
+```
+
+AiFriends 希望补上这中间的工程断层，尤其为中文开发者提供一条 **code-first、可复现、带实验和自动反馈** 的学习路线。
+
+项目把“教程”和“真实维护”放在同一个仓库里：学生看到的不是另一套玩具代码，而是实际运行路径、真实 Git 历史、真实测试、真实数据迁移和真实 CI。
+
+---
+
+# 🌱 零基础学习路线
+
+```text
+README：先知道项目是什么
    ↓
 AI_MODE=mock：零 API Key 跑通项目
    ↓
 BEGINNER_TUTORIAL：理解基础概念
    ↓
-COURSE_REBUILD：沿真实 Git 历史重新造
+COURSE_REBUILD：沿真实 Git 历史重新实现
    ↓
-Labs Chapter 00–13：自己实现完整 AI 应用
+Labs Chapter 00–13：独立完成 AI 应用
    ↓
-Labs Chapter 14–20：Testing / Security / Deploy
+Labs Chapter 14–20：Testing / Security / CI / Deploy
    ↓
-源码 + ARCHITECTURE：形成系统视角
+源码 + ARCHITECTURE：形成完整系统视角
 ```
 
-### 核心入口
+## 核心入口
 
 - 📘 [零基础学习中心](./docs/README.md)
 - 🚀 [完整运行与复刻教程](./docs/BEGINNER_TUTORIAL.md)
@@ -47,25 +107,26 @@ Labs Chapter 14–20：Testing / Security / Deploy
 
 ## 🎭 AI Character
 
-- 创建角色；
-- 自定义头像、背景图、人格设定；
-- 为不同角色选择 Voice；
-- 用户与 Character 建立独立 Friend 关系。
+- 创建自己的 AI 角色；
+- 自定义名称、头像、聊天背景；
+- 编写人格 / 世界观 / 角色设定；
+- 为不同 Character 选择 Voice；
+- 每个用户与 Character 建立独立 Friend 关系。
 
 ## 💬 Streaming Chat
 
-- JWT 登录；
+- JWT 登录与刷新；
 - SSE 流式文本；
 - Message 历史保存；
-- 最近对话作为短期上下文；
+- 最近聊天作为短期上下文；
 - Token 使用量记录；
-- AbortController 真正关闭浏览器 SSE；
+- `AbortController` 真实终止浏览器 SSE；
 - 后端 cancellation event 尽快停止生成 worker。
 
 ## 🧠 Long-term Memory
 
 ```text
-原始 Message
+历史 Message
    +
 旧 Friend.memory
    ↓
@@ -74,7 +135,14 @@ MemoryGraph
 新的长期摘要
 ```
 
-## 🧰 LangGraph Agent
+长期记忆与 Character 固定人格分离，让学习者可以理解：
+
+```text
+Character.profile = 角色是谁
+Friend.memory     = 这个角色记住了某个用户什么
+```
+
+## 🧰 LangGraph Agent / Tool Calling
 
 ```text
 START
@@ -88,10 +156,10 @@ agent
            agent
 ```
 
-当前可扩展 Tool 包括：
+当前示例 Tool 包括：
 
 - 当前时间；
-- LanceDB 私有知识库检索。
+- LanceDB 知识库检索。
 
 ## 📚 RAG
 
@@ -111,12 +179,12 @@ Retrieval
 Agent
 ```
 
-第四轮已经把 Retrieval 从 Agent 中拆出，因此可以单独做 Retrieval Eval。
+Retrieval 已从 Agent 中拆出，可以独立评测，不必把“检索错误”和“生成错误”混在一起。
 
 ## 🎙️ Voice
 
 - 浏览器 VAD；
-- PCM 上传；
+- PCM 音频上传；
 - WebSocket ASR；
 - LLM 文本与 TTS 并行；
 - MP3 bytes → Base64 → SSE；
@@ -126,21 +194,15 @@ Agent
 
 # ⭐ 三种 AI 运行模式
 
-新手第一次 clone 项目时，最常见的问题不是不会写 LangGraph，而是：
+为了让新手先学系统，再处理第三方模型服务，AiFriends 支持：
 
-```text
-没有正确模型
-没有 Embedding
-没有 Speech 账号
-没有 LanceDB
-没有 Voice
-```
+| Mode | 外部模型要求 | 适合学习 |
+| --- | --- | --- |
+| `mock` | 无 | Vue / Django / JWT / Friend / SSE / DB / CI |
+| `text` | Chat Model | LLM / LangGraph / Tool / Memory |
+| `full` | Chat + Embedding + Speech | RAG / ASR / TTS 完整链路 |
 
-所以项目现在支持：
-
-## 1. `mock`
-
-**第一次学习推荐。**
+## 1. `mock`：第一次学习推荐
 
 ```env
 AI_MODE=mock
@@ -149,7 +211,7 @@ ENABLE_ASR=false
 ENABLE_TTS=false
 ```
 
-不需要真实：
+不需要：
 
 ```text
 API_KEY
@@ -157,18 +219,21 @@ API_BASE
 WSS_URL
 ```
 
-但仍然经过真实：
+但仍然走真实：
 
 ```text
 Vue
+ ↓
 JWT
+ ↓
 Django
+ ↓
 Friend
+ ↓
 SSE
+ ↓
 Message 数据库
 ```
-
-所以 Chapter 00–07 和 CI 都能在零模型费用下运行。
 
 ## 2. `text`
 
@@ -179,17 +244,17 @@ API_BASE=...
 CHAT_MODEL=...
 ```
 
-先学习真实 LLM / LangGraph，不要求语音服务。
+用于先学习真实 LLM / LangGraph，而不把 TTS/ASR 作为聊天成功的前置条件。
 
 ## 3. `full`
 
 完整开启 Chat / RAG / ASR / TTS。
 
-为兼容已有部署，如果没有配置 `AI_MODE`，代码默认仍使用 `full`；新用户复制 `.env.example` 时默认是 `mock`。
+为了兼容旧部署，没有配置 `AI_MODE` 时运行时代码默认仍按 `full` 处理；新学习者复制 `.env.example` 时从 `mock` 开始。
 
 ---
 
-# 🚀 第一次启动：推荐流程
+# 🚀 第一次启动
 
 ## 1. Clone
 
@@ -198,7 +263,7 @@ git clone https://github.com/tfyf103/AiFriends.git
 cd AiFriends
 ```
 
-## 2. Python 环境
+## 2. Python
 
 ```bash
 python -m venv .venv
@@ -216,13 +281,11 @@ macOS / Linux：
 source .venv/bin/activate
 ```
 
-安装：
-
 ```bash
 pip install -r requirements.txt
 ```
 
-## 3. `.env`
+## 3. Environment
 
 Windows：
 
@@ -236,7 +299,7 @@ macOS / Linux：
 cp .env.example .env
 ```
 
-第一次不要改：
+第一次保持：
 
 ```env
 AI_MODE=mock
@@ -257,7 +320,7 @@ python manage.py runserver
 
 ### `seed_demo`
 
-幂等创建学习所需基础数据：
+幂等创建基础学习数据：
 
 ```text
 Demo Voice
@@ -267,7 +330,7 @@ Demo Voice
 
 ### `doctor`
 
-自动检查当前模式真正需要的：
+根据当前 AI 模式检查真正需要的环境：
 
 ```text
 Python
@@ -289,16 +352,9 @@ npm ci
 npm run dev
 ```
 
-开发模式通过 Vite Proxy 转发：
+开发模式通过 Vite Proxy 转发 `/api` 和 `/media`，降低第一次学习时的 CORS / Cookie host 干扰。
 
-```text
-/api
-/media
-```
-
-因此第一次学习不需要同时处理一堆跨域与 Cookie host 问题。
-
-## 6. 看到第一条 Mock Chat
+## 6. 第一条消息
 
 ```text
 注册
@@ -314,27 +370,27 @@ npm run dev
 看到【Mock 模式】流式回复
 ```
 
-做到这里，再把 `AI_MODE` 切到 `text`。
+完成这里后，再逐步切换到 `text` / `full`。
 
 ---
 
-# 🎙️ 学语音前执行一次
+# 🎙️ 学语音前
 
 ```bash
 cd frontend
 npm run setup:vad
 ```
 
-它会自动准备浏览器所需的 VAD / ONNX Runtime 静态资源。
+它会从 npm 依赖中自动准备浏览器所需 VAD / ONNX Runtime 静态资源。
 
-然后再逐项开启：
+之后再逐项开启：
 
 ```env
 ENABLE_ASR=true
 ENABLE_TTS=true
 ```
 
-每改一次环境配置都可以重新：
+环境有疑问时重新执行：
 
 ```bash
 cd backend
@@ -343,18 +399,18 @@ python manage.py doctor
 
 ---
 
-# ✅ 不要用“感觉”判断代码是否正确
+# ✅ 自动反馈：不要靠“感觉”判断做对了
 
-AiFriends 现在提供四层反馈。
+AiFriends 当前提供四层反馈。
 
-## Level 1：环境
+## Level 1 — Environment
 
 ```bash
 cd backend
 python manage.py doctor
 ```
 
-## Level 2：课程结构
+## Level 2 — Course Structural Grader
 
 ```bash
 python scripts/grade.py --chapter 7
@@ -362,30 +418,30 @@ python scripts/grade.py --chapter 13
 python scripts/grade.py --chapter 20
 ```
 
-## Level 3：Behavior Tests
+## Level 3 — Behavior Tests
 
-后端：
+Backend：
 
 ```bash
 cd backend
 python manage.py test web
 ```
 
-前端：
+Frontend：
 
 ```bash
 cd frontend
 npm test
 ```
 
-## Level 4：Build / CI
+## Level 4 — Build / CI
 
 ```bash
 cd frontend
 npm run check
 ```
 
-Pull Request 会自动运行 GitHub Actions，包括：
+Pull Request 的 GitHub Actions 会在干净环境运行：
 
 ```text
 Python compile
@@ -401,11 +457,11 @@ Vite production build
 Docker learning image build
 ```
 
-详细说明：[GRADING.md](./docs/GRADING.md)。
+详见 [GRADING.md](./docs/GRADING.md)。
 
 ---
 
-# 🔥 一条消息经过哪些层？
+# 🔥 一条聊天消息如何穿过整个系统？
 
 ```text
 InputField.vue
@@ -426,7 +482,7 @@ SystemPrompt
 + recent Message
   ↓
 AI_MODE
-  ├─ mock → local deterministic stream
+  ├─ mock → deterministic local stream
   └─ text/full → CharGraph
                    ↓
                   LLM
@@ -454,7 +510,7 @@ Message persistence
 periodic Memory update
 ```
 
-完整版本：[ARCHITECTURE.md](./docs/ARCHITECTURE.md)。
+完整说明：[ARCHITECTURE.md](./docs/ARCHITECTURE.md)。
 
 ---
 
@@ -479,9 +535,7 @@ periodic Memory update
 13 Full Pipeline
 ```
 
-目标：
-
-> **独立做出一个完整 AI Web 应用。**
+目标：**独立做出一个完整 AI Web 应用。**
 
 ## Chapter 14–20：再学“做可靠”
 
@@ -495,75 +549,35 @@ periodic Memory update
 20 CI / Build / Deploy / Observability
 ```
 
-目标：
-
-> **把一个 AI Demo 升级成可以验证、维护和部署的工程项目。**
+目标：**把能跑的 AI Demo 升级成可验证、可维护的工程项目。**
 
 入口：[Labs](./labs/README.md)。
 
 ---
 
-# 🧪 第四轮已经真正落地了什么？
+# 🛡️ Security & maintenance
 
-## First-run success
+AiFriends 的维护面横跨：
 
-- [x] `mock / text / full` 三模式
-- [x] 模型名配置化
-- [x] RAG / ASR / TTS Feature Flag
-- [x] Text-only Chat 不依赖 TTS
-- [x] Vite local proxy
-- [x] 开发/生产 Cookie 策略集中管理
-- [x] `manage.py doctor`
-- [x] `manage.py seed_demo`
-- [x] `npm run setup:vad`
+```text
+JWT / refresh cookies
+Object-level authorization
+File uploads
+SSE / WebSocket
+LLM Tool Calling
+RAG / user data
+Third-party AI endpoints
+Dependency supply chain
+```
 
-## Authentication / REST
+因此安全不是课程最后的一页，而是项目维护的一部分。
 
-- [x] Axios 与 SSE 共用 single-flight refresh
-- [x] 修复 SSE refresh 后可能继续使用旧 access token
-- [x] 登录/注册开始使用 DRF Serializer
-- [x] 400 / 401 / 409 等状态码
-- [x] 基础机器可读错误码
+- 安全问题请遵循 **[SECURITY.md](./SECURITY.md)**，不要公开披露未修复漏洞。
+- 普通 Bug、文档、测试和工程改进欢迎按 **[CONTRIBUTING.md](./CONTRIBUTING.md)** 提交。
+- CI 默认使用 `mock` 模式，不要求贡献者提交真实 API Key，也不消耗外部模型额度。
+- `/api/health/`、`X-Request-ID`、migration drift check、behavior tests 和 Docker learning build 用于提升可诊断性和回归保护。
 
-## Streaming / Async
-
-- [x] AbortController 关闭真实 SSE
-- [x] backend `cancel_event`
-- [x] text-only worker
-- [x] optional TTS worker
-
-## Data
-
-- [x] Friend `(user, character)` 数据库 UniqueConstraint
-- [x] `0008` 安全数据迁移：合并潜在重复 Friend / Message
-- [x] migration drift CI check
-
-## RAG
-
-- [x] Retrieval 从 Agent 解耦
-- [x] Tool evidence 带 source
-- [x] source 不泄露服务器绝对路径
-- [x] `evals/rag_cases.example.json`
-- [x] `scripts/eval_rag.py`
-
-## Testing / CI
-
-- [x] Backend behavior tests
-- [x] Frontend single-flight tests
-- [x] Chapter 00–20 structural grader
-- [x] Frontend quality check
-- [x] Vite build smoke test
-- [x] GitHub Actions
-
-## Build / Observability
-
-- [x] `/api/health/`
-- [x] `X-Request-ID`
-- [x] Django runtime settings 环境变量化
-- [x] Vite manifest，不再手工写 hash bundle
-- [x] `Dockerfile.learning`
-- [x] `compose.learning.yml`
-- [x] CI Docker build
+> `Dockerfile.learning`、SQLite、Django `runserver` 和开发环境设置是**教学参考**，不是生产环境安全承诺。生产部署需要继续完成 WSGI/ASGI、HTTPS、PostgreSQL、持久化存储、Secrets、Rate Limit、metrics/tracing 等工作。
 
 ---
 
@@ -577,7 +591,7 @@ python scripts/eval_rag.py \
   --k 3
 ```
 
-它先只测试：
+它先独立测试 Retrieval：
 
 ```text
 问题
@@ -586,26 +600,24 @@ Embedding
  ↓
 Top-k Retrieval
  ↓
-是否拿到预期关键词 / source
+预期关键词 / source
 ```
-
-而不是直接让 LLM 生成答案。
 
 这样可以区分：
 
 ```text
 Retrieval 没找对
 vs
-LLM 找到了但没用好
+LLM 找到了证据但没用好
 ```
 
-这也是 Chapter 19 的核心工程思维。
+这是 Chapter 19 的核心工程思维之一。
 
 ---
 
 # 🐳 Learning Docker
 
-这不是生产部署模板，而是教学用“干净环境复现器”。
+教学用“干净环境复现器”：
 
 ```bash
 docker build -f Dockerfile.learning -t aifriends:learning .
@@ -618,56 +630,58 @@ docker run --rm -p 8000:8000 aifriends:learning
 docker compose -f compose.learning.yml up --build
 ```
 
-它故意仍然使用 Django `runserver`。
+它故意仍使用 Django `runserver`。Chapter 20 再继续学习真正的生产部署边界。
 
-Chapter 20 再继续学习：
+---
+
+# 🤝 Contributing
+
+AiFriends 欢迎这些贡献：
+
+- 可以复现的 Bug fix；
+- Authentication / Authorization / Upload / Streaming / RAG 安全改进；
+- Regression tests；
+- 新手第一次运行问题和诊断工具；
+- 文档与源码不一致的修复；
+- Labs / Debugging exercises；
+- Accessibility / Performance / CI / Observability / Deploy 改进；
+- RAG / Memory evaluation cases。
+
+开始前请阅读：[CONTRIBUTING.md](./CONTRIBUTING.md)。
+
+最低检查：
+
+```bash
+python scripts/grade.py --chapter 20
+
+cd backend
+python manage.py makemigrations --check --dry-run
+python manage.py check
+python manage.py test web
+
+cd ../frontend
+npm run check
+npm test
+npm run build
+```
+
+不要提交：
 
 ```text
-production WSGI/ASGI
-Nginx
-HTTPS
-PostgreSQL
-persistent media
-secret management
-metrics / tracing
+真实 API Key / JWT / Django Secret
+.env
+私人聊天数据
+db.sqlite3
+运行时 LanceDB 数据
 ```
 
 ---
 
-# 📂 第四轮最值得阅读的新增文件
+# 🗺️ Roadmap
 
-```text
-backend/web/ai/config.py
-backend/web/serializers/account.py
-backend/web/management/commands/doctor.py
-backend/web/management/commands/seed_demo.py
-backend/web/middleware.py
-backend/web/views/health.py
-backend/web/documents/retrieval.py
-backend/web/migrations/0008_friend_unique_constraint.py
-backend/web/tests.py
+下一阶段更值得做的是提高教学质量、软件供应链安全和生产思维，而不是继续堆基础教程。
 
-frontend/src/js/http/authRefresh.js
-frontend/src/js/utils/singleFlight.js
-frontend/scripts/setup-vad.mjs
-frontend/scripts/quality-check.mjs
-frontend/tests/singleFlight.test.js
-
-scripts/grade.py
-scripts/eval_rag.py
-evals/rag_cases.example.json
-.github/workflows/ci.yml
-Dockerfile.learning
-compose.learning.yml
-```
-
----
-
-# 🗺️ 下一阶段 Roadmap
-
-现在更值得做的是继续提高“教学质量与生产思维”，而不是继续堆基础教程。
-
-## 教学体验
+## Learning Experience
 
 - [ ] `course/chXX-start` / `course/chXX-solution` 稳定教学标签
 - [ ] Bug Museum：把真实历史 Bug 变成 Debug Lab
@@ -677,17 +691,18 @@ compose.learning.yml
 
 ## Backend / Security
 
-- [ ] 把更多旧 API 迁移到 Serializer / 统一错误结构
+- [ ] 更多旧 API 迁移到 Serializer / 统一错误结构
 - [ ] 文件上传 MIME / Size / Image validation
 - [ ] Object-level Permission 系统化
-- [ ] Refresh-token blacklist / revoke 策略课程
+- [ ] Refresh-token blacklist / revoke 策略
 - [ ] Rate Limit
+- [ ] Dependency audit / supply-chain hardening
 - [ ] PostgreSQL / 并发 Transaction 实验
 
 ## AI Engineering
 
 - [ ] Provider Adapter
-- [ ] 把 RAG source 以结构化事件直接展示到 UI
+- [ ] RAG source 结构化事件与前端 Citation UI
 - [ ] Generation / Faithfulness Eval
 - [ ] Structured Memory
 - [ ] Memory conflict resolution
@@ -698,52 +713,16 @@ compose.learning.yml
 
 - [ ] Production WSGI/ASGI Server
 - [ ] Nginx / HTTPS
-- [ ] Persistent media/object storage
+- [ ] Persistent media / object storage
 - [ ] PostgreSQL production config
 - [ ] Structured logging / metrics / tracing
-
----
-
-# 🤝 贡献前最低检查
-
-Backend：
-
-```bash
-cd backend
-python manage.py test web
-```
-
-Frontend：
-
-```bash
-cd frontend
-npm run check
-```
-
-课程结构：
-
-```bash
-python scripts/grade.py --chapter 20
-```
-
-并确认没有提交：
-
-```text
-真实 API Key
-真实 Django Secret
-.env
-私人聊天数据
-db.sqlite3
-运行时 LanceDB 数据
-```
+- [ ] Route-level lazy loading / code splitting
 
 ---
 
 # 📄 License
 
-当前仓库尚未声明正式开源许可证。
-
-如果准备把 AiFriends 作为正式开源教学项目推广，建议后续明确选择 MIT / Apache-2.0 等许可证。
+AiFriends is open source under the **MIT License**. See [LICENSE](./LICENSE).
 
 ---
 
@@ -758,5 +737,3 @@ Vue + Django + JWT + SSE + LangGraph + RAG + Memory + ASR + TTS + Docker
 正确顺序是：
 
 > **先用 Mock 跑通 → 看懂一条请求 → 自己重写 → 用测试证明 → 再逐个打开复杂能力。**
-
-从这里开始：**[AiFriends 零基础学习中心](./docs/README.md)**。
