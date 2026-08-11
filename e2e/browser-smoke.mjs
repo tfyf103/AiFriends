@@ -14,7 +14,7 @@ const npm = process.platform === 'win32' ? 'npm.cmd' : 'npm'
 const env = {
   ...process.env,
   DJANGO_DEBUG: 'true',
-  DJANGO_SECRET_KEY: 'browser-e2e-development-only',
+  DJANGO_SECRET_KEY: 'browser-e2e-development-only-key-please-do-not-use-in-production',
   DJANGO_ALLOWED_HOSTS: '127.0.0.1,localhost',
   CORS_ALLOWED_ORIGINS: 'http://127.0.0.1:5173,http://localhost:5173',
   DATABASE_PATH: path.join(tmpDir, 'e2e.sqlite3'),
