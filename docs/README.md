@@ -1,5 +1,7 @@
 # AiFriends 零基础学习中心
 
+🌐 **语言 / Language：** **简体中文** | [English Learning Hub](./README_EN.md)
+
 > 这里不是“文档目录”，而是你的学习路线控制台。
 
 AiFriends 现在分成两个阶段：
@@ -11,6 +13,8 @@ Chapter 00–13
 Chapter 14–20
 把 AI Demo 升级成可靠工程项目
 ```
+
+> English learners can now use the [English Quick Start](./QUICK_START_EN.md), [English Architecture Guide](./ARCHITECTURE_EN.md), and the [English core Labs](../labs/en/README.md) for Chapters 00 / 06 / 07 / 08 / 10 / 13.
 
 ---
 
@@ -76,6 +80,8 @@ InputField.vue / streamApi.js
 
 # 2. 核心资料
 
+## 中文
+
 | 资料 | 用途 |
 |---|---|
 | [BEGINNER_TUTORIAL](./BEGINNER_TUTORIAL.md) | 第一次安装、运行、理解基础概念 |
@@ -87,6 +93,16 @@ InputField.vue / streamApi.js
 | [DATABASE_ER](./DATABASE_ER.md) | Model / Relation / ER 图 |
 | [ARCHITECTURE](./ARCHITECTURE.md) | 完整请求与 AI 数据流 |
 | [TROUBLESHOOTING](./TROUBLESHOOTING.md) | 分层排错 |
+
+## English
+
+| Resource | Purpose |
+|---|---|
+| [English Learning Hub](./README_EN.md) | English learning navigation and translation status |
+| [English Quick Start](./QUICK_START_EN.md) | Zero-API-key first run with `AI_MODE=mock` |
+| [English Architecture Guide](./ARCHITECTURE_EN.md) | Current end-to-end architecture and data flow |
+| [English Core Labs](../labs/en/README.md) | Chapters 00 / 06 / 07 / 08 / 10 / 13 |
+| [README_EN](../README_EN.md) | International project landing page |
 
 ---
 
@@ -269,6 +285,8 @@ npm run check
 | 13 | 能否完整追踪一句话？ |
 
 入口：**[Labs](../labs/README.md)**。
+
+英文核心路径：**[English Labs](../labs/en/README.md)**。
 
 ---
 
@@ -462,7 +480,28 @@ Labs 验收 = 学习目标
 
 ---
 
-# 12. 最终学习闭环
+# 12. 国际化状态
+
+当前已经完成：
+
+- [x] 中英文项目首页
+- [x] English Learning Hub
+- [x] English Quick Start
+- [x] English Architecture Guide
+- [x] English Labs：00 / 06 / 07 / 08 / 10 / 13
+- [x] 英文贡献入口与翻译贡献说明
+
+后续继续逐步扩展：
+
+- [ ] Chapter 01–05 / 09 / 11–12 英文 Labs
+- [ ] Chapter 14–20 Engineering Labs 英文化
+- [ ] API / Database / Troubleshooting 的完整英文版本
+
+原则：**优先保证英文内容与当前代码一致，而不是追求一次性机械翻译全部文档。**
+
+---
+
+# 13. 最终学习闭环
 
 每一章尽量做到：
 
@@ -500,4 +539,5 @@ Metric
 
 ---
 
-返回：**[项目首页](../README.md)**。
+返回：**[项目首页](../README.md)**。  
+English: **[English Learning Hub](./README_EN.md)**。
