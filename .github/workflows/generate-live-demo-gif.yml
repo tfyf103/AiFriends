@@ -24,14 +24,146 @@ jobs:
         run: pip install pillow==12.2.0
       - name: Build walkthrough GIF from real screenshots
         run: python scripts/build_demo_gif.py
-      - name: Commit generated GIF
+      - name: Update root bilingual navigation/status
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          def replace_once(text: str, old: str, new: str, label: str) -> str:
+              if old not in text:
+                  raise SystemExit(f"README patch anchor not found: {label}")
+              return text.replace(old, new, 1)
+
+          zh_path = Path('README.md')
+          zh = zh_path.read_text(encoding='utf-8')
+          zh = replace_once(
+              zh,
+              '> **国际化状态：核心课程已经完成中英文双轨。** 英文用户现在可以独立完成 **Chapter 00–20**，并使用 English Quick Start、Architecture、Engineering Course、API Reference、Database/ER 和 Troubleshooting，不需要依赖中文正文才能完成核心学习路径。',
+              '> **国际化状态：核心课程 + 高价值工程资料已经形成中英文双轨。** 英文用户现在不仅能独立完成 **Chapter 00–20**，还可使用 English Git-history Rebuild、Architecture、API/ER/Troubleshooting、双语术语基线、真实截图/GIF 和 Browser E2E；CI 会检查核心双语结构与关键源码路径漂移。',
+              'zh status',
+          )
+          zh = replace_once(
+              zh,
+              '| 自动反馈 | Django tests + Node tests + structural grader + GitHub Actions |',
+              '| 自动反馈 | Django tests + Node tests + Browser E2E + structural grader + i18n/source drift + GitHub Actions |',
+              'zh snapshot feedback',
+          )
+          zh = replace_once(
+              zh,
+              '| 英文参考 | Quick Start / Architecture / Engineering / API / ER / Troubleshooting |',
+              '| 英文参考 | Quick Start / Git History / Architecture / Engineering / API / ER / Troubleshooting |',
+              'zh snapshot refs',
+          )
+          zh = replace_once(
+              zh,
+              '> 截图是 **2026-08-11 的真实线上快照**，公开角色、用户资料和部署版本之后可能变化。采集方法和验证范围见 [Live Demo Verification](./docs/LIVE_DEMO.md)。',
+              '> 截图是 **2026-08-11 的真实线上快照**，公开角色、用户资料和部署版本之后可能变化。采集方法和验证范围见 [Live Demo Verification](./docs/LIVE_DEMO.md)。\n\n## 真实 walkthrough GIF\n\n![AiFriends real production walkthrough](./docs/assets/live-demo/walkthrough.gif)\n\n该 GIF 只由上面的真实线上 PNG 可复现合成，不是生成式 UI。视觉规范与贡献规则见 [Screenshots & GIF Guide](./docs/SCREENSHOTS.md)。',
+              'zh live gif',
+          )
+          zh = replace_once(
+              zh,
+              '- 🌍 [English Learning Hub](./docs/README_EN.md)\n- 🚀 [English Quick Start](./docs/QUICK_START_EN.md)\n- 🧪 [English Labs：Chapter 00–20](./labs/en/README.md)',
+              '- 🌍 [English Learning Hub](./docs/README_EN.md)\n- 🚀 [English Quick Start](./docs/QUICK_START_EN.md)\n- 🧭 [English Git-history Rebuild](./docs/COURSE_REBUILD_EN.md)\n- 🧪 [English Labs：Chapter 00–20](./labs/en/README.md)',
+              'zh english resources',
+          )
+          zh = replace_once(
+              zh,
+              '- 🧯 [English Troubleshooting](./docs/TROUBLESHOOTING_EN.md)',
+              '- 🧯 [English Troubleshooting](./docs/TROUBLESHOOTING_EN.md)\n- 🌐 [Bilingual Engineering Glossary](./docs/BILINGUAL_GLOSSARY.md)\n- 🖼️ [Screenshots & GIF Guide](./docs/SCREENSHOTS.md)\n- 🧪 [English Browser E2E](./e2e/README.md)',
+              'zh quality resources',
+          )
+          zh = replace_once(
+              zh,
+              'Python compile\nChapter 00–20 grader\nMigration drift check\nDjango check/tests\nnpm ci\nVAD setup\nFrontend quality/tests/build\nDocker learning image build',
+              'Python compile\nInternationalization/documentation drift check\nLive-demo GIF drift check\nChapter 00–20 grader\nMigration drift check\nDjango check/tests\nnpm ci\nVAD setup\nFrontend quality/tests/build\nChromium Browser E2E in AI_MODE=mock\nDocker learning image build',
+              'zh ci list',
+          )
+          zh = replace_once(
+              zh,
+              '- [ ] 按价值逐步翻译 `COURSE_REBUILD` / 历史工程考古等辅助资料\n- [ ] 自动化检查中英文文档漂移\n- [x] 首批中英文真实线上截图 / Live Demo\n- [ ] 每章截图 / GIF / Expected Result\n- [ ] 统一中英文工程术语与可访问性表达',
+              '- [x] English `COURSE_REBUILD` / 真实 Git 历史工程考古\n- [x] 自动化检查核心双语文档与关键源码路径结构性漂移\n- [x] 首批中英文真实线上截图 + 可复现 walkthrough GIF\n- [ ] 高价值章节继续增加截图 / GIF / Expected Result\n- [x] 双语工程术语基线与贡献规范\n- [ ] 持续优化可访问性表达',
+              'zh roadmap i18n',
+          )
+          zh = replace_once(
+              zh,
+              '- [ ] Mock 模式 Browser E2E',
+              '- [x] Mock 模式 Browser E2E（注册 / 受保护路由 / 刷新恢复）',
+              'zh roadmap e2e',
+          )
+          zh_path.write_text(zh, encoding='utf-8')
+
+          en_path = Path('README_EN.md')
+          en = en_path.read_text(encoding='utf-8')
+          en = replace_once(
+              en,
+              '> **English documentation status:** the core learning path is now fully internationalized. English learners can complete **Chapters 00–20** and use dedicated English Quick Start, Architecture, Engineering Course, API Reference, Database/ER, and Troubleshooting guides without relying on Chinese prose for the core curriculum.',
+              '> **English documentation status:** the core curriculum and high-value maintainer path are now internationalized. English learners can complete **Chapters 00–20**, study real Git-history engineering archaeology, use the maintained architecture/API/database references, follow a bilingual terminology baseline, inspect real screenshots/GIFs, and run a Browser E2E example. CI guards core bilingual/source structure against silent drift.',
+              'en status',
+          )
+          en = replace_once(
+              en,
+              '| Automated feedback | Django tests + Node tests + structural grader + GitHub Actions |',
+              '| Automated feedback | Django tests + Node tests + Browser E2E + structural grader + i18n/source drift + GitHub Actions |',
+              'en snapshot feedback',
+          )
+          en = replace_once(
+              en,
+              '| English references | Quick Start / Architecture / Engineering / API / ER / Troubleshooting |',
+              '| English references | Quick Start / Git History / Architecture / Engineering / API / ER / Troubleshooting |',
+              'en snapshot refs',
+          )
+          en = replace_once(
+              en,
+              '> Screenshots are real production snapshots captured on **2026-08-11**. Public Characters, profile data, and deployed assets can evolve over time. See [Live Demo Verification](./docs/LIVE_DEMO.md) for the capture method and scope.',
+              '> Screenshots are real production snapshots captured on **2026-08-11**. Public Characters, profile data, and deployed assets can evolve over time. See [Live Demo Verification](./docs/LIVE_DEMO.md) for the capture method and scope.\n\n## Real walkthrough GIF\n\n![AiFriends real production walkthrough](./docs/assets/live-demo/walkthrough.gif)\n\nThe GIF is reproducibly built only from the real production PNGs above; it is not generated UI. See the [Screenshots & GIF Guide](./docs/SCREENSHOTS.md) for visual-evidence rules.',
+              'en live gif',
+          )
+          en = replace_once(
+              en,
+              '- 🌍 [English Learning Hub](./docs/README_EN.md)\n- 🚀 [English Quick Start](./docs/QUICK_START_EN.md)\n- 🧪 [English Labs: Chapter 00–20](./labs/en/README.md)',
+              '- 🌍 [English Learning Hub](./docs/README_EN.md)\n- 🚀 [English Quick Start](./docs/QUICK_START_EN.md)\n- 🧭 [English Git-history Rebuild](./docs/COURSE_REBUILD_EN.md)\n- 🧪 [English Labs: Chapter 00–20](./labs/en/README.md)',
+              'en resources',
+          )
+          en = replace_once(
+              en,
+              '- 🧯 [English Troubleshooting Guide](./docs/TROUBLESHOOTING_EN.md)\n- ✅ [Grading & Automated Feedback](./docs/GRADING.md)',
+              '- 🧯 [English Troubleshooting Guide](./docs/TROUBLESHOOTING_EN.md)\n- 🌐 [Bilingual Engineering Glossary](./docs/BILINGUAL_GLOSSARY.md)\n- 🖼️ [Screenshots & GIF Guide](./docs/SCREENSHOTS.md)\n- 🧪 [Browser E2E example](./e2e/README.md)\n- ✅ [Grading & Automated Feedback](./docs/GRADING.md)',
+              'en quality resources',
+          )
+          en = replace_once(
+              en,
+              '`COURSE_REBUILD` and some historical/auxiliary deep-dive material may remain Chinese-first. That does not block the complete English Chapter 00–20 learning path.',
+              'Real Git-history engineering archaeology is now available in both languages through `COURSE_REBUILD.md` and `COURSE_REBUILD_EN.md`. Remaining internationalization work is ongoing maintenance quality rather than a missing core learning path.',
+              'en stale archaeology note',
+          )
+          en = replace_once(
+              en,
+              'Python compile\nChapter 00–20 grader\nmigration drift\nDjango check/tests\nnpm ci\nVAD setup\nfrontend quality/tests/build\nlearning Docker image build',
+              'Python compile\ninternationalization/documentation drift check\nlive-demo GIF drift check\nChapter 00–20 grader\nmigration drift\nDjango check/tests\nnpm ci\nVAD setup\nfrontend quality/tests/build\nChromium Browser E2E in AI_MODE=mock\nlearning Docker image build',
+              'en ci list',
+          )
+          en = replace_once(
+              en,
+              '- [ ] Translate historical `COURSE_REBUILD` / auxiliary archaeology where useful\n- [ ] Keep bilingual docs synchronized automatically where possible\n- [x] First real bilingual Live Demo screenshots\n- [ ] Add per-chapter screenshots / GIFs / expected results\n- [ ] Improve terminology consistency and accessibility',
+              '- [x] English `COURSE_REBUILD` / real Git-history engineering archaeology\n- [x] Structural CI guard for core bilingual docs and important source sentinels\n- [x] First real bilingual Live Demo screenshots + reproducible walkthrough GIF\n- [ ] Add focused screenshots / GIFs / expected results to more high-value chapters\n- [x] Bilingual engineering terminology baseline and contribution rules\n- [ ] Continue accessibility-language improvements',
+              'en roadmap i18n',
+          )
+          en = replace_once(
+              en,
+              '- [ ] Browser E2E in Mock mode',
+              '- [x] Browser E2E in Mock mode (registration / protected route / reload restoration)',
+              'en roadmap e2e',
+          )
+          en_path.write_text(en, encoding='utf-8')
+          PY
+      - name: Commit generated GIF and root documentation
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add docs/assets/live-demo/walkthrough.gif
+          git add docs/assets/live-demo/walkthrough.gif README.md README_EN.md
           if git diff --cached --quiet; then
-            echo "walkthrough.gif already up to date"
+            echo "walkthrough.gif and root docs already up to date"
             exit 0
           fi
-          git commit -m "docs: add real live-demo walkthrough gif"
+          git commit -m "docs: finalize internationalization quality entry points"
           git push origin HEAD:${{ github.head_ref }}
