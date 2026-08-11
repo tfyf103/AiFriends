@@ -1,18 +1,25 @@
 from rest_framework import serializers
 
 
-class CredentialsSerializer(serializers.Serializer):
-    """Shared username/password validation for login and registration.
-
-    Keeping syntactic validation in a Serializer lets Views focus on business rules
-    such as authentication and duplicate-user checks.
-    """
+class LoginSerializer(serializers.Serializer):
+    """Validate the transport shape of a login request."""
 
     username = serializers.CharField(
         max_length=150,
         allow_blank=False,
         trim_whitespace=True,
     )
+    password = serializers.CharField(
+        write_only=True,
+        allow_blank=False,
+        trim_whitespace=False,
+        max_length=128,
+    )
+
+
+class RegisterSerializer(LoginSerializer):
+    """Registration can enforce a stronger minimum than login transport validation."""
+
     password = serializers.CharField(
         write_only=True,
         allow_blank=False,
