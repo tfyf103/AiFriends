@@ -3,6 +3,8 @@
 [![AiFriends CI](https://github.com/tfyf103/AiFriends/actions/workflows/ci.yml/badge.svg)](https://github.com/tfyf103/AiFriends/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
 
+🌐 **语言 / Language：** **简体中文** | [English](./README_EN.md)
+
 > **从 0 做出一个有角色、长期记忆、RAG、Agent 与语音能力的 AI 伙伴，并一路学到测试、安全、CI 与部署。**
 >
 > **An open-source, project-based full-stack AI curriculum and reference application for learning how modern AI products are actually engineered and maintained.**
@@ -19,7 +21,7 @@ AiFriends 使用 **Vue 3 + Django + DRF + JWT + LangChain + LangGraph + LanceDB 
 | --- | --- |
 | 开源许可 | **MIT** |
 | 维护状态 | **Active development**，由 `@tfyf103` 主要维护 |
-| 学习语言 | 中文优先，代码/工程术语保留英文原名 |
+| 学习语言 | **中文 + English 双语入口**；深度课程正文当前中文优先 |
 | 入门门槛 | `AI_MODE=mock` 可 **零 API Key** 跑通核心 Web/SSE 链路 |
 | 课程 | Chapter **00–20**，从零基础到工程化 |
 | 自动反馈 | Django tests + Node tests + structural grader + GitHub Actions |
@@ -64,7 +66,7 @@ Speech
 Persistence / Tests / CI / Security
 ```
 
-AiFriends 希望补上这中间的工程断层，尤其为中文开发者提供一条 **code-first、可复现、带实验和自动反馈** 的学习路线。
+AiFriends 希望补上这中间的工程断层。项目从中文 AI 学习社区起步，提供一条 **code-first、可复现、带实验和自动反馈** 的学习路线，并通过中英文双语入口逐步向全球开发者开放。
 
 项目把“教程”和“真实维护”放在同一个仓库里：学生看到的不是另一套玩具代码，而是实际运行路径、真实 Git 历史、真实测试、真实数据迁移和真实 CI。
 
@@ -645,7 +647,8 @@ AiFriends 欢迎这些贡献：
 - 文档与源码不一致的修复；
 - Labs / Debugging exercises；
 - Accessibility / Performance / CI / Observability / Deploy 改进；
-- RAG / Memory evaluation cases。
+- RAG / Memory evaluation cases；
+- **英文文档改进与翻译贡献。**
 
 开始前请阅读：[CONTRIBUTING.md](./CONTRIBUTING.md)。
 
@@ -679,10 +682,13 @@ db.sqlite3
 
 # 🗺️ Roadmap
 
-下一阶段更值得做的是提高教学质量、软件供应链安全和生产思维，而不是继续堆基础教程。
+下一阶段更值得做的是提高教学质量、软件供应链安全、国际可访问性和生产思维，而不是继续堆基础教程。
 
-## Learning Experience
+## Internationalization / Learning Experience
 
+- [x] 中文 + English 仓库首页
+- [ ] 将 Architecture 与 Quick Start 扩展为独立英文文档
+- [ ] 逐步翻译高价值 Labs
 - [ ] `course/chXX-start` / `course/chXX-solution` 稳定教学标签
 - [ ] Bug Museum：把真实历史 Bug 变成 Debug Lab
 - [ ] 每章截图 / GIF / Expected Result
