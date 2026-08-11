@@ -4,20 +4,25 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from web.models.user import UserProfile
+from web.serializers.account import LoginSerializer, validation_response_data
 from web.views.user.account.cookies import set_refresh_cookie
 
 
 class LoginView(APIView):
     def post(self, request, *args, **kwargs):
-        username = (request.data.get('username') or '').strip()
-        password = (request.data.get('password') or '').strip()
+        serializer = LoginSerializer(data=request.data)
+        if not serializer.is_valid():
+            return Response(validation_response_data(serializer), status=400)
 
-        if not username or not password:
-            return Response({'result': '用户名和密码不能为空'}, status=400)
-
+        username = serializer.validated_data['username']
+        password = serializer.validated_data['password']
         user = authenticate(username=username, password=password)
+
         if not user:
-            return Response({'result': '用户名或密码错误'}, status=401)
+            return Response({
+                'result': '用户名或密码错误',
+                'code': 'AUTH_INVALID_CREDENTIALS',
+            }, status=401)
 
         user_profile = UserProfile.objects.get(user=user)
         refresh = RefreshToken.for_user(user)
