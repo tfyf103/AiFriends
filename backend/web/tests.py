@@ -4,10 +4,13 @@ from unittest.mock import patch
 
 from django.contrib.auth.models import User
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.db import connection
 from django.test import TestCase, override_settings
+from langchain_core.documents import Document
 from rest_framework.test import APIClient
 
 from web.ai.config import get_ai_settings
+from web.documents.retrieval import document_source
 from web.models.character import Character, Voice
 from web.models.friend import Friend, Message
 from web.models.user import UserProfile
@@ -52,6 +55,15 @@ class AuthFlowTests(TestCase):
         self.assertIn('refresh_token', response.cookies)
         self.assertFalse(response.cookies['refresh_token']['secure'])
 
+    def test_register_serializer_returns_field_errors(self):
+        response = self.client.post('/api/user/account/register/', {
+            'username': 'alice',
+            'password': '123',
+        }, format='json')
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.data['code'], 'VALIDATION_ERROR')
+        self.assertIn('password', response.data['errors'])
+
     def test_duplicate_username_returns_conflict(self):
         User.objects.create_user(username='alice', password='secret123')
         response = self.client.post('/api/user/account/register/', {
@@ -59,6 +71,7 @@ class AuthFlowTests(TestCase):
             'password': 'other123',
         }, format='json')
         self.assertEqual(response.status_code, 409)
+        self.assertEqual(response.data['code'], 'USERNAME_EXISTS')
 
     def test_wrong_password_returns_401(self):
         user = User.objects.create_user(username='alice', password='secret123')
@@ -68,6 +81,7 @@ class AuthFlowTests(TestCase):
             'password': 'wrong',
         }, format='json')
         self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.data['code'], 'AUTH_INVALID_CREDENTIALS')
 
     def test_refresh_cookie_returns_new_access(self):
         register = self.client.post('/api/user/account/register/', {
@@ -97,6 +111,15 @@ class HealthTests(TestCase):
         self.assertEqual(response.data['request_id'], 'learn-123')
 
 
+class RAGUtilityTests(TestCase):
+    def test_document_source_does_not_leak_absolute_path(self):
+        document = Document(
+            page_content='example',
+            metadata={'source': '/srv/private/aifriends/data.txt'},
+        )
+        self.assertEqual(document_source(document), 'data.txt')
+
+
 class MockChatTests(TestCase):
     def setUp(self):
         self.tmp_media = tempfile.TemporaryDirectory()
@@ -104,23 +127,44 @@ class MockChatTests(TestCase):
         self.media_override.enable()
 
         self.user = User.objects.create_user(username='learner', password='secret123')
-        profile = UserProfile.objects.create(user=self.user)
+        self.profile = UserProfile.objects.create(user=self.user)
         voice = Voice.objects.create(name='Demo', voice_id='demo-voice')
         self.character = Character.objects.create(
-            author=profile,
+            author=self.profile,
             name='Nova',
             photo=SimpleUploadedFile('photo.jpg', b'fake-image'),
             voice=voice,
             profile='A friendly teaching assistant.',
             background_image=SimpleUploadedFile('background.jpg', b'fake-image'),
         )
-        self.friend = Friend.objects.create(me=profile, character=self.character)
+        self.friend = Friend.objects.create(me=self.profile, character=self.character)
         self.client = APIClient()
         self.client.force_authenticate(self.user)
 
     def tearDown(self):
         self.media_override.disable()
         self.tmp_media.cleanup()
+
+    def test_friend_database_constraint_exists(self):
+        with connection.cursor() as cursor:
+            constraints = connection.introspection.get_constraints(
+                cursor,
+                Friend._meta.db_table,
+            )
+        self.assertIn('unique_friend_per_user_character', constraints)
+        self.assertTrue(constraints['unique_friend_per_user_character']['unique'])
+
+    def test_friend_get_or_create_is_idempotent(self):
+        response = self.client.post('/api/friend/get_or_create/', {
+            'character_id': self.character.id,
+        }, format='json')
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(response.data['created'])
+        self.assertEqual(response.data['friend']['id'], self.friend.id)
+        self.assertEqual(
+            Friend.objects.filter(me=self.profile, character=self.character).count(),
+            1,
+        )
 
     def test_mock_chat_streams_and_persists_without_external_api(self):
         with patch.dict(os.environ, {
