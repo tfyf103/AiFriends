@@ -137,6 +137,6 @@ Do not make the E2E job depend on external model providers unless the test is ex
 Related:
 
 - [English Chapter 14 — Testing/TDD](../labs/en/chapter-14-testing-tdd.md)
-- [English Chapter 17 — Streaming/Cancellation](../labs/en/chapter-17-streaming-cancellation.md)
+- [English Chapter 17 — Streaming/Cancellation](../labs/en/chapter-17-stream-cancellation.md)
 - [Bilingual terminology guide](../docs/BILINGUAL_GLOSSARY.md)
 - [Screenshot & GIF guide](../docs/SCREENSHOTS.md)
