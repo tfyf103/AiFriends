@@ -1,319 +1,204 @@
 # 🤖 AiFriends
 
-> **从 0 学会做一个有角色、记忆、RAG 与语音能力的 AI 伙伴。**
+> **从 0 做出一个有角色、记忆、RAG、语音能力的 AI 伙伴，并一路学到测试、CI、数据安全与部署。**
 >
-> 一个基于 **Vue 3 + Django + LangChain + LangGraph + LanceDB** 的 AI 全栈学习项目，也是一套可以逐步拆解、逐步复刻的真实 AI 应用。
+> 技术栈：**Vue 3 + Django + DRF + JWT + LangChain + LangGraph + LanceDB + SSE + WebSocket**。
+
+AiFriends 既是一个真实可运行的 AI 全栈项目，也是一套项目制课程。
+
+你可以先把最终项目跑起来，再沿真实 Git 历史重新实现它，最后继续学习“如何把 AI Demo 做成可靠工程”。
 
 ---
 
-## 🌱 这个仓库适合谁？
-
-如果你是下面任何一种情况，这个项目就是为你准备的：
-
-- 只会一点 Python，不知道前后端怎么配合；
-- 学过 Vue / Django，但没独立做过完整项目；
-- 会调用大模型 API，但不知道 LangChain / LangGraph 到底解决什么；
-- 听过 RAG、向量数据库、Tool Calling、Agent、长期记忆，却没有完整串起来；
-- 想做 AI 陪伴、AI 角色、数字人、智能助手类项目；
-- 想通过一个真实项目同时学习前端、后端和 AI 应用工程。
-
-**零基础建议不要直接从源码最深处开始看。**
-
-先进入：
-
-👉 **[AiFriends 零基础学习地图](./docs/README.md)**
-
-👉 **[从 0 开始完整复刻教程](./docs/BEGINNER_TUTORIAL.md)**
-
-👉 **[系统架构与完整请求链路](./docs/ARCHITECTURE.md)**
-
-👉 **[常见报错与排查手册](./docs/TROUBLESHOOTING.md)**
-
----
-
-# ✨ 项目能做什么？
-
-## 🎭 AI 角色
-
-- 创建自己的 AI 角色；
-- 设置角色名称；
-- 上传头像；
-- 上传聊天背景；
-- 编写人格 / 世界观 / 角色设定；
-- 给不同角色选择不同音色。
-
-## 💬 智能聊天
-
-- 自然语言对话；
-- LLM 流式输出；
-- 保存聊天历史；
-- 最近聊天自动进入上下文；
-- 保存输入 / 输出 token 用量。
-
-## 🧠 长期记忆
-
-- 原始聊天记录保存在数据库；
-- 最近消息直接作为短期上下文；
-- 每隔若干轮对话调用独立 Memory Graph；
-- 把历史信息压缩后保存到 `Friend.memory`；
-- 后续聊天自动把长期记忆放回系统上下文。
-
-## 🧰 Tool Calling / Agent
-
-当前 LangGraph Agent 可：
-
-- 查询当前精确时间；
-- 根据问题调用知识库检索工具；
-- 获取 Tool 结果后回到 LLM 再生成自然语言答案。
-
-## 📚 RAG 知识库
-
-- TextLoader 加载原始文本；
-- RecursiveCharacterTextSplitter 文本切块；
-- 自定义 Embedding；
-- LanceDB 保存向量；
-- similarity search 检索相关片段；
-- RAG 被封装成 LangChain Tool，由 Agent 自主决定是否调用。
-
-## 🎙️ 语音
-
-- 浏览器麦克风输入；
-- PCM 音频上传；
-- WebSocket ASR；
-- LLM 文本流与 TTS 并行；
-- TTS 二进制音频转 Base64 后通过 SSE 推到浏览器；
-- 浏览器使用 MediaSource / SourceBuffer 连续播放 MP3 流。
-
----
-
-# 🧠 你真正会学到什么？
-
-AiFriends 不只是“调用一个模型 API”。
-
-你会完整经历一条现代 AI Web 应用链路：
+## 🌱 完全零基础？只走这一条路线
 
 ```text
-Vue 页面
-  ↓
-Vue Router
-  ↓
-Pinia
-  ↓
-Axios / SSE
-  ↓
-JWT
-  ↓
-Django REST Framework
-  ↓
-Django ORM / SQLite
-  ↓
-LangChain Messages
-  ↓
-LangGraph Agent
-  ↓
-Tool Calling
-  ↓
-RAG / LanceDB
-  ↓
-Long-term Memory
-  ↓
-ASR / TTS WebSocket
+README：知道项目是什么
+   ↓
+AI_MODE=mock：零 API Key 跑通项目
+   ↓
+BEGINNER_TUTORIAL：理解基础概念
+   ↓
+COURSE_REBUILD：沿真实 Git 历史重新造
+   ↓
+Labs Chapter 00–13：自己实现完整 AI 应用
+   ↓
+Labs Chapter 14–20：Testing / Security / Deploy
+   ↓
+源码 + ARCHITECTURE：形成系统视角
 ```
 
-如果你能从头解释清楚“一条用户消息”如何穿过这些层，你就已经掌握了 AI 全栈开发最重要的系统思维。
+### 核心入口
+
+- 📘 [零基础学习中心](./docs/README.md)
+- 🚀 [完整运行与复刻教程](./docs/BEGINNER_TUTORIAL.md)
+- 🧭 [沿真实 Git 历史重建](./docs/COURSE_REBUILD.md)
+- 🧪 [Labs：Chapter 00–20](./labs/README.md)
+- 🏗️ [工程进阶课程 Chapter 14–20](./docs/ENGINEERING_COURSE.md)
+- ✅ [自动验收 / Grading](./docs/GRADING.md)
+- 🔌 [API Reference](./docs/API_REFERENCE.md)
+- 🗄️ [数据库 ER 图](./docs/DATABASE_ER.md)
+- 🧠 [系统架构与请求链路](./docs/ARCHITECTURE.md)
+- 🧯 [常见报错与排查](./docs/TROUBLESHOOTING.md)
 
 ---
 
-# 🏗️ 架构总览
+# ✨ 你最终会做出什么？
+
+## 🎭 AI Character
+
+- 创建角色；
+- 自定义头像、背景图、人格设定；
+- 为不同角色选择 Voice；
+- 用户与 Character 建立独立 Friend 关系。
+
+## 💬 Streaming Chat
+
+- JWT 登录；
+- SSE 流式文本；
+- Message 历史保存；
+- 最近对话作为短期上下文；
+- Token 使用量记录；
+- AbortController 真正关闭浏览器 SSE；
+- 后端 cancellation event 尽快停止生成 worker。
+
+## 🧠 Long-term Memory
 
 ```text
-┌──────────────────────────────────────────────────────────┐
-│                         Browser                          │
-│ Vue 3 / Router / Pinia / Axios / SSE / MediaSource      │
-└──────────────────────────┬───────────────────────────────┘
-                           │ HTTP JSON / SSE
-                           ▼
-┌──────────────────────────────────────────────────────────┐
-│                    Django + DRF                         │
-│ Auth / Character / Friend / Message / Chat / Voice     │
-└──────────┬───────────────────┬───────────────────────────┘
-           │                   │
-           ▼                   ▼
-      ┌─────────┐      ┌──────────────────┐
-      │ SQLite  │      │ LangChain/Graph  │
-      └─────────┘      │ Agent + Memory   │
-                       └────────┬─────────┘
-                                │
-                     ┌──────────┼──────────┐
-                     ▼          ▼          ▼
-                    LLM      LanceDB    Speech WS
-                              RAG       ASR / TTS
+原始 Message
+   +
+旧 Friend.memory
+   ↓
+MemoryGraph
+   ↓
+新的长期摘要
 ```
 
-更详细的数据流：
-
-👉 [系统架构与完整请求链路](./docs/ARCHITECTURE.md)
-
----
-
-# 🔥 一句话是怎么完成聊天的？
+## 🧰 LangGraph Agent
 
 ```text
-InputField.vue
+START
   ↓
-streamApi('/api/friend/message/chat/')
+agent
   ↓
-Django web/urls.py
-  ↓
-MessageChatView
-  ↓
-鉴权 + Friend 校验
-  ↓
-角色 System Prompt
-  ↓
-Friend.memory
-  ↓
-最近 Message 历史
-  ↓
-CharGraph
-  ↓
-LLM
-  ↓
-需要工具？
-  ├─ 否 → 继续回答
+需要 Tool？
+  ├─ 否 → END
   └─ 是 → ToolNode
-            ├─ get_time
-            └─ LanceDB RAG
-                ↓
-              再回 LLM
-  ↓
-astream
-  ├─ 文本 chunk ─────────────► SSE ─► Vue
-  └─ 文本 chunk ─► TTS WS ─► MP3 ─► SSE ─► MediaSource
-  ↓
-Message 落库
-  ↓
-每 5 条 Message 更新长期记忆
+             ↓
+           agent
 ```
 
-这是整个项目最值得反复阅读的一条链路。
+当前可扩展 Tool 包括：
 
----
+- 当前时间；
+- LanceDB 私有知识库检索。
 
-# 🛠️ 技术栈
-
-## Backend
-
-| 技术 | 用途 |
-|---|---|
-| Python | 后端与 AI 主语言 |
-| Django 6 | Web 框架 |
-| Django REST Framework | API |
-| Simple JWT | 用户认证 |
-| SQLite | 当前开发数据库 |
-| django-cors-headers | 前后端跨域 |
-| WebSocket | ASR / TTS 双工通信 |
-| SSE | LLM 文本与音频流式返回 |
-
-## AI
-
-| 技术 | 用途 |
-|---|---|
-| LangChain | Message、Tool、模型与向量库抽象 |
-| LangGraph | Agent / Memory 工作流 |
-| ChatOpenAI | OpenAI-compatible Chat API |
-| OpenAI Python SDK | Embedding API |
-| LanceDB | 向量数据库 |
-| RecursiveCharacterTextSplitter | 文档切块 |
-
-## Frontend
-
-| 技术 | 用途 |
-|---|---|
-| Vue 3 | UI |
-| Vite | 开发与构建 |
-| Vue Router | SPA 路由 |
-| Pinia | 全局用户状态 |
-| Axios | 普通 HTTP API |
-| fetch-event-source | SSE 流式聊天 |
-| Tailwind CSS | 样式 |
-| daisyUI | UI 组件样式 |
-| MediaSource API | 流式 MP3 播放 |
-| vad-web | 语音活动检测相关能力 |
-
----
-
-# 📂 先记住这些核心文件
+## 📚 RAG
 
 ```text
-AiFriends/
-│
-├── README.md
-├── requirements.txt
-├── .env.example
-├── docs/
-│   ├── README.md
-│   ├── BEGINNER_TUTORIAL.md
-│   ├── ARCHITECTURE.md
-│   └── TROUBLESHOOTING.md
-│
-├── backend/
-│   ├── manage.py
-│   ├── backend/
-│   │   ├── settings.py
-│   │   └── urls.py
-│   └── web/
-│       ├── urls.py
-│       ├── admin.py
-│       ├── models/
-│       │   ├── character.py
-│       │   ├── friend.py
-│       │   └── user.py
-│       ├── documents/
-│       │   └── utils/
-│       │       ├── custom_embeddings.py
-│       │       └── insert_documents.py
-│       └── views/
-│           └── friend/message/
-│               ├── chat/
-│               │   ├── chat.py
-│               │   └── graph.py
-│               ├── memory/
-│               │   ├── graph.py
-│               │   └── update.py
-│               └── asr/
-│                   └── asr.py
-│
-└── frontend/
-    ├── package.json
-    └── src/
-        ├── main.js
-        ├── router/index.js
-        ├── stores/user.js
-        ├── js/
-        │   ├── config/config.js
-        │   └── http/
-        │       ├── api.js
-        │       └── streamApi.js
-        └── components/
-            └── character/chat_field/input_field/
-                └── InputField.vue
+原始文档
+  ↓
+Chunk
+  ↓
+Embedding
+  ↓
+LanceDB
+  ↓
+Retrieval
+  ↓
+带 source 的 evidence
+  ↓
+Agent
 ```
+
+第四轮已经把 Retrieval 从 Agent 中拆出，因此可以单独做 Retrieval Eval。
+
+## 🎙️ Voice
+
+- 浏览器 VAD；
+- PCM 上传；
+- WebSocket ASR；
+- LLM 文本与 TTS 并行；
+- MP3 bytes → Base64 → SSE；
+- MediaSource / SourceBuffer 连续播放。
 
 ---
 
-# 🚀 5 分钟了解启动流程
+# ⭐ 三种 AI 运行模式
 
-> 完全零基础请不要只看这一节，请直接阅读 [完整复刻教程](./docs/BEGINNER_TUTORIAL.md)。
+新手第一次 clone 项目时，最常见的问题不是不会写 LangGraph，而是：
 
-## 1. 克隆
+```text
+没有正确模型
+没有 Embedding
+没有 Speech 账号
+没有 LanceDB
+没有 Voice
+```
+
+所以项目现在支持：
+
+## 1. `mock`
+
+**第一次学习推荐。**
+
+```env
+AI_MODE=mock
+ENABLE_RAG=false
+ENABLE_ASR=false
+ENABLE_TTS=false
+```
+
+不需要真实：
+
+```text
+API_KEY
+API_BASE
+WSS_URL
+```
+
+但仍然经过真实：
+
+```text
+Vue
+JWT
+Django
+Friend
+SSE
+Message 数据库
+```
+
+所以 Chapter 00–07 和 CI 都能在零模型费用下运行。
+
+## 2. `text`
+
+```env
+AI_MODE=text
+API_KEY=...
+API_BASE=...
+CHAT_MODEL=...
+```
+
+先学习真实 LLM / LangGraph，不要求语音服务。
+
+## 3. `full`
+
+完整开启 Chat / RAG / ASR / TTS。
+
+为兼容已有部署，如果没有配置 `AI_MODE`，代码默认仍使用 `full`；新用户复制 `.env.example` 时默认是 `mock`。
+
+---
+
+# 🚀 第一次启动：推荐流程
+
+## 1. Clone
 
 ```bash
 git clone https://github.com/tfyf103/AiFriends.git
 cd AiFriends
 ```
 
-## 2. Python 虚拟环境
+## 2. Python 环境
 
 ```bash
 python -m venv .venv
@@ -331,325 +216,547 @@ macOS / Linux：
 source .venv/bin/activate
 ```
 
-## 3. 安装 Python 依赖
+安装：
 
 ```bash
 pip install -r requirements.txt
 ```
 
-当前 Django 6.0 建议使用 Python 3.12+。
+## 3. `.env`
 
-## 4. 环境变量
-
-```bash
-cp .env.example .env
-```
-
-Windows PowerShell：
+Windows：
 
 ```powershell
 Copy-Item .env.example .env
 ```
 
-填写：
+macOS / Linux：
 
-```env
-API_KEY=...
-API_BASE=...
-WSS_URL=...
+```bash
+cp .env.example .env
 ```
 
-## 5. Django
+第一次不要改：
+
+```env
+AI_MODE=mock
+ENABLE_RAG=false
+ENABLE_ASR=false
+ENABLE_TTS=false
+```
+
+## 4. Django
 
 ```bash
 cd backend
 python manage.py migrate
+python manage.py seed_demo
+python manage.py doctor
 python manage.py runserver
 ```
 
-后端：
+### `seed_demo`
+
+幂等创建学习所需基础数据：
 
 ```text
-http://127.0.0.1:8000
+Demo Voice
+回复 SystemPrompt
+记忆 SystemPrompt
 ```
 
-## 6. Vue
+### `doctor`
+
+自动检查当前模式真正需要的：
+
+```text
+Python
+Database
+API 配置
+SystemPrompt
+Voice
+LanceDB
+VAD assets
+```
+
+## 5. Vue
 
 新终端：
 
 ```bash
 cd frontend
-npm install
+npm ci
 npm run dev
+```
+
+开发模式通过 Vite Proxy 转发：
+
+```text
+/api
+/media
+```
+
+因此第一次学习不需要同时处理一堆跨域与 Cookie host 问题。
+
+## 6. 看到第一条 Mock Chat
+
+```text
+注册
+ ↓
+登录
+ ↓
+创建 Character
+ ↓
+添加 Friend
+ ↓
+发送消息
+ ↓
+看到【Mock 模式】流式回复
+```
+
+做到这里，再把 `AI_MODE` 切到 `text`。
+
+---
+
+# 🎙️ 学语音前执行一次
+
+```bash
+cd frontend
+npm run setup:vad
+```
+
+它会自动准备浏览器所需的 VAD / ONNX Runtime 静态资源。
+
+然后再逐项开启：
+
+```env
+ENABLE_ASR=true
+ENABLE_TTS=true
+```
+
+每改一次环境配置都可以重新：
+
+```bash
+cd backend
+python manage.py doctor
+```
+
+---
+
+# ✅ 不要用“感觉”判断代码是否正确
+
+AiFriends 现在提供四层反馈。
+
+## Level 1：环境
+
+```bash
+cd backend
+python manage.py doctor
+```
+
+## Level 2：课程结构
+
+```bash
+python scripts/grade.py --chapter 7
+python scripts/grade.py --chapter 13
+python scripts/grade.py --chapter 20
+```
+
+## Level 3：Behavior Tests
+
+后端：
+
+```bash
+cd backend
+python manage.py test web
 ```
 
 前端：
 
-```text
-http://localhost:5173
+```bash
+cd frontend
+npm test
 ```
 
----
-
-# ⚙️ 环境要求
-
-## Python
-
-项目固定：
-
-```text
-Django==6.0.5
-```
-
-推荐：
-
-```text
-Python 3.12 / 3.13
-```
-
-## Node
-
-`frontend/package.json` 当前要求：
-
-```text
-^20.19.0 || >=22.12.0
-```
-
----
-
-# 🔐 环境变量说明
-
-| 变量 | 用途 |
-|---|---|
-| `API_KEY` | LLM / Embedding / ASR / TTS 服务鉴权 |
-| `API_BASE` | OpenAI-compatible HTTP API 地址 |
-| `WSS_URL` | ASR / TTS WebSocket 服务地址 |
-
-仓库提供 `.env.example`，真实 `.env` 不应提交。
-
----
-
-# 📚 第一次使用 RAG
-
-因为知识库原始数据和向量存储都不会提交到 Git：
-
-```text
-backend/web/documents/data.txt
-backend/web/documents/lancedb_storage
-```
-
-所以第一次需要自己创建：
-
-```text
-backend/web/documents/data.txt
-```
-
-然后：
+## Level 4：Build / CI
 
 ```bash
-cd backend
-python manage.py shell
+cd frontend
+npm run check
 ```
 
-```python
-from web.documents.utils.insert_documents import insert_documents
-insert_documents()
+Pull Request 会自动运行 GitHub Actions，包括：
+
+```text
+Python compile
+Chapter 00–20 grader
+Migration drift check
+Django system check
+Backend tests
+npm ci
+VAD setup
+Frontend quality check
+Frontend unit tests
+Vite production build
+Docker learning image build
 ```
 
-完整原理：
-
-👉 [零基础完整复刻教程：RAG 部分](./docs/BEGINNER_TUTORIAL.md)
+详细说明：[GRADING.md](./docs/GRADING.md)。
 
 ---
 
-# 🛡️ Django Admin
+# 🔥 一条消息经过哪些层？
 
-创建管理员：
+```text
+InputField.vue
+  ↓
+streamApi
+  ↓
+Authorization: Bearer <JWT>
+  ↓
+Vite Proxy / Django URL
+  ↓
+MessageChatView
+  ↓
+Friend ownership
+  ↓
+SystemPrompt
++ Character.profile
++ Friend.memory
++ recent Message
+  ↓
+AI_MODE
+  ├─ mock → local deterministic stream
+  └─ text/full → CharGraph
+                   ↓
+                  LLM
+                   ↓
+                ToolNode
+                ├─ time
+                └─ RAG retrieval
+                     ↓
+                source evidence
+  ↓
+content chunk
+  ├──────────────→ SSE text
+  └→ optional TTS WebSocket
+                   ↓
+                MP3 bytes
+                   ↓ Base64
+                 SSE audio
+  ↓
+Vue onmessage
+  ├─ message bubble
+  └─ MediaSource
+  ↓
+Message persistence
+  ↓
+periodic Memory update
+```
+
+完整版本：[ARCHITECTURE.md](./docs/ARCHITECTURE.md)。
+
+---
+
+# 📚 两阶段课程
+
+## Chapter 00–13：先学“做出来”
+
+```text
+00 Environment
+01 Vue / Router
+02 Django / ORM
+03 JWT / Pinia / Axios
+04 Character CRUD
+05 Friend
+06 Basic LLM Chat
+07 SSE
+08 LangGraph / Tool
+09 Memory
+10 RAG
+11 ASR
+12 TTS
+13 Full Pipeline
+```
+
+目标：
+
+> **独立做出一个完整 AI Web 应用。**
+
+## Chapter 14–20：再学“做可靠”
+
+```text
+14 Testing / TDD
+15 DRF / Serializer / HTTP Status
+16 Config / Feature Flag / Provider
+17 Async / Cancellation
+18 Constraint / Transaction / Security
+19 RAG / Memory Evaluation
+20 CI / Build / Deploy / Observability
+```
+
+目标：
+
+> **把一个 AI Demo 升级成可以验证、维护和部署的工程项目。**
+
+入口：[Labs](./labs/README.md)。
+
+---
+
+# 🧪 第四轮已经真正落地了什么？
+
+## First-run success
+
+- [x] `mock / text / full` 三模式
+- [x] 模型名配置化
+- [x] RAG / ASR / TTS Feature Flag
+- [x] Text-only Chat 不依赖 TTS
+- [x] Vite local proxy
+- [x] 开发/生产 Cookie 策略集中管理
+- [x] `manage.py doctor`
+- [x] `manage.py seed_demo`
+- [x] `npm run setup:vad`
+
+## Authentication / REST
+
+- [x] Axios 与 SSE 共用 single-flight refresh
+- [x] 修复 SSE refresh 后可能继续使用旧 access token
+- [x] 登录/注册开始使用 DRF Serializer
+- [x] 400 / 401 / 409 等状态码
+- [x] 基础机器可读错误码
+
+## Streaming / Async
+
+- [x] AbortController 关闭真实 SSE
+- [x] backend `cancel_event`
+- [x] text-only worker
+- [x] optional TTS worker
+
+## Data
+
+- [x] Friend `(user, character)` 数据库 UniqueConstraint
+- [x] `0008` 安全数据迁移：合并潜在重复 Friend / Message
+- [x] migration drift CI check
+
+## RAG
+
+- [x] Retrieval 从 Agent 解耦
+- [x] Tool evidence 带 source
+- [x] source 不泄露服务器绝对路径
+- [x] `evals/rag_cases.example.json`
+- [x] `scripts/eval_rag.py`
+
+## Testing / CI
+
+- [x] Backend behavior tests
+- [x] Frontend single-flight tests
+- [x] Chapter 00–20 structural grader
+- [x] Frontend quality check
+- [x] Vite build smoke test
+- [x] GitHub Actions
+
+## Build / Observability
+
+- [x] `/api/health/`
+- [x] `X-Request-ID`
+- [x] Django runtime settings 环境变量化
+- [x] Vite manifest，不再手工写 hash bundle
+- [x] `Dockerfile.learning`
+- [x] `compose.learning.yml`
+- [x] CI Docker build
+
+---
+
+# 🧪 RAG Retrieval Eval
+
+真实 RAG 配好后：
 
 ```bash
-cd backend
-python manage.py createsuperuser
+python scripts/eval_rag.py \
+  --cases evals/rag_cases.example.json \
+  --k 3
 ```
 
-访问：
+它先只测试：
 
 ```text
-http://127.0.0.1:8000/admin/
+问题
+ ↓
+Embedding
+ ↓
+Top-k Retrieval
+ ↓
+是否拿到预期关键词 / source
 ```
 
-可以管理：
+而不是直接让 LLM 生成答案。
 
-- UserProfile；
-- Character；
-- Voice；
-- Friend；
-- Message；
-- SystemPrompt。
+这样可以区分：
 
-新手可以在 Admin 中快速配置 Voice 和 SystemPrompt，不需要先写额外后台页面。
+```text
+Retrieval 没找对
+vs
+LLM 找到了但没用好
+```
+
+这也是 Chapter 19 的核心工程思维。
 
 ---
 
-# 📖 推荐学习路线
+# 🐳 Learning Docker
 
-```text
-第 1 关：跑起来
-  ↓
-第 2 关：Vue 页面 / Component / Router
-  ↓
-第 3 关：Pinia / Axios / JWT
-  ↓
-第 4 关：Django URL / View / Model
-  ↓
-第 5 关：普通聊天
-  ↓
-第 6 关：SSE 流式聊天
-  ↓
-第 7 关：LangChain Message
-  ↓
-第 8 关：LangGraph Agent
-  ↓
-第 9 关：Tool Calling
-  ↓
-第 10 关：长期记忆
-  ↓
-第 11 关：Embedding / LanceDB / RAG
-  ↓
-第 12 关：ASR
-  ↓
-第 13 关：流式 TTS
+这不是生产部署模板，而是教学用“干净环境复现器”。
+
+```bash
+docker build -f Dockerfile.learning -t aifriends:learning .
+docker run --rm -p 8000:8000 aifriends:learning
 ```
 
-详细路线：
+或：
 
-👉 [AiFriends 零基础学习地图](./docs/README.md)
+```bash
+docker compose -f compose.learning.yml up --build
+```
+
+它故意仍然使用 Django `runserver`。
+
+Chapter 20 再继续学习：
+
+```text
+production WSGI/ASGI
+Nginx
+HTTPS
+PostgreSQL
+persistent media
+secret management
+metrics / tracing
+```
 
 ---
 
-# 🧪 新手如何正确调试？
-
-同时打开：
+# 📂 第四轮最值得阅读的新增文件
 
 ```text
-VS Code
-浏览器 Console
-浏览器 Network
-Django runserver 终端
-Vite 终端
+backend/web/ai/config.py
+backend/web/serializers/account.py
+backend/web/management/commands/doctor.py
+backend/web/management/commands/seed_demo.py
+backend/web/middleware.py
+backend/web/views/health.py
+backend/web/documents/retrieval.py
+backend/web/migrations/0008_friend_unique_constraint.py
+backend/web/tests.py
+
+frontend/src/js/http/authRefresh.js
+frontend/src/js/utils/singleFlight.js
+frontend/scripts/setup-vad.mjs
+frontend/scripts/quality-check.mjs
+frontend/tests/singleFlight.test.js
+
+scripts/grade.py
+scripts/eval_rag.py
+evals/rag_cases.example.json
+.github/workflows/ci.yml
+Dockerfile.learning
+compose.learning.yml
 ```
-
-问题按层判断：
-
-```text
-UI
- ↓
-Vue State
- ↓
-Network
- ↓
-Django URL
- ↓
-APIView
- ↓
-ORM
- ↓
-LLM
- ↓
-Tool / RAG
- ↓
-Speech Service
-```
-
-遇到错误：
-
-👉 [常见报错与排查手册](./docs/TROUBLESHOOTING.md)
 
 ---
 
-# 🗺️ Roadmap
+# 🗺️ 下一阶段 Roadmap
+
+现在更值得做的是继续提高“教学质量与生产思维”，而不是继续堆基础教程。
 
 ## 教学体验
 
-- [x] 零基础学习地图
-- [x] 从 0 完整复刻教程
-- [x] 架构与请求链路文档
-- [x] 新手排错手册
-- [x] `.env.example`
-- [ ] API 请求/响应参考文档
-- [ ] 每章对应 Git Tag / 教学分支
-- [ ] 配套截图与架构图图片
-- [ ] 配套视频章节索引
+- [ ] `course/chXX-start` / `course/chXX-solution` 稳定教学标签
+- [ ] Bug Museum：把真实历史 Bug 变成 Debug Lab
+- [ ] 每章截图 / GIF / Expected Result
+- [ ] 更细粒度 behavioral grader
+- [ ] 配套视频索引
 
-## 工程化
+## Backend / Security
 
-- [ ] 把模型名 / Embedding / ASR / TTS 全部配置化
-- [ ] 支持 text-only 模式
-- [ ] 完善错误处理与超时
-- [ ] 自动化测试
-- [ ] OpenAPI / Swagger
-- [ ] Docker / Compose
-- [ ] PostgreSQL
-- [ ] CI/CD
-- [ ] 生产环境配置模板
+- [ ] 把更多旧 API 迁移到 Serializer / 统一错误结构
+- [ ] 文件上传 MIME / Size / Image validation
+- [ ] Object-level Permission 系统化
+- [ ] Refresh-token blacklist / revoke 策略课程
+- [ ] Rate Limit
+- [ ] PostgreSQL / 并发 Transaction 实验
 
-## AI
+## AI Engineering
 
-- [ ] 多模型供应商
-- [ ] 角色级知识库
-- [ ] 用户级知识库
-- [ ] RAG 来源引用
-- [ ] 结构化长期记忆
-- [ ] Memory 冲突更新策略
-- [ ] Tool 权限与隔离
-- [ ] Agent observability
+- [ ] Provider Adapter
+- [ ] 把 RAG source 以结构化事件直接展示到 UI
+- [ ] Generation / Faithfulness Eval
+- [ ] Structured Memory
+- [ ] Memory conflict resolution
+- [ ] Prompt Injection / Tool permission tests
+- [ ] Token / Latency dashboard
+
+## Production
+
+- [ ] Production WSGI/ASGI Server
+- [ ] Nginx / HTTPS
+- [ ] Persistent media/object storage
+- [ ] PostgreSQL production config
+- [ ] Structured logging / metrics / tracing
 
 ---
 
-# 🤝 参与贡献
+# 🤝 贡献前最低检查
 
-欢迎通过 Issue / Pull Request 一起完善。
+Backend：
 
-尤其欢迎：
+```bash
+cd backend
+python manage.py test web
+```
 
-- 新手复刻时真实遇到的错误；
-- 更容易理解的解释；
-- Windows / macOS / Linux 差异补充；
-- 架构图；
-- 测试；
-- Docker；
-- 模型适配；
-- RAG / Memory 改进。
+Frontend：
 
-提交前请确认：
+```bash
+cd frontend
+npm run check
+```
 
-- 不包含真实 API Key；
-- 不包含私人数据；
-- 前端可构建；
-- 后端迁移完整；
-- 新功能尽量补充文档。
+课程结构：
+
+```bash
+python scripts/grade.py --chapter 20
+```
+
+并确认没有提交：
+
+```text
+真实 API Key
+真实 Django Secret
+.env
+私人聊天数据
+db.sqlite3
+运行时 LanceDB 数据
+```
 
 ---
 
 # 📄 License
 
-当前项目暂未声明开源许可证。
+当前仓库尚未声明正式开源许可证。
 
-这意味着“代码公开可见”并不自动等于“任何人都拥有复制、修改、再分发的授权”。如果计划把项目作为正式开源项目推广，建议后续明确选择并添加 LICENSE（例如 MIT、Apache-2.0 等，具体取决于作者希望授予的权利）。
+如果准备把 AiFriends 作为正式开源教学项目推广，建议后续明确选择 MIT / Apache-2.0 等许可证。
 
 ---
 
-## ⭐ 最后
+## 最重要的学习原则
 
-如果你是新手，不要要求自己第一次就理解：
+不要第一天同时调：
 
 ```text
-Vue + Django + JWT + SSE + LangChain + LangGraph + RAG + ASR + TTS
+Vue + Django + JWT + SSE + LangGraph + RAG + Memory + ASR + TTS + Docker
 ```
 
-真正有效的方式是：
+正确顺序是：
 
-> **先跑通，再跟踪一条请求，再拆掉复杂功能重新做一遍。**
+> **先用 Mock 跑通 → 看懂一条请求 → 自己重写 → 用测试证明 → 再逐个打开复杂能力。**
 
-从这里开始：
-
-👉 **[从 0 开始完整复刻 AiFriends](./docs/BEGINNER_TUTORIAL.md)**
+从这里开始：**[AiFriends 零基础学习中心](./docs/README.md)**。

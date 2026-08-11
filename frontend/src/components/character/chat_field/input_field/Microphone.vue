@@ -1,78 +1,70 @@
 <script setup>
-import KeyboardIcon from "@/components/character/icons/KeyboardIcon.vue";
-import {onBeforeUnmount, onMounted, ref} from "vue";
-import {MicVAD} from "@ricky0123/vad-web";
-import api from "@/js/http/api.js";
-import CONFIG_API from "@/js/config/config.js";
+import KeyboardIcon from '@/components/character/icons/KeyboardIcon.vue'
+import { onBeforeUnmount, onMounted, ref } from 'vue'
+import { MicVAD } from '@ricky0123/vad-web'
+import api from '@/js/http/api.js'
+import CONFIG_API from '@/js/config/config.js'
 
-const emit = defineEmits(['close','send','stop'])
+const emit = defineEmits(['close', 'send', 'stop'])
 const isSpeaking = ref(false)
-let vadInstance = null;
+let vadInstance = null
 
 const startRecording = async () => {
   const baseUrl = CONFIG_API.VAD_URL
   try {
     vadInstance = await MicVAD.new({
+      // The package loads its worklet/model separately from the ONNX Runtime WASM
+      // files. `npm run setup:vad` prepares both directories for local development.
       baseAssetPath: baseUrl,
+      onnxWASMBasePath: `${baseUrl}onnx/`,
       onSpeechStart: () => {
-        isSpeaking.value = true;
+        isSpeaking.value = true
         emit('stop')
       },
       onSpeechEnd: (audio) => {
-        isSpeaking.value = false;
-        const pcm16 = float32ToInt16(audio);
-        sendToBackend(pcm16);
-      },
-      ortConfig: (ort) => {
-        ort.env.wasm.wasmPaths = baseUrl;
-        ort.env.logLevel = "error";
+        isSpeaking.value = false
+        sendToBackend(float32ToInt16(audio))
       },
       positiveSpeechThreshold: 0.8,
       negativeSpeechThreshold: 0.65,
       minSpeechFrames: 5,
       redemptionFrames: 5,
-    });
+    })
 
-    await vadInstance.start();
-  } catch (e) {
-    console.error("VAD 初始化失败:", e);
+    await vadInstance.start()
+  } catch (error) {
+    console.error('VAD 初始化失败。先运行 npm run setup:vad：', error)
   }
-};
-// 将 Float32 转 PCM 16-bit
+}
+
 const float32ToInt16 = (float32Array) => {
-  const buffer = new Int16Array(float32Array.length);
+  const buffer = new Int16Array(float32Array.length)
   for (let i = 0; i < float32Array.length; i++) {
-    let s = Math.max(-1, Math.min(1, float32Array[i]));
-    buffer[i] = s < 0 ? s * 0x8000 : s * 0x7fff;
+    const sample = Math.max(-1, Math.min(1, float32Array[i]))
+    buffer[i] = sample < 0 ? sample * 0x8000 : sample * 0x7fff
   }
-  return buffer.buffer;
-};
+  return buffer.buffer
+}
 
 const sendToBackend = async (arrayBuffer) => {
-  const blob = new Blob([arrayBuffer], { type: "audio/pcm"});
   const formData = new FormData()
-  formData.append("audio",blob, 'voice.pcm')
+  formData.append('audio', new Blob([arrayBuffer], { type: 'audio/pcm' }), 'voice.pcm')
 
   try {
     const res = await api.post('/api/friend/message/asr/asr/', formData)
-    const data = res.data
-    if (data.result === 'success') {
-      emit('send',null,data.text)
+    if (res.data.result === 'success') {
+      emit('send', null, res.data.text)
     }
-  } catch (err) {
-    console.error(err)
+  } catch (error) {
+    console.error('ASR 请求失败:', error)
   }
-};
+}
 
-onMounted(() => {
-  startRecording()
-})
+onMounted(startRecording)
 
 onBeforeUnmount(() => {
-  if (vadInstance) {
-    vadInstance.destroy()
-    vadInstance = null
-  }
+  vadInstance?.destroy()
+  vadInstance = null
 })
 </script>
 
@@ -80,17 +72,21 @@ onBeforeUnmount(() => {
   <div class="absolute bottom-4 left-2 h-12 w-86 flex items-center bg-black/30 backdrop-blur-sm rounded-2xl">
     <div v-if="isSpeaking" class="flex items-center justify-center gap-1 h-6 flex-1">
       <div
-        v-for="i in 32" :key="i"
+        v-for="i in 32"
+        :key="i"
         class="w-0.5 bg-blue-400 rounded-full animate-wave"
         :style="{ animationDelay: `${i * 0.1}s` }"
       ></div>
     </div>
-    <div v-else class="text-white/50 text-base w-full text-center">
-      语音输入
-    </div>
-    <div @click="emit('close')" class="absolute right-2 w-8 h-8 flex justify-center items-center cursor-pointer">
+    <div v-else class="text-white/50 text-base w-full text-center">语音输入</div>
+    <button
+      type="button"
+      aria-label="切换回键盘输入"
+      @click="emit('close')"
+      class="absolute right-2 w-8 h-8 flex justify-center items-center cursor-pointer"
+    >
       <KeyboardIcon />
-    </div>
+    </button>
   </div>
 </template>
 

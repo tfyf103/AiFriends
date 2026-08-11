@@ -1,0 +1,67 @@
+name: AiFriends CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    env:
+      AI_MODE: mock
+      ENABLE_RAG: 'false'
+      ENABLE_ASR: 'false'
+      ENABLE_TTS: 'false'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+          cache: pip
+      - name: Install Python dependencies
+        run: pip install -r requirements.txt
+      - name: Compile Python
+        run: python -m compileall -q backend scripts
+      - name: Course structural grader
+        run: python scripts/grade.py --chapter 20
+      - name: Django migration drift check
+        working-directory: backend
+        run: python manage.py makemigrations --check --dry-run
+      - name: Django checks
+        working-directory: backend
+        run: python manage.py check
+      - name: Django tests
+        working-directory: backend
+        run: python manage.py test web
+
+  frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - name: Install frontend dependencies
+        run: npm ci
+      - name: Prepare VAD assets
+        run: npm run setup:vad
+      - name: Quality check
+        run: npm run lint
+      - name: Unit tests
+        run: npm test
+      - name: Build smoke test
+        run: npm run build
+
+  docker-learning-image:
+    runs-on: ubuntu-latest
+    needs: [backend, frontend]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build learning image
+        run: docker build -f Dockerfile.learning -t aifriends:learning .

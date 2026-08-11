@@ -17,7 +17,7 @@
       stroke-linejoin="round"
       d="M3 10.5L12 3l9 7.5"
     />
-  
+
     <!-- 房体 -->
     <path
       stroke-linecap="round"
