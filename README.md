@@ -21,7 +21,7 @@ AiFriends 使用 **Vue 3 + Django + DRF + JWT + LangChain + LangGraph + LanceDB 
 | --- | --- |
 | 开源许可 | **MIT** |
 | 维护状态 | **Active development**，由 `@tfyf103` 主要维护 |
-| 学习语言 | **中文 + English 双语入口**；深度课程正文当前中文优先 |
+| 学习语言 | **中文 + English 双语入口**；英文已覆盖 Quick Start、Architecture 与核心 Labs 00/06/07/08/10/13 |
 | 入门门槛 | `AI_MODE=mock` 可 **零 API Key** 跑通核心 Web/SSE 链路 |
 | 课程 | Chapter **00–20**，从零基础到工程化 |
 | 自动反馈 | Django tests + Node tests + structural grader + GitHub Actions |
@@ -66,7 +66,7 @@ Speech
 Persistence / Tests / CI / Security
 ```
 
-AiFriends 希望补上这中间的工程断层。项目从中文 AI 学习社区起步，提供一条 **code-first、可复现、带实验和自动反馈** 的学习路线，并通过中英文双语入口逐步向全球开发者开放。
+AiFriends 希望补上这中间的工程断层。项目从中文 AI 学习社区起步，提供一条 **code-first、可复现、带实验和自动反馈** 的学习路线，并通过中英文双语文档逐步向全球开发者开放。
 
 项目把“教程”和“真实维护”放在同一个仓库里：学生看到的不是另一套玩具代码，而是实际运行路径、真实 Git 历史、真实测试、真实数据迁移和真实 CI。
 
@@ -90,7 +90,7 @@ Labs Chapter 14–20：Testing / Security / CI / Deploy
 源码 + ARCHITECTURE：形成完整系统视角
 ```
 
-## 核心入口
+## 中文核心入口
 
 - 📘 [零基础学习中心](./docs/README.md)
 - 🚀 [完整运行与复刻教程](./docs/BEGINNER_TUTORIAL.md)
@@ -102,6 +102,13 @@ Labs Chapter 14–20：Testing / Security / CI / Deploy
 - 🗄️ [数据库 ER 图](./docs/DATABASE_ER.md)
 - 🧠 [系统架构与请求链路](./docs/ARCHITECTURE.md)
 - 🧯 [常见报错与排查](./docs/TROUBLESHOOTING.md)
+
+## English Core Track
+
+- 🌍 [English Learning Hub](./docs/README_EN.md)
+- 🚀 [English Quick Start](./docs/QUICK_START_EN.md)
+- 🧠 [English Architecture Guide](./docs/ARCHITECTURE_EN.md)
+- 🧪 [English Core Labs](./labs/en/README.md) — Chapter 00 / 06 / 07 / 08 / 10 / 13
 
 ---
 
@@ -512,7 +519,8 @@ Message persistence
 periodic Memory update
 ```
 
-完整说明：[ARCHITECTURE.md](./docs/ARCHITECTURE.md)。
+完整说明：[ARCHITECTURE.md](./docs/ARCHITECTURE.md)。  
+English: [ARCHITECTURE_EN.md](./docs/ARCHITECTURE_EN.md)。
 
 ---
 
@@ -538,6 +546,19 @@ periodic Memory update
 ```
 
 目标：**独立做出一个完整 AI Web 应用。**
+
+英文核心路径已覆盖：
+
+```text
+00 Environment
+06 Basic LLM Chat
+07 SSE Streaming
+08 LangGraph / Tool Calling
+10 RAG + LanceDB
+13 Full-System Capstone
+```
+
+入口：[Labs](./labs/README.md) / [English Labs](./labs/en/README.md)。
 
 ## Chapter 14–20：再学“做可靠”
 
@@ -613,7 +634,7 @@ vs
 LLM 找到了证据但没用好
 ```
 
-这是 Chapter 19 的核心工程思维之一。
+这是 Chapter 19 的核心工程思维之一，也是英文 [Chapter 10 RAG Lab](./labs/en/chapter-10-rag.md) 的重点。
 
 ---
 
@@ -687,8 +708,14 @@ db.sqlite3
 ## Internationalization / Learning Experience
 
 - [x] 中文 + English 仓库首页
-- [ ] 将 Architecture 与 Quick Start 扩展为独立英文文档
-- [ ] 逐步翻译高价值 Labs
+- [x] English Learning Hub
+- [x] 独立 English Quick Start
+- [x] 当前实现版 English Architecture Guide
+- [x] 高价值 English Labs：00 / 06 / 07 / 08 / 10 / 13
+- [x] 明确欢迎 English documentation improvements and translations
+- [ ] Chapter 01–05 / 09 / 11–12 英文 Labs
+- [ ] Chapter 14–20 Engineering Labs 英文化
+- [ ] API / Database / Troubleshooting 完整英文版本
 - [ ] `course/chXX-start` / `course/chXX-solution` 稳定教学标签
 - [ ] Bug Museum：把真实历史 Bug 变成 Debug Lab
 - [ ] 每章截图 / GIF / Expected Result
