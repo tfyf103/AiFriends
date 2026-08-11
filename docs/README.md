@@ -4,7 +4,7 @@
 
 > 这里不是“文档目录”，而是你的学习路线控制台。
 
-AiFriends 现在分成两个阶段：
+AiFriends 分成两个阶段：
 
 ```text
 Chapter 00–13
@@ -14,7 +14,7 @@ Chapter 14–20
 把 AI Demo 升级成可靠工程项目
 ```
 
-> English learners can now use the [English Quick Start](./QUICK_START_EN.md), [English Architecture Guide](./ARCHITECTURE_EN.md), and the [English core Labs](../labs/en/README.md) for Chapters 00 / 06 / 07 / 08 / 10 / 13.
+> **英文核心课程现已完整覆盖 Chapter 00–20。** English learners can use dedicated Quick Start / Architecture / Engineering Course / API / Database / Troubleshooting documents and complete the full Labs path independently.
 
 ---
 
@@ -22,20 +22,36 @@ Chapter 14–20
 
 ## A. 完全零基础
 
-严格按：
+中文路线：
 
 ```text
 README
  ↓
 BEGINNER_TUTORIAL
  ↓
-先用 AI_MODE=mock 跑通
+AI_MODE=mock
  ↓
 COURSE_REBUILD
  ↓
 Labs Chapter 00–13
  ↓
 ENGINEERING_COURSE Chapter 14–20
+```
+
+英文路线：
+
+```text
+README_EN
+ ↓
+English Learning Hub
+ ↓
+QUICK_START_EN
+ ↓
+AI_MODE=mock
+ ↓
+English Labs Chapter 00–13
+ ↓
+English Engineering Labs Chapter 14–20
 ```
 
 ## B. 会 Vue / Django，只想学 AI 应用
@@ -51,13 +67,11 @@ Chapter 09 Memory
  ↓
 Chapter 10 RAG
  ↓
-Chapter 11/12 Voice
+Chapter 11 ASR
  ↓
-Chapter 14 Testing
+Chapter 12 TTS
  ↓
-Chapter 16 Config
- ↓
-Chapter 19 RAG / Memory Eval
+Chapter 13 Capstone
 ```
 
 ## C. 已会 LangChain，只想看项目架构
@@ -71,9 +85,27 @@ chat/graph.py
  ↓
 memory/*
  ↓
-documents/utils/*
+documents/*
  ↓
 InputField.vue / streamApi.js
+```
+
+## D. 想学工程化 / 开源维护
+
+```text
+Chapter 14 Testing
+ ↓
+15 DRF Engineering
+ ↓
+16 Config / Providers
+ ↓
+17 Cancellation
+ ↓
+18 Data / Security
+ ↓
+19 RAG / Memory Eval
+ ↓
+20 CI / Deploy / Observability
 ```
 
 ---
@@ -98,19 +130,21 @@ InputField.vue / streamApi.js
 
 | Resource | Purpose |
 |---|---|
-| [English Learning Hub](./README_EN.md) | English learning navigation and translation status |
-| [English Quick Start](./QUICK_START_EN.md) | Zero-API-key first run with `AI_MODE=mock` |
-| [English Architecture Guide](./ARCHITECTURE_EN.md) | Current end-to-end architecture and data flow |
-| [English Core Labs](../labs/en/README.md) | Chapters 00 / 06 / 07 / 08 / 10 / 13 |
+| [English Learning Hub](./README_EN.md) | Full English navigation |
+| [English Quick Start](./QUICK_START_EN.md) | Zero-API-key first run |
+| [English Labs 00–20](../labs/en/README.md) | Complete hands-on curriculum |
+| [English Architecture Guide](./ARCHITECTURE_EN.md) | Current end-to-end architecture |
+| [English Engineering Course](./ENGINEERING_COURSE_EN.md) | Chapters 14–20 overview |
+| [English API Reference](./API_REFERENCE_EN.md) | HTTP / JWT / SSE / current API behavior |
+| [English Database / ER Guide](./DATABASE_ER_EN.md) | Relations, constraints, storage boundaries |
+| [English Troubleshooting](./TROUBLESHOOTING_EN.md) | Current layered debugging guide |
 | [README_EN](../README_EN.md) | International project landing page |
 
 ---
 
 # 3. 第一次启动：不要先配真实模型
 
-第四轮加入三种模式。
-
-## Mock
+推荐：
 
 ```env
 AI_MODE=mock
@@ -139,15 +173,7 @@ Message 保存
 Vue 实时更新
 ```
 
-## Text
-
-真实 Chat Model，默认关闭语音/RAG。
-
-## Full
-
-完整 Agent + RAG + ASR/TTS。
-
-推荐升级顺序：
+升级顺序：
 
 ```text
 mock
@@ -179,7 +205,7 @@ python manage.py doctor
 python manage.py runserver
 ```
 
-Windows 复制 `.env`：
+Windows：
 
 ```powershell
 Copy-Item .env.example .env
@@ -193,7 +219,7 @@ npm ci
 npm run dev
 ```
 
-如果准备学习语音：
+学语音前：
 
 ```bash
 npm run setup:vad
@@ -201,7 +227,7 @@ npm run setup:vad
 
 ---
 
-# 5. 第四轮新手工具
+# 5. 新手诊断与机器反馈
 
 ## `doctor`
 
@@ -210,11 +236,7 @@ cd backend
 python manage.py doctor
 ```
 
-它回答：
-
-> “我现在选的 AI 模式，环境到底准备好了吗？”
-
-会检查：
+按当前 Mode / Feature 检查真正需要的：
 
 ```text
 Python
@@ -233,33 +255,26 @@ VAD assets
 python manage.py seed_demo
 ```
 
-幂等准备：
+幂等准备教学基础数据。
 
-```text
-Demo Voice
-回复 Prompt
-记忆 Prompt
-```
-
-## Chapter grader
+## Structural grader
 
 ```bash
 python scripts/grade.py --chapter 7
+python scripts/grade.py --chapter 20
 ```
 
-## Tests
+## Backend tests
 
 ```bash
 cd backend
 python manage.py test web
-
-cd ../frontend
-npm test
 ```
 
-## Frontend 综合检查
+## Frontend checks
 
 ```bash
+cd frontend
 npm run check
 ```
 
@@ -273,7 +288,7 @@ npm run check
 | 01 | URL 为什么能切页面？ |
 | 02 | Python Model 为什么变成数据库表？ |
 | 03 | 登录状态如何贯穿前后端？ |
-| 04 | 一个角色如何从表单进入 SQLite/media？ |
+| 04 | 一个 Character 如何从表单进入 SQLite/media？ |
 | 05 | User / Character / Friend 是什么关系？ |
 | 06 | 一条消息如何进入 LLM？ |
 | 07 | 为什么 AI 能逐段显示？ |
@@ -284,9 +299,10 @@ npm run check
 | 12 | AI 为什么能边生成边说话？ |
 | 13 | 能否完整追踪一句话？ |
 
-入口：**[Labs](../labs/README.md)**。
+入口：
 
-英文核心路径：**[English Labs](../labs/en/README.md)**。
+- [中文 Labs](../labs/README.md)
+- [English Labs](../labs/en/README.md)
 
 ---
 
@@ -296,13 +312,16 @@ npm run check
 |---|---|
 | 14 Testing | 谁证明修改没把功能弄坏？ |
 | 15 DRF Engineering | 为什么 API 不能全靠 try/except + dict？ |
-| 16 Config | 为什么换模型不该改五个业务文件？ |
+| 16 Config | 为什么换模型不该改多个业务文件？ |
 | 17 Cancellation | Stop 如何真的停止 SSE/LLM/TTS？ |
 | 18 Data/Security | 为什么 View 判断不能替代 DB constraint？ |
 | 19 Eval | RAG / Memory 怎么证明“更好”？ |
 | 20 CI/Deploy | 为什么“我电脑能跑”远远不够？ |
 
-入口：**[ENGINEERING_COURSE](./ENGINEERING_COURSE.md)**。
+入口：
+
+- [中文 Engineering Course](./ENGINEERING_COURSE.md)
+- [English Engineering Course](./ENGINEERING_COURSE_EN.md)
 
 ---
 
@@ -328,25 +347,14 @@ InputField.vue
 Microphone.vue
 ```
 
-重点理解：
-
-```text
-Pinia
-JWT header
-single-flight refresh
-SSE
-AbortController
-Base64
-MediaSource
-VAD
-```
-
 ## Backend
 
 ```text
 web/urls.py
  ↓
 models/*
+ ↓
+serializers/*
  ↓
 views/user/account/*
  ↓
@@ -356,7 +364,7 @@ chat/graph.py
  ↓
 memory/*
  ↓
-documents/utils/*
+documents/retrieval.py
  ↓
 asr/asr.py
 ```
@@ -370,6 +378,7 @@ management/commands/seed_demo.py
 web/tests.py
 .github/workflows/ci.yml
 scripts/grade.py
+scripts/eval_rag.py
 ```
 
 ---
@@ -417,8 +426,6 @@ Memory update
 
 # 10. 调试顺序
 
-看到“聊天失败”不要直接改 LangChain。
-
 ```text
 UI
  ↓
@@ -426,13 +433,11 @@ Vue state
  ↓
 Network
  ↓
-JWT
+JWT / refresh
  ↓
-Django URL
+Django URL / View / Serializer
  ↓
-View
- ↓
-ORM
+ORM / ownership / constraint
  ↓
 AI mode/config
  ↓
@@ -440,29 +445,19 @@ LLM
  ↓
 Tool / RAG
  ↓
-SSE
+SSE / cancellation
  ↓
 ASR/TTS
 ```
 
-同时打开：
-
-```text
-VS Code
-Vite terminal
-Django terminal
-DevTools Console
-DevTools Network
-Django Admin
-```
-
-遇到问题：**[TROUBLESHOOTING](./TROUBLESHOOTING.md)**。
+- 中文：[TROUBLESHOOTING](./TROUBLESHOOTING.md)
+- English：[TROUBLESHOOTING_EN](./TROUBLESHOOTING_EN.md)
 
 ---
 
-# 11. 真实历史 Commit 怎么正确使用？
+# 11. 真实历史 Commit 怎么使用？
 
-`COURSE_REBUILD.md` 的历史 commit 价值在于：
+`COURSE_REBUILD.md` 的价值是：
 
 > 看一个真实项目如何逐步增加需求与复杂度。
 
@@ -476,34 +471,37 @@ Django Admin
 Labs 验收 = 学习目标
 ```
 
-不要把每一个历史版本都当“标准答案”。
+不要把每一个历史版本都当标准答案。
 
 ---
 
 # 12. 国际化状态
 
-当前已经完成：
+核心路径已经完成：
 
 - [x] 中英文项目首页
 - [x] English Learning Hub
 - [x] English Quick Start
 - [x] English Architecture Guide
-- [x] English Labs：00 / 06 / 07 / 08 / 10 / 13
-- [x] 英文贡献入口与翻译贡献说明
+- [x] **English Labs Chapter 00–20**
+- [x] English Engineering Course
+- [x] English API Reference
+- [x] English Database / ER Guide
+- [x] English Troubleshooting
+- [x] 中英文贡献入口
 
-后续继续逐步扩展：
+后续国际化已经从“补缺失课程”转成“持续质量维护”：
 
-- [ ] Chapter 01–05 / 09 / 11–12 英文 Labs
-- [ ] Chapter 14–20 Engineering Labs 英文化
-- [ ] API / Database / Troubleshooting 的完整英文版本
+- [ ] 按价值翻译 `COURSE_REBUILD` / 历史工程考古等辅助资料
+- [ ] 自动检查双语文档与代码漂移
+- [ ] 中英文截图 / GIF / Expected Result
+- [ ] 术语一致性和可访问性优化
 
-原则：**优先保证英文内容与当前代码一致，而不是追求一次性机械翻译全部文档。**
+原则：**双语文档首先要与当前代码一致，其次才是追求文字覆盖率。**
 
 ---
 
 # 13. 最终学习闭环
-
-每一章尽量做到：
 
 ```text
 预测
@@ -522,7 +520,7 @@ grader / test / build
  ↓
 commit
  ↓
-写一句 trade-off
+写 trade-off
 ```
 
 如果你开始习惯用：
@@ -535,7 +533,7 @@ CI
 Metric
 ```
 
-证明自己的判断，而不是不停“试一试代码”，你已经开始从教程学习者向工程开发者过渡。
+证明自己的判断，而不是不停“试代码”，你已经开始从教程学习者向工程开发者过渡。
 
 ---
 
