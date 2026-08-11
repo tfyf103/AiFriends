@@ -13,7 +13,7 @@ AiFriends uses **Vue 3 + Django + DRF + JWT + LangChain + LangGraph + LanceDB + 
 
 This is not a “call one LLM API and print the answer” demo. It connects browser UI, authentication, persistence, streaming protocols, agents, RAG, long-term memory, ASR/TTS, automated tests, data integrity, security boundaries, CI, and build workflows in one repository.
 
-> **Documentation status:** this English README is a complete project and onboarding guide. The deep chapter-by-chapter course and many source-code teaching comments are currently **Chinese-first**. English documentation will expand incrementally while code, tests, CI, security policy, and contribution workflows are shared by all users.
+> **English documentation status:** the project now has a complete English landing page, an [English Learning Hub](./docs/README_EN.md), a zero-API-key [Quick Start](./docs/QUICK_START_EN.md), a current [Architecture Guide](./docs/ARCHITECTURE_EN.md), and full English Labs for Chapters **00 / 06 / 07 / 08 / 10 / 13**. The remaining deep course chapters are still Chinese-first and will be translated incrementally.
 
 ---
 
@@ -23,9 +23,10 @@ This is not a “call one LLM API and print the answer” demo. It connects brow
 | --- | --- |
 | License | **MIT** |
 | Maintenance | **Active development**, primarily maintained by `@tfyf103` |
-| Languages | Chinese + English landing pages; deep course content currently Chinese-first |
+| Languages | Chinese + English landing pages, English core learning path, remaining deep course content Chinese-first |
 | First-run barrier | `AI_MODE=mock` runs the core Web/SSE flow with **zero API keys** |
 | Curriculum | Chapters **00–20**, from beginner foundations to engineering practices |
+| English labs | Full translations for **00 / 06 / 07 / 08 / 10 / 13** |
 | Automated feedback | Django tests + Node tests + structural grader + GitHub Actions |
 | AI stack | LangGraph Agent / Tool Calling / Memory / RAG / ASR / TTS |
 | Engineering stack | Serializers / cancellation / migration checks / Health / Request-ID / Docker learning image |
@@ -72,31 +73,50 @@ AiFriends is designed to bridge that engineering gap with a **code-first, reprod
 
 The tutorial and the maintained application live in the same repository. Learners inspect the real runtime path, real Git history, real tests, real data migrations, and real CI instead of switching to a separate toy implementation.
 
-The project started from the Chinese AI learning community and is now opening a bilingual entry point for developers worldwide.
+The project started from the Chinese AI learning community and is now building a durable bilingual learning path for developers worldwide.
 
 ---
 
-# 🌱 Recommended learning path
+# 🌱 Recommended English learning path
 
 ```text
 README_EN.md: understand the project
    ↓
+English Learning Hub
+   ↓
+English Quick Start
+   ↓
 AI_MODE=mock: run it with zero API keys
    ↓
-Understand one complete request path
+Chapter 00: reproducible environment
    ↓
-Explore source + architecture
+Chapter 06: minimal LLM boundary
    ↓
-Chapters 00–13: build the AI application
+Chapter 07: SSE streaming + cancellation
    ↓
-Chapters 14–20: testing / security / CI / deployment
+Chapter 08: LangGraph + Tool Calling
    ↓
-Contribute fixes, tests, evaluations, or docs
+Chapter 10: RAG + retrieval evaluation
+   ↓
+Chapter 13: full-system capstone
+   ↓
+English Architecture Guide
+   ↓
+Contribute fixes, tests, evaluations, or translations
 ```
 
-## Main resources
+## English-first resources
 
-The following deep-learning materials are currently Chinese-first, but the code paths and commands are the same:
+- 🌍 [English Learning Hub](./docs/README_EN.md)
+- 🚀 [English Quick Start](./docs/QUICK_START_EN.md)
+- 🧠 [English Architecture Guide](./docs/ARCHITECTURE_EN.md)
+- 🧪 [English Core Labs](./labs/en/README.md)
+- 🛡️ [Security Policy](./SECURITY.md)
+- 🤝 [Contributing Guide](./CONTRIBUTING.md)
+
+## Complete Chinese-first curriculum
+
+The following materials cover the full Chapter 00–20 curriculum. Chapters without a dedicated English translation remain Chinese-first, while code paths and commands are shared:
 
 - 📘 [Learning Center / 学习中心](./docs/README.md)
 - 🚀 [Beginner Tutorial / 完整运行与复刻教程](./docs/BEGINNER_TUTORIAL.md)
@@ -106,7 +126,6 @@ The following deep-learning materials are currently Chinese-first, but the code 
 - ✅ [Grading & Automated Feedback](./docs/GRADING.md)
 - 🔌 [API Reference](./docs/API_REFERENCE.md)
 - 🗄️ [Database ER Guide](./docs/DATABASE_ER.md)
-- 🧠 [Architecture & Request Flow](./docs/ARCHITECTURE.md)
 - 🧯 [Troubleshooting](./docs/TROUBLESHOOTING.md)
 
 ---
@@ -262,6 +281,8 @@ For backward compatibility, existing deployments without `AI_MODE` still default
 ---
 
 # 🚀 Quick Start
+
+> For the maintained step-by-step version, use **[docs/QUICK_START_EN.md](./docs/QUICK_START_EN.md)**.
 
 ## 1. Clone
 
@@ -519,7 +540,7 @@ Message persistence
 periodic Memory update
 ```
 
-For the deeper explanation, see [ARCHITECTURE.md](./docs/ARCHITECTURE.md) (currently Chinese-first).
+For the maintained English explanation, see **[ARCHITECTURE_EN.md](./docs/ARCHITECTURE_EN.md)**.
 
 ---
 
@@ -546,6 +567,19 @@ For the deeper explanation, see [ARCHITECTURE.md](./docs/ARCHITECTURE.md) (curre
 
 Goal: **build a complete AI web application independently.**
 
+The current English core track covers:
+
+```text
+00 Environment
+06 Basic LLM Chat
+07 SSE Streaming
+08 LangGraph / Tool Calling
+10 RAG + LanceDB
+13 Full-System Capstone
+```
+
+Start from [English Labs](./labs/en/README.md).
+
 ## Chapters 14–20 — make it reliable
 
 ```text
@@ -560,7 +594,7 @@ Goal: **build a complete AI web application independently.**
 
 Goal: **upgrade a working AI demo into software that can be verified and maintained.**
 
-Start from [Labs](./labs/README.md). The lab prose is currently Chinese-first; code, tests, commands, and acceptance structure are shared.
+The complete Chapter 00–20 lab set remains available at [Labs](./labs/README.md), with untranslated chapters currently Chinese-first.
 
 ---
 
@@ -620,7 +654,7 @@ vs
 Evidence was retrieved but the LLM used it poorly
 ```
 
-That separation is one of the core engineering ideas in Chapter 19.
+That separation is one of the core engineering ideas in Chapter 19 and is also taught in the English [Chapter 10 RAG Lab](./labs/en/chapter-10-rag.md).
 
 ---
 
@@ -689,13 +723,19 @@ runtime LanceDB data
 
 # 🗺️ Roadmap
 
-The next stage focuses on learning quality, supply-chain security, international accessibility, and production thinking rather than simply adding more beginner content.
+The next stage focuses on learning quality, supply-chain security, broader international accessibility, and production thinking rather than simply adding more beginner content.
 
 ## Internationalization / Learning Experience
 
 - [x] Chinese + English repository landing pages
-- [ ] Translate the architecture guide and Quick Start into native English docs
-- [ ] Translate high-value labs incrementally
+- [x] English Learning Hub
+- [x] Native English Quick Start
+- [x] Current English Architecture Guide
+- [x] Full English high-value labs: 00 / 06 / 07 / 08 / 10 / 13
+- [x] Explicitly welcome English documentation and translation contributions
+- [ ] Translate remaining Chapters 01–05 / 09 / 11–12
+- [ ] Translate Engineering Chapters 14–20
+- [ ] Full English API / database / troubleshooting references
 - [ ] Stable `course/chXX-start` / `course/chXX-solution` tags
 - [ ] Bug Museum based on real historical defects
 - [ ] Expected screenshots / GIFs for each chapter

@@ -1,5 +1,7 @@
 # AiFriends 实验课（Labs）
 
+🌐 **语言 / Language：** **简体中文** | [English Labs](./en/README.md)
+
 > 目标：把“我看懂了”升级成“我能自己写出来，而且能证明自己写对了”。
 
 Labs 分成两段：
@@ -8,6 +10,8 @@ Labs 分成两段：
 Chapter 00–13：从零做出完整 AI 全栈应用
 Chapter 14–20：把 AI Demo 升级成可靠工程项目
 ```
+
+> English learners: the international track currently provides full English labs for **00 / 06 / 07 / 08 / 10 / 13**, plus an [English Quick Start](../docs/QUICK_START_EN.md) and [English Architecture Guide](../docs/ARCHITECTURE_EN.md).
 
 ---
 
@@ -36,6 +40,23 @@ git diff <old-sha> <new-sha>
 git add .
 git commit -m "learn: finish chapter 03 jwt auth"
 ```
+
+---
+
+# English Core Track
+
+当前优先国际化的是最能代表 AiFriends 核心价值的章节：
+
+| Chapter | English Lab | 核心主题 |
+|---|---|---|
+| 00 | [Environment & Reproducible Setup](./en/chapter-00-environment.md) | 环境、Mock 模式、可复现启动 |
+| 06 | [Minimal LLM Chat](./en/chapter-06-basic-chat.md) | Vue → Django → LLM 最小闭环 |
+| 07 | [SSE Streaming](./en/chapter-07-sse.md) | SSE、JWT refresh、取消、持久化 |
+| 08 | [LangGraph Tool Calling](./en/chapter-08-langgraph-tools.md) | Agent、ToolNode、条件路由 |
+| 10 | [RAG + LanceDB](./en/chapter-10-rag.md) | Chunk、Embedding、Retrieval、Eval |
+| 13 | [Full-System Capstone](./en/chapter-13-capstone.md) | 全链路取证与跨层改造 |
+
+完整英文导航：[`labs/en/README.md`](./en/README.md)。
 
 ---
 
@@ -156,6 +177,8 @@ npm run check
 
 ## 配套资料
 
+### 中文
+
 - [工程进阶课程](../docs/ENGINEERING_COURSE.md)
 - [从 0 复刻课程](../docs/COURSE_REBUILD.md)
 - [零基础完整教程](../docs/BEGINNER_TUTORIAL.md)
@@ -163,3 +186,10 @@ npm run check
 - [数据库 ER 图](../docs/DATABASE_ER.md)
 - [架构与请求链路](../docs/ARCHITECTURE.md)
 - [排错手册](../docs/TROUBLESHOOTING.md)
+
+### English
+
+- [English Learning Hub](../docs/README_EN.md)
+- [English Quick Start](../docs/QUICK_START_EN.md)
+- [English Architecture Guide](../docs/ARCHITECTURE_EN.md)
+- [English Labs](./en/README.md)
