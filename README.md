@@ -2,6 +2,7 @@
 
 [![AiFriends CI](https://github.com/tfyf103/AiFriends/actions/workflows/ci.yml/badge.svg)](https://github.com/tfyf103/AiFriends/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Open%20AiFriends-2ea44f)](https://app8056.acapp.acwing.com.cn/)
 
 🌐 **语言 / Language：** **简体中文** | [English](./README_EN.md)
 
@@ -24,6 +25,7 @@ AiFriends 使用 **Vue 3 + Django + DRF + JWT + LangChain + LangGraph + LanceDB 
 | 开源许可 | **MIT** |
 | 维护状态 | **Active development**，由 `@tfyf103` 主要维护 |
 | 学习语言 | **简体中文 + English 双核心学习路径** |
+| 在线体验 | **[真实部署可直接访问](https://app8056.acapp.acwing.com.cn/)** |
 | 入门门槛 | `AI_MODE=mock` 可 **零 API Key** 跑通核心 Web/SSE 链路 |
 | 课程 | Chapter **00–20**，中英文 Labs 均完整覆盖 |
 | 自动反馈 | Django tests + Node tests + structural grader + GitHub Actions |
@@ -34,6 +36,42 @@ AiFriends 使用 **Vue 3 + Django + DRF + JWT + LangChain + LangGraph + LanceDB 
 | 贡献入口 | [CONTRIBUTING.md](./CONTRIBUTING.md) |
 
 > **项目目标：让学习者不仅“把 AI Demo 跑起来”，还能够理解它为什么这样设计、如何验证它、如何维护它，以及怎样逐步把 Demo 变成可靠的软件工程。**
+
+---
+
+# 🌐 在线体验 / Live Demo
+
+**实际部署地址：** [https://app8056.acapp.acwing.com.cn/](https://app8056.acapp.acwing.com.cn/)
+
+> 下面不是 Mock、设计稿或生成图片。**2026-08-11**，使用 GitHub-hosted Ubuntu runner + Playwright Chromium 从独立公网环境实际访问线上部署，并以**只读方式**验证首页、登录、注册和公开用户空间；没有为了截图注册测试账号、创建角色或修改生产数据。
+
+公网验证结果：
+
+```text
+/                         → HTTP 200
+/user/account/login       → HTTP 200
+/user/account/register    → HTTP 200
+/user/space/6             → HTTP 200
+```
+
+## 首页：发现公开 AI Character
+
+[![AiFriends live homepage](./docs/assets/live-demo/homepage.png)](https://app8056.acapp.acwing.com.cn/)
+
+实际首页能够加载公开角色与人格描述，验证了 Character discovery 并不是 README 中的静态概念，而是线上正在运行的产品路径。
+
+## 登录与注册
+
+<p align="center">
+  <img src="./docs/assets/live-demo/login.png" alt="AiFriends 线上登录页面" width="49%" />
+  <img src="./docs/assets/live-demo/register.png" alt="AiFriends 线上注册页面" width="49%" />
+</p>
+
+## 公开用户空间
+
+[![AiFriends live public profile](./docs/assets/live-demo/public-profile.png)](https://app8056.acapp.acwing.com.cn/user/space/6)
+
+> 截图是 **2026-08-11 的真实线上快照**，公开角色、用户资料和部署版本之后可能变化。采集方法和验证范围见 [Live Demo Verification](./docs/LIVE_DEMO.md)。
 
 ---
 
@@ -627,7 +665,8 @@ Chapter 20 继续区分“可复现教学容器”和“真正生产部署”。
 - [x] 明确欢迎 bilingual documentation contributions
 - [ ] 按价值逐步翻译 `COURSE_REBUILD` / 历史工程考古等辅助资料
 - [ ] 自动化检查中英文文档漂移
-- [ ] 中英文截图 / GIF / Expected Result
+- [x] 首批中英文真实线上截图 / Live Demo
+- [ ] 每章截图 / GIF / Expected Result
 - [ ] 统一中英文工程术语与可访问性表达
 
 ## Learning Quality
