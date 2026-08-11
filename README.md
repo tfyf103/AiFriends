@@ -11,7 +11,9 @@
 
 AiFriends 使用 **Vue 3 + Django + DRF + JWT + LangChain + LangGraph + LanceDB + SSE + WebSocket**，把一个真实 AI 应用拆成可运行、可复刻、可测试、可继续工程化的学习路径。
 
-它不是“只调用一次大模型 API”的示例。项目覆盖从浏览器 UI、认证、数据库、流式协议，到 Agent、RAG、Memory、ASR/TTS，再到自动测试、数据约束、安全边界、CI 和构建发布。
+它不是“只调用一次大模型 API”的示例。项目覆盖浏览器 UI、认证、数据库、流式协议、Agent、RAG、Memory、ASR/TTS，以及自动测试、数据约束、安全、CI、构建和部署思维。
+
+> **国际化状态：核心课程已经完成中英文双轨。** 英文用户现在可以独立完成 **Chapter 00–20**，并使用 English Quick Start、Architecture、Engineering Course、API Reference、Database/ER 和 Troubleshooting，不需要依赖中文正文才能完成核心学习路径。
 
 ---
 
@@ -21,12 +23,13 @@ AiFriends 使用 **Vue 3 + Django + DRF + JWT + LangChain + LangGraph + LanceDB 
 | --- | --- |
 | 开源许可 | **MIT** |
 | 维护状态 | **Active development**，由 `@tfyf103` 主要维护 |
-| 学习语言 | **中文 + English 双语入口**；英文已覆盖 Quick Start、Architecture 与核心 Labs 00/06/07/08/10/13 |
+| 学习语言 | **简体中文 + English 双核心学习路径** |
 | 入门门槛 | `AI_MODE=mock` 可 **零 API Key** 跑通核心 Web/SSE 链路 |
-| 课程 | Chapter **00–20**，从零基础到工程化 |
+| 课程 | Chapter **00–20**，中英文 Labs 均完整覆盖 |
 | 自动反馈 | Django tests + Node tests + structural grader + GitHub Actions |
 | AI 能力 | LangGraph Agent / Tool Calling / Memory / RAG / ASR / TTS |
-| 工程能力 | Serializer / cancellation / migration checks / Health / Request-ID / Docker learning image |
+| 工程能力 | Serializer / cancellation / migration / Health / Request-ID / Docker learning image |
+| 英文参考 | Quick Start / Architecture / Engineering / API / ER / Troubleshooting |
 | 安全入口 | [SECURITY.md](./SECURITY.md) |
 | 贡献入口 | [CONTRIBUTING.md](./CONTRIBUTING.md) |
 
@@ -46,7 +49,7 @@ AiFriends 使用 **Vue 3 + Django + DRF + JWT + LangChain + LangGraph + LanceDB 
 打印答案
 ```
 
-真实 AI 产品却往往是：
+真实 AI 产品通常还要经过：
 
 ```text
 Frontend
@@ -66,28 +69,30 @@ Speech
 Persistence / Tests / CI / Security
 ```
 
-AiFriends 希望补上这中间的工程断层。项目从中文 AI 学习社区起步，提供一条 **code-first、可复现、带实验和自动反馈** 的学习路线，并通过中英文双语文档逐步向全球开发者开放。
+AiFriends 希望补上这中间的工程断层，提供一条 **code-first、可复现、带实验和自动反馈** 的学习路线。
 
-项目把“教程”和“真实维护”放在同一个仓库里：学生看到的不是另一套玩具代码，而是实际运行路径、真实 Git 历史、真实测试、真实数据迁移和真实 CI。
+项目把“教程”和“真实维护”放在同一个仓库里：学习者看到的不是另一套玩具代码，而是真实运行路径、真实 Git 历史、真实测试、真实数据迁移和真实 CI。
+
+项目从中文 AI 学习社区起步，现在已经形成可供全球开发者使用的中英文双语核心课程。
 
 ---
 
-# 🌱 零基础学习路线
+# 🌱 中文学习路线
 
 ```text
-README：先知道项目是什么
+README
    ↓
 AI_MODE=mock：零 API Key 跑通项目
    ↓
-BEGINNER_TUTORIAL：理解基础概念
+BEGINNER_TUTORIAL
    ↓
-COURSE_REBUILD：沿真实 Git 历史重新实现
+COURSE_REBUILD：沿真实 Git 历史理解项目演进
    ↓
-Labs Chapter 00–13：独立完成 AI 应用
+Labs Chapter 00–13：做出完整 AI 应用
    ↓
 Labs Chapter 14–20：Testing / Security / CI / Deploy
    ↓
-源码 + ARCHITECTURE：形成完整系统视角
+源码 + ARCHITECTURE + API + ER + Troubleshooting
 ```
 
 ## 中文核心入口
@@ -95,7 +100,7 @@ Labs Chapter 14–20：Testing / Security / CI / Deploy
 - 📘 [零基础学习中心](./docs/README.md)
 - 🚀 [完整运行与复刻教程](./docs/BEGINNER_TUTORIAL.md)
 - 🧭 [沿真实 Git 历史重建](./docs/COURSE_REBUILD.md)
-- 🧪 [Labs：Chapter 00–20](./labs/README.md)
+- 🧪 [中文 Labs：Chapter 00–20](./labs/README.md)
 - 🏗️ [工程进阶课程 Chapter 14–20](./docs/ENGINEERING_COURSE.md)
 - ✅ [自动验收 / Grading](./docs/GRADING.md)
 - 🔌 [API Reference](./docs/API_REFERENCE.md)
@@ -103,12 +108,40 @@ Labs Chapter 14–20：Testing / Security / CI / Deploy
 - 🧠 [系统架构与请求链路](./docs/ARCHITECTURE.md)
 - 🧯 [常见报错与排查](./docs/TROUBLESHOOTING.md)
 
-## English Core Track
+---
+
+# 🌍 English Learning Track
+
+```text
+README_EN
+  ↓
+English Learning Hub
+  ↓
+English Quick Start
+  ↓
+Chapter 00 → 01 → 02 → 03 → 04 → 05
+  ↓
+06 → 07 → 08 → 09 → 10 → 11 → 12
+  ↓
+13 Full-System Capstone
+  ↓
+14 → 15 → 16 → 17 → 18 → 19 → 20
+  ↓
+Architecture / API / Database / Troubleshooting
+```
+
+## English 核心入口
 
 - 🌍 [English Learning Hub](./docs/README_EN.md)
 - 🚀 [English Quick Start](./docs/QUICK_START_EN.md)
+- 🧪 [English Labs：Chapter 00–20](./labs/en/README.md)
 - 🧠 [English Architecture Guide](./docs/ARCHITECTURE_EN.md)
-- 🧪 [English Core Labs](./labs/en/README.md) — Chapter 00 / 06 / 07 / 08 / 10 / 13
+- 🏗️ [English Engineering Course](./docs/ENGINEERING_COURSE_EN.md)
+- 🔌 [English API Reference](./docs/API_REFERENCE_EN.md)
+- 🗄️ [English Database / ER Guide](./docs/DATABASE_ER_EN.md)
+- 🧯 [English Troubleshooting](./docs/TROUBLESHOOTING_EN.md)
+
+`COURSE_REBUILD` 等真实历史工程考古资料仍可能以中文为主，但已经不影响英文用户完成完整核心课程。
 
 ---
 
@@ -119,7 +152,7 @@ Labs Chapter 14–20：Testing / Security / CI / Deploy
 - 创建自己的 AI 角色；
 - 自定义名称、头像、聊天背景；
 - 编写人格 / 世界观 / 角色设定；
-- 为不同 Character 选择 Voice；
+- 为 Character 选择 Voice；
 - 每个用户与 Character 建立独立 Friend 关系。
 
 ## 💬 Streaming Chat
@@ -130,7 +163,7 @@ Labs Chapter 14–20：Testing / Security / CI / Deploy
 - 最近聊天作为短期上下文；
 - Token 使用量记录；
 - `AbortController` 真实终止浏览器 SSE；
-- 后端 cancellation event 尽快停止生成 worker。
+- 后端 `cancel_event` 尽快停止生成 worker。
 
 ## 🧠 Long-term Memory
 
@@ -143,8 +176,6 @@ MemoryGraph
    ↓
 新的长期摘要
 ```
-
-长期记忆与 Character 固定人格分离，让学习者可以理解：
 
 ```text
 Character.profile = 角色是谁
@@ -165,10 +196,7 @@ agent
            agent
 ```
 
-当前示例 Tool 包括：
-
-- 当前时间；
-- LanceDB 知识库检索。
+当前示例 Tool 包括当前时间和 LanceDB 知识库检索。
 
 ## 📚 RAG
 
@@ -188,7 +216,7 @@ Retrieval
 Agent
 ```
 
-Retrieval 已从 Agent 中拆出，可以独立评测，不必把“检索错误”和“生成错误”混在一起。
+Retrieval 已从 Agent 编排中拆出，可以独立评测，区分“检索失败”和“生成失败”。
 
 ## 🎙️ Voice
 
@@ -203,15 +231,13 @@ Retrieval 已从 Agent 中拆出，可以独立评测，不必把“检索错误
 
 # ⭐ 三种 AI 运行模式
 
-为了让新手先学系统，再处理第三方模型服务，AiFriends 支持：
-
-| Mode | 外部模型要求 | 适合学习 |
+| Mode | 外部服务要求 | 适合学习 |
 | --- | --- | --- |
 | `mock` | 无 | Vue / Django / JWT / Friend / SSE / DB / CI |
 | `text` | Chat Model | LLM / LangGraph / Tool / Memory |
 | `full` | Chat + Embedding + Speech | RAG / ASR / TTS 完整链路 |
 
-## 1. `mock`：第一次学习推荐
+## `mock`：第一次学习推荐
 
 ```env
 AI_MODE=mock
@@ -228,7 +254,7 @@ API_BASE
 WSS_URL
 ```
 
-但仍然走真实：
+但仍然经过真实：
 
 ```text
 Vue
@@ -244,7 +270,7 @@ SSE
 Message 数据库
 ```
 
-## 2. `text`
+## `text`
 
 ```env
 AI_MODE=text
@@ -253,13 +279,11 @@ API_BASE=...
 CHAT_MODEL=...
 ```
 
-用于先学习真实 LLM / LangGraph，而不把 TTS/ASR 作为聊天成功的前置条件。
+先学习真实 LLM / LangGraph，而不把语音作为聊天成功的前置条件。
 
-## 3. `full`
+## `full`
 
-完整开启 Chat / RAG / ASR / TTS。
-
-为了兼容旧部署，没有配置 `AI_MODE` 时运行时代码默认仍按 `full` 处理；新学习者复制 `.env.example` 时从 `mock` 开始。
+开启完整 Chat + RAG + ASR + TTS，具体能力仍由 Feature Flag 和 provider 配置控制。
 
 ---
 
@@ -308,14 +332,7 @@ macOS / Linux：
 cp .env.example .env
 ```
 
-第一次保持：
-
-```env
-AI_MODE=mock
-ENABLE_RAG=false
-ENABLE_ASR=false
-ENABLE_TTS=false
-```
+第一次保持 Mock 模式。
 
 ## 4. Django
 
@@ -327,33 +344,9 @@ python manage.py doctor
 python manage.py runserver
 ```
 
-### `seed_demo`
-
-幂等创建基础学习数据：
-
-```text
-Demo Voice
-回复 SystemPrompt
-记忆 SystemPrompt
-```
-
-### `doctor`
-
-根据当前 AI 模式检查真正需要的环境：
-
-```text
-Python
-Database
-API 配置
-SystemPrompt
-Voice
-LanceDB
-VAD assets
-```
-
 ## 5. Vue
 
-新终端：
+另开终端：
 
 ```bash
 cd frontend
@@ -361,7 +354,7 @@ npm ci
 npm run dev
 ```
 
-开发模式通过 Vite Proxy 转发 `/api` 和 `/media`，降低第一次学习时的 CORS / Cookie host 干扰。
+开发模式由 Vite Proxy 转发 `/api` 和 `/media`。
 
 ## 6. 第一条消息
 
@@ -376,10 +369,10 @@ npm run dev
  ↓
 发送消息
  ↓
-看到【Mock 模式】流式回复
+看到 Mock 流式回复
 ```
 
-完成这里后，再逐步切换到 `text` / `full`。
+完成后再逐步进入 `text`、RAG、ASR、TTS 和 `full`。
 
 ---
 
@@ -390,16 +383,14 @@ cd frontend
 npm run setup:vad
 ```
 
-它会从 npm 依赖中自动准备浏览器所需 VAD / ONNX Runtime 静态资源。
-
-之后再逐项开启：
+再按需要开启：
 
 ```env
 ENABLE_ASR=true
 ENABLE_TTS=true
 ```
 
-环境有疑问时重新执行：
+遇到环境问题：
 
 ```bash
 cd backend
@@ -408,18 +399,16 @@ python manage.py doctor
 
 ---
 
-# ✅ 自动反馈：不要靠“感觉”判断做对了
+# ✅ 自动反馈
 
-AiFriends 当前提供四层反馈。
-
-## Level 1 — Environment
+## Environment
 
 ```bash
 cd backend
 python manage.py doctor
 ```
 
-## Level 2 — Course Structural Grader
+## Structural Grader
 
 ```bash
 python scripts/grade.py --chapter 7
@@ -427,50 +416,36 @@ python scripts/grade.py --chapter 13
 python scripts/grade.py --chapter 20
 ```
 
-## Level 3 — Behavior Tests
-
-Backend：
+## Backend Tests
 
 ```bash
 cd backend
 python manage.py test web
 ```
 
-Frontend：
-
-```bash
-cd frontend
-npm test
-```
-
-## Level 4 — Build / CI
+## Frontend Checks
 
 ```bash
 cd frontend
 npm run check
 ```
 
-Pull Request 的 GitHub Actions 会在干净环境运行：
+PR 的 GitHub Actions 会在干净环境运行：
 
 ```text
 Python compile
 Chapter 00–20 grader
 Migration drift check
-Django system check
-Backend tests
+Django check/tests
 npm ci
 VAD setup
-Frontend quality check
-Frontend unit tests
-Vite production build
+Frontend quality/tests/build
 Docker learning image build
 ```
 
-详见 [GRADING.md](./docs/GRADING.md)。
-
 ---
 
-# 🔥 一条聊天消息如何穿过整个系统？
+# 🔥 一条聊天消息如何穿过系统？
 
 ```text
 InputField.vue
@@ -485,10 +460,7 @@ MessageChatView
   ↓
 Friend ownership
   ↓
-SystemPrompt
-+ Character.profile
-+ Friend.memory
-+ recent Message
+SystemPrompt + Character.profile + Friend.memory + recent Message
   ↓
 AI_MODE
   ├─ mock → deterministic local stream
@@ -503,24 +475,18 @@ AI_MODE
                 source evidence
   ↓
 content chunk
-  ├──────────────→ SSE text
-  └→ optional TTS WebSocket
-                   ↓
-                MP3 bytes
-                   ↓ Base64
-                 SSE audio
+  ├→ SSE text
+  └→ optional TTS WebSocket → MP3 → Base64 → SSE audio
   ↓
-Vue onmessage
-  ├─ message bubble
-  └─ MediaSource
+Vue UI / MediaSource
   ↓
 Message persistence
   ↓
 periodic Memory update
 ```
 
-完整说明：[ARCHITECTURE.md](./docs/ARCHITECTURE.md)。  
-English: [ARCHITECTURE_EN.md](./docs/ARCHITECTURE_EN.md)。
+- 中文：[ARCHITECTURE.md](./docs/ARCHITECTURE.md)
+- English：[ARCHITECTURE_EN.md](./docs/ARCHITECTURE_EN.md)
 
 ---
 
@@ -537,28 +503,15 @@ English: [ARCHITECTURE_EN.md](./docs/ARCHITECTURE_EN.md)。
 05 Friend
 06 Basic LLM Chat
 07 SSE
-08 LangGraph / Tool
-09 Memory
+08 LangGraph / Tool Calling
+09 Long-Term Memory
 10 RAG
 11 ASR
-12 TTS
-13 Full Pipeline
-```
-
-目标：**独立做出一个完整 AI Web 应用。**
-
-英文核心路径已覆盖：
-
-```text
-00 Environment
-06 Basic LLM Chat
-07 SSE Streaming
-08 LangGraph / Tool Calling
-10 RAG + LanceDB
+12 Streaming TTS
 13 Full-System Capstone
 ```
 
-入口：[Labs](./labs/README.md) / [English Labs](./labs/en/README.md)。
+目标：**独立做出一个完整 AI Web 应用。**
 
 ## Chapter 14–20：再学“做可靠”
 
@@ -566,7 +519,7 @@ English: [ARCHITECTURE_EN.md](./docs/ARCHITECTURE_EN.md)。
 14 Testing / TDD
 15 DRF / Serializer / HTTP Status
 16 Config / Feature Flag / Provider
-17 Async / Cancellation
+17 Async / Streaming / Cancellation
 18 Constraint / Transaction / Security
 19 RAG / Memory Evaluation
 20 CI / Build / Deploy / Observability
@@ -574,13 +527,16 @@ English: [ARCHITECTURE_EN.md](./docs/ARCHITECTURE_EN.md)。
 
 目标：**把能跑的 AI Demo 升级成可验证、可维护的工程项目。**
 
-入口：[Labs](./labs/README.md)。
+中英文全部章节入口：
+
+- [中文 Labs](./labs/README.md)
+- [English Labs](./labs/en/README.md)
 
 ---
 
 # 🛡️ Security & maintenance
 
-AiFriends 的维护面横跨：
+AiFriends 的维护面包括：
 
 ```text
 JWT / refresh cookies
@@ -593,14 +549,12 @@ Third-party AI endpoints
 Dependency supply chain
 ```
 
-因此安全不是课程最后的一页，而是项目维护的一部分。
+- 安全问题遵循 [SECURITY.md](./SECURITY.md)，不要公开披露未修复漏洞。
+- 普通 Bug、测试、文档、工程改进遵循 [CONTRIBUTING.md](./CONTRIBUTING.md)。
+- CI 默认使用 `mock`，不要求贡献者提交真实 API Key。
+- `/api/health/`、`X-Request-ID`、migration checks、behavior tests 和 learning Docker 用于提升可诊断性与回归保护。
 
-- 安全问题请遵循 **[SECURITY.md](./SECURITY.md)**，不要公开披露未修复漏洞。
-- 普通 Bug、文档、测试和工程改进欢迎按 **[CONTRIBUTING.md](./CONTRIBUTING.md)** 提交。
-- CI 默认使用 `mock` 模式，不要求贡献者提交真实 API Key，也不消耗外部模型额度。
-- `/api/health/`、`X-Request-ID`、migration drift check、behavior tests 和 Docker learning build 用于提升可诊断性和回归保护。
-
-> `Dockerfile.learning`、SQLite、Django `runserver` 和开发环境设置是**教学参考**，不是生产环境安全承诺。生产部署需要继续完成 WSGI/ASGI、HTTPS、PostgreSQL、持久化存储、Secrets、Rate Limit、metrics/tracing 等工作。
+> `Dockerfile.learning`、SQLite、Django `runserver` 和开发环境配置是**教学参考**，不是生产部署安全承诺。
 
 ---
 
@@ -614,33 +568,15 @@ python scripts/eval_rag.py \
   --k 3
 ```
 
-它先独立测试 Retrieval：
+相关课程：
 
-```text
-问题
- ↓
-Embedding
- ↓
-Top-k Retrieval
- ↓
-预期关键词 / source
-```
-
-这样可以区分：
-
-```text
-Retrieval 没找对
-vs
-LLM 找到了证据但没用好
-```
-
-这是 Chapter 19 的核心工程思维之一，也是英文 [Chapter 10 RAG Lab](./labs/en/chapter-10-rag.md) 的重点。
+- 中文 Chapter 10 / 19
+- [English Chapter 10 RAG](./labs/en/chapter-10-rag.md)
+- [English Chapter 19 RAG / Memory Eval](./labs/en/chapter-19-rag-memory-eval.md)
 
 ---
 
 # 🐳 Learning Docker
-
-教学用“干净环境复现器”：
 
 ```bash
 docker build -f Dockerfile.learning -t aifriends:learning .
@@ -653,73 +589,53 @@ docker run --rm -p 8000:8000 aifriends:learning
 docker compose -f compose.learning.yml up --build
 ```
 
-它故意仍使用 Django `runserver`。Chapter 20 再继续学习真正的生产部署边界。
+Chapter 20 继续区分“可复现教学容器”和“真正生产部署”。
 
 ---
 
 # 🤝 Contributing
 
-AiFriends 欢迎这些贡献：
+欢迎：
 
-- 可以复现的 Bug fix；
+- 可复现的 Bug fix；
 - Authentication / Authorization / Upload / Streaming / RAG 安全改进；
-- Regression tests；
-- 新手第一次运行问题和诊断工具；
-- 文档与源码不一致的修复；
+- Regression / E2E tests；
+- 新手诊断工具；
+- 文档与源码漂移修复；
 - Labs / Debugging exercises；
 - Accessibility / Performance / CI / Observability / Deploy 改进；
 - RAG / Memory evaluation cases；
-- **英文文档改进与翻译贡献。**
+- **中英文文档同步、术语一致性和翻译质量改进。**
 
-开始前请阅读：[CONTRIBUTING.md](./CONTRIBUTING.md)。
-
-最低检查：
-
-```bash
-python scripts/grade.py --chapter 20
-
-cd backend
-python manage.py makemigrations --check --dry-run
-python manage.py check
-python manage.py test web
-
-cd ../frontend
-npm run check
-npm test
-npm run build
-```
-
-不要提交：
-
-```text
-真实 API Key / JWT / Django Secret
-.env
-私人聊天数据
-db.sqlite3
-运行时 LanceDB 数据
-```
+开始前阅读：[CONTRIBUTING.md](./CONTRIBUTING.md)。
 
 ---
 
 # 🗺️ Roadmap
 
-下一阶段更值得做的是提高教学质量、软件供应链安全、国际可访问性和生产思维，而不是继续堆基础教程。
-
 ## Internationalization / Learning Experience
 
 - [x] 中文 + English 仓库首页
 - [x] English Learning Hub
-- [x] 独立 English Quick Start
-- [x] 当前实现版 English Architecture Guide
-- [x] 高价值 English Labs：00 / 06 / 07 / 08 / 10 / 13
-- [x] 明确欢迎 English documentation improvements and translations
-- [ ] Chapter 01–05 / 09 / 11–12 英文 Labs
-- [ ] Chapter 14–20 Engineering Labs 英文化
-- [ ] API / Database / Troubleshooting 完整英文版本
+- [x] English Quick Start
+- [x] English Architecture Guide
+- [x] **Chapter 00–20 English Labs 全覆盖**
+- [x] English Engineering Course
+- [x] English API Reference
+- [x] English Database / ER Guide
+- [x] English Troubleshooting Guide
+- [x] 明确欢迎 bilingual documentation contributions
+- [ ] 按价值逐步翻译 `COURSE_REBUILD` / 历史工程考古等辅助资料
+- [ ] 自动化检查中英文文档漂移
+- [ ] 中英文截图 / GIF / Expected Result
+- [ ] 统一中英文工程术语与可访问性表达
+
+## Learning Quality
+
 - [ ] `course/chXX-start` / `course/chXX-solution` 稳定教学标签
 - [ ] Bug Museum：把真实历史 Bug 变成 Debug Lab
-- [ ] 每章截图 / GIF / Expected Result
 - [ ] 更细粒度 behavioral grader
+- [ ] Mock 模式 Browser E2E
 - [ ] 配套视频索引
 
 ## Backend / Security
@@ -737,8 +653,7 @@ db.sqlite3
 - [ ] Provider Adapter
 - [ ] RAG source 结构化事件与前端 Citation UI
 - [ ] Generation / Faithfulness Eval
-- [ ] Structured Memory
-- [ ] Memory conflict resolution
+- [ ] Structured Memory + provenance / conflict handling
 - [ ] Prompt Injection / Tool permission tests
 - [ ] Token / Latency dashboard
 
@@ -749,7 +664,7 @@ db.sqlite3
 - [ ] Persistent media / object storage
 - [ ] PostgreSQL production config
 - [ ] Structured logging / metrics / tracing
-- [ ] Route-level lazy loading / code splitting
+- [ ] Route-level lazy loading / code splitting / bundle budget
 
 ---
 
