@@ -2,6 +2,7 @@
 
 [![AiFriends CI](https://github.com/tfyf103/AiFriends/actions/workflows/ci.yml/badge.svg)](https://github.com/tfyf103/AiFriends/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Open%20AiFriends-2ea44f)](https://app8056.acapp.acwing.com.cn/)
 
 🌐 **Language / 语言:** [简体中文](./README.md) | **English**
 
@@ -24,6 +25,7 @@ This is not a “call one LLM API and print the answer” demo. It connects brow
 | License | **MIT** |
 | Maintenance | **Active development**, primarily maintained by `@tfyf103` |
 | Languages | **Chinese + English** project and core learning paths |
+| Live demo | **[Open the real deployment](https://app8056.acapp.acwing.com.cn/)** |
 | First-run barrier | `AI_MODE=mock` runs the core Web/SSE flow with **zero API keys** |
 | Curriculum | Chapters **00–20**, fully available as English Labs |
 | Automated feedback | Django tests + Node tests + structural grader + GitHub Actions |
@@ -34,6 +36,42 @@ This is not a “call one LLM API and print the answer” demo. It connects brow
 | Contributing | [CONTRIBUTING.md](./CONTRIBUTING.md) |
 
 > **Project goal:** help learners go beyond “getting an AI demo to work” and understand why the system is designed this way, how to verify it, how to maintain it, and how to evolve it toward reliable software engineering.
+
+---
+
+# 🌐 Live Demo
+
+**Production deployment:** [https://app8056.acapp.acwing.com.cn/](https://app8056.acapp.acwing.com.cn/)
+
+> These are not mock or generated screenshots. On **2026-08-11**, a GitHub-hosted Ubuntu runner with Playwright Chromium visited the real deployment from an independent public network. Verification was **read-only**: no test account, Character, Friend, or chat data was created or modified.
+
+Verified public routes:
+
+```text
+/                         → HTTP 200
+/user/account/login       → HTTP 200
+/user/account/register    → HTTP 200
+/user/space/6             → HTTP 200
+```
+
+## Homepage — discover public AI characters
+
+[![AiFriends live homepage](./docs/assets/live-demo/homepage.png)](https://app8056.acapp.acwing.com.cn/)
+
+The deployed homepage loads real public Character cards and profiles, demonstrating the running discovery layer rather than a static README concept.
+
+## Login and registration
+
+<p align="center">
+  <img src="./docs/assets/live-demo/login.png" alt="AiFriends live login page" width="49%" />
+  <img src="./docs/assets/live-demo/register.png" alt="AiFriends live register page" width="49%" />
+</p>
+
+## Public user space
+
+[![AiFriends live public profile](./docs/assets/live-demo/public-profile.png)](https://app8056.acapp.acwing.com.cn/user/space/6)
+
+> Screenshots are real production snapshots captured on **2026-08-11**. Public Characters, profile data, and deployed assets can evolve over time. See [Live Demo Verification](./docs/LIVE_DEMO.md) for the capture method and scope.
 
 ---
 
@@ -579,7 +617,8 @@ Never commit real secrets, JWTs, private conversations, or local private knowled
 - [x] Explicitly welcome bilingual documentation contributions
 - [ ] Translate historical `COURSE_REBUILD` / auxiliary archaeology where useful
 - [ ] Keep bilingual docs synchronized automatically where possible
-- [ ] Add bilingual screenshots / GIFs / expected results
+- [x] First real bilingual Live Demo screenshots
+- [ ] Add per-chapter screenshots / GIFs / expected results
 - [ ] Improve terminology consistency and accessibility
 
 ## Learning Quality
