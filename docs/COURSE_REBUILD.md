@@ -1,115 +1,126 @@
-# AiFriends 从 0 复刻课程：按真实 Git 历史学习全栈 + LangChain
+# AiFriends 从 0 复刻课程：沿真实 Git 历史学习全栈 + LangChain
 
-> 这不是一份“把最终代码从头到尾念一遍”的教程。
+> 这套课程不要求你直接啃最终版源码。
 >
-> 这套课程直接利用 AiFriends 自己的真实 Git 提交历史，把项目重新拆回它最初成长的样子：先有 Vue 页面，再有 Django 数据库和登录，再有角色系统、好友系统、聊天、流式输出、LangGraph、长期记忆、RAG，最后接入语音。
+> 它利用 AiFriends 自己的真实 Git 提交历史，把项目重新拆回最自然的成长顺序：**Vue 页面 → Django → JWT → 角色 CRUD → 好友系统 → 普通聊天 → SSE → LangGraph → 长期记忆 → RAG → ASR → TTS**。
 >
-> 学习目标不是“看懂仓库”，而是：**你能在一个空目录里，按章节一步一步重新做出一个自己的 AiFriends。**
+> 最终目标不是“看懂这个仓库”，而是：**你能在一个空目录里，自己重新做出一个 AiFriends。**
 
 ---
 
-## 1. 为什么推荐“按版本复刻”，而不是直接读最终代码？
+# 0. 为什么要按真实版本学习？
 
-最终版 AiFriends 同时包含：
-
-- Vue 3
-- Vue Router
-- Pinia
-- Axios
-- JWT
-- Django
-- Django REST Framework
-- SQLite
-- SSE
-- LangChain
-- LangGraph
-- Function Calling
-- 长期记忆
-- Embedding
-- LanceDB
-- RAG
-- ASR
-- TTS
-- WebSocket
-- MediaSource
-
-如果你第一天就打开最终版 `chat.py`，会同时看到线程、异步、WebSocket、SSE、LLM、TTS 和数据库。
-
-这对零基础非常不友好。
-
-但项目真实的开发历史不是“一天写完这些东西”，而是逐层增加能力：
+最终版 AiFriends 同时出现：
 
 ```text
-静态 Vue 页面
-    ↓
-路由
-    ↓
-注册登录
-    ↓
-Django 数据库
-    ↓
-角色 CRUD
-    ↓
-好友系统
-    ↓
-普通聊天
-    ↓
-SSE 流式聊天
-    ↓
-系统提示词 / 多轮上下文
-    ↓
+Vue 3
+Vue Router
+Pinia
+Axios
+JWT
+Django
+DRF
+SQLite
+SSE
+LangChain
+LangGraph
 Tool Calling
-    ↓
-长期记忆
-    ↓
+Long-term Memory
+Embedding
+LanceDB
 RAG
-    ↓
-语音输入
-    ↓
-语音输出
+ASR
+TTS
+WebSocket
+MediaSource
 ```
 
-所以最自然的学习顺序，就是沿着真实提交历史重新走一遍。
+如果第一次学项目就打开最终版 `chat.py`，你会同时看到：
+
+```text
+Django
+线程
+asyncio
+Queue
+LangGraph
+LLM streaming
+WebSocket
+TTS
+SSE
+数据库
+```
+
+这不是合理的新手学习顺序。
+
+真实项目也不是一天写完的。AiFriends 的历史提交正好展示了一条很自然的工程演进路线：
+
+```text
+先有页面
+  ↓
+再有后端和数据库
+  ↓
+再有用户身份
+  ↓
+再有角色和好友业务
+  ↓
+再接 LLM
+  ↓
+发现等待太久 → SSE
+  ↓
+发现模型能力有限 → Tool Calling
+  ↓
+发现历史越来越长 → Long-term Memory
+  ↓
+发现模型不知道私有资料 → RAG
+  ↓
+最后增加 ASR / TTS
+```
+
+所以本课程把**真实 commit 当作章节检查点**。
 
 ---
 
-# 2. 两种学习模式
+# 1. Git 历史怎么用？
 
-## 模式 A：只观察历史版本
-
-适合想先理解作者“每一步改了什么”的同学。
-
-查看某次提交：
+## 1.1 查看某个版本改了什么
 
 ```bash
 git show <commit-sha>
 ```
 
-例如：
+例如查看“第一次实现后端流式输出”：
 
 ```bash
 git show b9ea1c3404b04413d638067de78c3ed4d7262fc3
 ```
 
-你会看到“实现文字交流的后端流式输出”到底改了哪些文件、增加了哪些代码。
+只看文件统计：
 
-比较两个阶段：
+```bash
+git show --stat b9ea1c3404b04413d638067de78c3ed4d7262fc3
+```
+
+---
+
+## 1.2 比较两个阶段
 
 ```bash
 git diff <旧版本> <新版本>
 ```
 
-例如比较普通聊天和第一次流式聊天：
+例如比较“普通聊天”和“第一次流式聊天”：
 
 ```bash
 git diff 72a9866e3370481a8fa6e070e55c7784977c058a b9ea1c3404b04413d638067de78c3ed4d7262fc3
 ```
 
+这个命令非常适合学习：
+
+> 为了把普通聊天升级成 SSE，到底新增了什么？
+
 ---
 
-## 模式 B：真的切到旧版本运行
-
-你可以临时进入某个历史版本：
+## 1.3 临时切到历史版本
 
 ```bash
 git switch --detach <commit-sha>
@@ -121,17 +132,23 @@ git switch --detach <commit-sha>
 git switch --detach 72a9866e3370481a8fa6e070e55c7784977c058a
 ```
 
-这时 Git 会提示你处于 `detached HEAD`，这是正常现象。
+这时出现 `detached HEAD` 是正常的。
 
-### 重要：不要直接在 detached HEAD 上长期开发
+如果只是观察代码，没有问题。
 
-如果你想从某个历史阶段开始自己写：
+---
+
+## 1.4 想从旧版本开始自己写
+
+不要长期在 detached HEAD 上开发。
+
+创建自己的学习分支：
 
 ```bash
-git switch -c learn/chapter-05 72a9866e3370481a8fa6e070e55c7784977c058a
+git switch -c learn/chapter-06 72a9866e3370481a8fa6e070e55c7784977c058a
 ```
 
-学习结束想回到教程分支：
+学习结束回教程分支：
 
 ```bash
 git switch agent/beginner-tutorial
@@ -145,72 +162,67 @@ git switch main
 
 ---
 
-# 3. 最推荐的复刻方式：另建一个学习仓库
+# 2. 推荐：另建一个自己的学习仓库
 
-真正想学会，最好不要只在原仓库切版本。
+真正想学会，不建议只在 AiFriends 中来回切版本。
 
-建议新建：
+新建：
 
 ```text
 AiFriends-Learning/
 ```
 
-然后每完成一章自己提交一次：
+每完成一个小功能，就 commit：
 
 ```bash
 git add .
-git commit -m "learn: chapter 01 vue shell"
+git commit -m "learn: chapter 01 vue router"
 ```
 
-你自己的 commit 不需要和原项目一模一样。
+原项目历史 commit 是“参考答案”。
 
-原项目 commit 是“参考答案”；你的 commit 是“学习轨迹”。
+你的 commit 是“学习轨迹”。
 
 ---
 
-# 4. 课程总览
+# 3. 课程地图
 
-| 章 | 主题 | 核心技术 | 学完必须能回答 |
+| Chapter | 主题 | 核心技术 | 最终能力 |
 |---|---|---|---|
-| 00 | 环境与项目骨架 | Git / Python / Node | 前端和后端为什么要分别启动？ |
-| 01 | Vue 页面与路由 | Vue / Router | URL 怎么决定显示哪个页面？ |
-| 02 | Django 与数据库 | Django / ORM / SQLite | Model 为什么能变成数据库表？ |
-| 03 | 注册登录 | REST / JWT / Pinia / Axios | 登录状态如何贯穿前后端？ |
-| 04 | AI 角色 CRUD | FormData / ImageField / CRUD | 一个角色怎样从表单进入数据库？ |
-| 05 | 首页与好友系统 | API / 关系模型 | 用户、角色、好友是什么关系？ |
-| 06 | 普通聊天 | LangChain / LLM | 一条消息怎样进入模型？ |
-| 07 | SSE 流式聊天 | StreamingHttpResponse / SSE | 为什么文字能一个片段一个片段出现？ |
-| 08 | 多轮上下文与 Tool | Message / LangGraph | Agent 为什么能自己决定调用工具？ |
-| 09 | 长期记忆 | Prompt / Summarization | 为什么不能无限塞历史聊天？ |
-| 10 | RAG | Embedding / LanceDB | 向量数据库到底解决什么问题？ |
-| 11 | ASR | PCM / WebSocket | 声音怎么变成文字？ |
-| 12 | TTS | asyncio / Queue / MediaSource | AI 回复为什么能边生成边说话？ |
-| 13 | 最终整合 | Full Stack | 能否独立追踪完整请求链路？ |
+| 00 | 环境与骨架 | Git / Python / Node | 能启动前后端开发环境 |
+| 01 | Vue 页面与路由 | Vue / Router | 理解组件和 SPA |
+| 02 | Django 与数据库 | Django / ORM / SQLite | 理解 URL → View → Model |
+| 03 | 注册登录 | REST / JWT / Pinia / Axios | 打通用户身份链路 |
+| 04 | Character CRUD | CRUD / FormData / ImageField | 做完整前后端业务 |
+| 05 | 首页与 Friend | ORM Relation / API | 理解业务关系模型 |
+| 06 | 普通 AI Chat | LangChain / Messages | 调通一次 LLM 对话 |
+| 07 | SSE Streaming | StreamingHttpResponse / SSE | 实现逐段回复 |
+| 08 | Agent 与 Tool | LangGraph / ToolNode | 让模型主动调用工具 |
+| 09 | Long-term Memory | Summarization / Prompt | 实现压缩式长期记忆 |
+| 10 | RAG | Chunk / Embedding / LanceDB | 构建可检索知识库 |
+| 11 | ASR | PCM / WebSocket | 声音转文字 |
+| 12 | TTS | asyncio / Queue / MediaSource | 边生成边说话 |
+| 13 | Full Pipeline | Full Stack AI | 独立追踪整个系统 |
 
 ---
 
-# Chapter 00：先搭一个“什么都不会”的开发环境
+# Chapter 00：环境与项目骨架
+
+## 真实检查点
+
+```text
+cd5cfb2b387f4fb727cd55f33db36ac3a2a847f7  首次提交：上传本地项目
+```
 
 ## 学习目标
 
-这一章完全不碰 LangChain。
-
-你只需要理解：
+先只理解：
 
 ```text
-Git = 管代码版本
-Python = 跑 Django 后端
-Node.js = 跑 Vue/Vite 前端工具链
-浏览器 = 运行最终前端 JavaScript
-```
-
-## 原项目起点
-
-首次提交：
-
-```text
-cd5cfb2b387f4fb727cd55f33db36ac3a2a847f7
-首次提交：上传本地项目
+Git      = 管理代码版本
+Python   = 运行 Django 后端
+Node.js  = 运行 Vue/Vite 工具链
+Browser  = 运行前端 JavaScript
 ```
 
 ## 动手任务
@@ -222,7 +234,7 @@ cd5cfb2b387f4fb727cd55f33db36ac3a2a847f7
 - Node.js
 - VS Code
 
-确认：
+确认版本：
 
 ```bash
 git --version
@@ -231,33 +243,37 @@ node --version
 npm --version
 ```
 
-创建：
+创建自己的学习目录：
 
 ```text
-aifriends-learning/
+AiFriends-Learning/
 ├── backend/
 └── frontend/
 ```
 
 ## 本章不要做
 
-不要安装 LangChain。
-不要创建向量数据库。
-不要研究 Agent。
+不要碰：
 
-先建立“前端和后端是两个程序”的概念。
+```text
+LangChain
+LangGraph
+RAG
+向量数据库
+语音
+```
 
-## 验收标准
+## 验收
 
 你能解释：
 
-> 为什么 `npm run dev` 和 `python manage.py runserver` 要在两个终端运行？
+> 为什么 Vue 和 Django 开发时通常需要两个终端？
 
 ---
 
-# Chapter 01：先让 Vue 页面跑起来
+# Chapter 01：Vue 页面、组件与路由
 
-## 真实历史检查点
+## 真实检查点
 
 ```text
 e03219b7464ea487f843f7abe74daa98eb7dfd7c  创建导航栏
@@ -265,9 +281,7 @@ b1703e8eff39f95dcd8cf3ed7b5d1def0e616758  实现路由
 b938159da24699eaec1249251b99ec06884f6b0a  实现登录注册页面
 ```
 
-## 要学的知识
-
-### Vue 最小心智模型
+## Vue 最小心智模型
 
 ```text
 main.js
@@ -276,50 +290,42 @@ createApp(App)
   ↓
 App.vue
   ↓
-组件树
+View
+  ↓
+Component
 ```
 
-### Router 心智模型
+## Router 心智模型
 
 ```text
-浏览器 URL
-  ↓
+URL
+ ↓
 Vue Router
-  ↓
-匹配 routes
-  ↓
-显示某个 View
+ ↓
+routes 匹配
+ ↓
+显示对应 View
 ```
 
 ## 动手任务
 
-自己做 3 个页面：
+先只做前端：
 
 ```text
 /
-/login
-/register
+/user/account/login
+/user/account/register
 ```
 
-先不要请求 Django。
-
-页面上只需要有：
-
-- 导航栏
-- 登录表单
-- 注册表单
+不用 Django。
+不用数据库。
 
 ## 必须理解
 
-```vue
+```text
 <script setup>
-</script>
-
 <template>
-</template>
-
 <style scoped>
-</style>
 ```
 
 以及：
@@ -333,97 +339,83 @@ defineEmits()
 
 ## 验收
 
-手动输入：
+输入不同 URL 时页面切换，但整个浏览器页面不会传统式重新加载。
 
-```text
-http://localhost:5173/login
-```
+你能解释：
 
-应该看到登录页面，并且页面切换不刷新整个浏览器。
+> View 和 Component 有什么区别？
 
 ---
 
-# Chapter 02：Django、Model 和 SQLite
+# Chapter 02：Django、ORM 与 SQLite
 
-## 真实历史检查点
+## 真实检查点
 
 ```text
 3ab2bd28ca6551e188084e7502de82a06df96b0a  实现完数据库
 248a7d8ea7c24e32d6f6a5d3631e277e7a09bb87  实现后端
 ```
 
-## 先理解 Django 的 4 个角色
+## Django 四层模型
 
 ```text
 URL
  ↓
 View
  ↓
-Model
+Model / ORM
  ↓
 Database
 ```
 
 ### URL
 
-回答：
+决定：
 
-> 用户访问哪个地址？
+> 哪个地址由哪个 View 处理？
 
 ### View
 
-回答：
+决定：
 
-> 收到请求以后做什么？
+> 收到请求后执行什么业务逻辑？
 
 ### Model
 
-回答：
+决定：
 
-> 数据长什么样？
+> 数据有哪些字段和关系？
 
-### Database
+### SQLite
 
-回答：
-
-> 数据最终保存在哪里？
+负责真正保存数据。
 
 ## 动手任务
 
-自己创建 Django 项目和 app：
+创建 Django：
 
 ```bash
 django-admin startproject backend
 python manage.py startapp web
 ```
 
-创建最简单的用户扩展资料 Model。
-
-然后执行：
+学习：
 
 ```bash
 python manage.py makemigrations
 python manage.py migrate
+python manage.py createsuperuser
+python manage.py runserver
 ```
 
-## 必须学会看 migration
-
-不要把：
-
-```bash
-python manage.py migrate
-```
-
-理解成“神奇数据库命令”。
-
-要知道流程：
+## Migration 心智模型
 
 ```text
 models.py
    ↓ makemigrations
 migration 文件
    ↓ migrate
-SQLite 表结构
+数据库表
 ```
 
 ## 验收
@@ -434,93 +426,87 @@ SQLite 表结构
 http://127.0.0.1:8000/admin/
 ```
 
-并理解为什么需要：
-
-```bash
-python manage.py createsuperuser
-```
+并且知道 Admin 不是数据库本身，只是 Django 提供的数据库管理界面。
 
 ---
 
-# Chapter 03：把 Vue 登录页真正接到 Django
+# Chapter 03：注册、登录、JWT 与全局用户状态
 
-## 真实历史检查点
+## 真实检查点
 
 ```text
 a27cbf8f90cf256ab075173f19d468319b302f67  前端对接注册、登录、退出api
-b0aa1d5c169d836023fd3788152d5cb1eb4bf55b  刷新页面时动态拉取用户信息
+b0aa1d5c169d836023fd3788152d5cb1eb4bf55b  第一次打开页面或刷新页面时，从云端动态拉取用户信息
 e2915586d6352180b93500ce8e15dbfa8afa8704  创建更新用户资料后端api
 8d06c1ec8c04a70a8a47a1644fd8cd28a63a48e6  实现编辑资料页面前端
 ```
 
-## 本章最重要的一张图
+## 登录完整链路
 
 ```text
-登录表单
-  ↓ axios POST
-Django LoginView
-  ↓ 校验用户名密码
+Login Form
+  ↓ POST
+Django Login API
+  ↓
 access token + refresh token
   ↓
-Pinia 保存 access token
+Pinia 保存登录状态
   ↓
-以后请求：Authorization: Bearer xxx
+Axios 自动加 Authorization Header
 ```
 
-## 学 JWT 时不要死背术语
+## 为什么有两个 Token？
 
-先回答：
+### access token
 
-### 为什么不能每个请求都重新输入密码？
+短寿命，频繁用于 API 请求。
 
-所以需要 token。
+### refresh token
 
-### 为什么 access token 不设置成永不过期？
-
-因为泄露风险太高。
-
-### access token 过期了怎么办？
-
-用寿命更长的 refresh token 换一个新的 access token。
+寿命更长，用于 access token 过期后换新 token。
 
 ## 动手任务
 
-完成：
+后端实现：
 
 ```text
-POST /api/user/account/register/
-POST /api/user/account/login/
-POST /api/user/account/logout/
-POST /api/user/account/refresh_token/
-GET  /api/user/account/get_user_info/
+register
+login
+logout
+refresh_token
+get_user_info
 ```
 
-前端完成：
+前端实现：
 
 ```text
 Pinia user store
 Axios request interceptor
 Axios response interceptor
-Router login guard
+Router guard
 ```
 
-## 调试要求
+## 必须亲自调试
 
-打开 DevTools -> Network。
+打开浏览器 DevTools → Network。
 
-你必须亲眼看到：
+看到：
 
 ```text
 Authorization: Bearer eyJ...
 ```
 
-而不是只满足于“页面登录成功了”。
+再模拟 access token 过期，理解刷新逻辑。
+
+## 验收
+
+刷新页面后，用户仍然能恢复登录信息，而不是页面刷新一次就“失忆”。
 
 ---
 
-# Chapter 04：角色 CRUD —— 第一次完整前后端业务
+# Chapter 04：Character CRUD
 
-## 真实历史检查点
+## 真实检查点
 
 ```text
 2081304f049a58a404b39bfe09f9c373b80d24df  实现角色增删改查后端api
@@ -529,18 +515,18 @@ Authorization: Bearer eyJ...
 95cf0456ef46696bca36c602928fbbb6dbe658d5  实现更新虚拟角色前端页面
 ```
 
-## CRUD 是什么？
+## CRUD
 
 ```text
-Create  创建
-Read    查询
-Update  修改
-Delete  删除
+Create
+Read
+Update
+Delete
 ```
 
-几乎所有 Web 系统都离不开 CRUD。
+这是 Web 开发最基本的业务闭环。
 
-## 本章重点 Model
+## Character 数据
 
 ```text
 Character
@@ -554,30 +540,28 @@ Character
 
 ## 新知识：文件上传
 
-普通 JSON 可以传：
+普通 JSON 适合：
 
 ```json
 {"name":"Alice"}
 ```
 
-图片不能简单当普通 JSON 字符串处理。
-
-所以你需要理解：
+图片需要理解：
 
 ```text
 FormData
 multipart/form-data
-Django ImageField
+ImageField
 MEDIA_ROOT
 MEDIA_URL
 ```
 
 ## 动手任务
 
-做出：
+完成：
 
 - 创建角色
-- 查看角色
+- 查询角色
 - 修改角色
 - 删除角色
 - 上传头像
@@ -585,44 +569,39 @@ MEDIA_URL
 
 ## 验收
 
-不要只看数据库。
-
-必须做到：
+完整追踪：
 
 ```text
-Vue 表单
-  ↓
-HTTP
-  ↓
+Vue Form
+ ↓
+HTTP Request
+ ↓
 Django View
-  ↓
+ ↓
 Character Model
-  ↓
-SQLite + media 文件
-  ↓
-再次 GET
-  ↓
-Vue 正确显示
+ ↓
+SQLite + media/
+ ↓
+GET API
+ ↓
+Vue Display
 ```
 
 ---
 
-# Chapter 05：首页、搜索与好友系统
+# Chapter 05：首页、搜索、好友关系与聊天框
 
-## 真实历史检查点
+## 真实检查点
 
 ```text
 f96da725bbfd77aa9766f70786a6061f35f8dcb9  实现首页前后端
 c9ea5e0f3b1a276c3fe6d0b10fa648db3f5510ca  实现搜索功能
-102b31a0f60be51bbc01da5d15cfdb97014111     （不要使用，本行仅作为格式说明）
 102b31a0f60be51bbc6f22f690ec74d3ee0a5be3  实现好友页面后端
 fb1394362c3ba60bee544bf8737bca5051ea9ae8  实现聊天框
 1c9d9e000c77c4e1779e0681ae5fca7e8123dc67  实现好友列表前端
 ```
 
-> 注意：学习时以完整 40 位 SHA 为准；上面标注“不要使用”的示例行故意展示了为什么复制 SHA 时不能手打。
-
-## 本章要理解关系数据库
+## 关系模型
 
 ```text
 UserProfile
@@ -636,15 +615,15 @@ Friend
 Character
 ```
 
-Friend 不是“另一个用户”。
+`Friend` 不是另一个真人账号。
 
-它表达的是：
+它表达：
 
-> 某个用户和某个 AI Character 建立了一条好友/聊天关系。
+> 当前用户与某个 AI Character 建立了一条好友/聊天关系。
 
 ## 动手任务
 
-完成：
+实现：
 
 - 首页角色列表
 - 搜索角色
@@ -653,21 +632,25 @@ Friend 不是“另一个用户”。
 - 删除好友
 - 打开聊天弹窗
 
-## 验收
+## 必须理解 Django ORM
 
-你能解释下面查询的含义：
+例如：
 
 ```python
 Friend.objects.filter(me__user=request.user)
 ```
 
-如果看不懂 Django ORM 的双下划线关联查询，先不要进入聊天章节。
+需要能解释双下划线 `__` 如何跨 ForeignKey 查询。
+
+## 验收
+
+不同用户登录后，只能看到自己的 Friend 关系。
 
 ---
 
-# Chapter 06：先做“不会流式输出”的普通 AI 聊天
+# Chapter 06：先做最普通的 AI Chat
 
-## 真实历史检查点
+## 真实检查点
 
 ```text
 c82553f13badf75ba372f1bc343b0d14b0bc5081  创建消息数据库
@@ -676,47 +659,48 @@ c82553f13badf75ba372f1bc343b0d14b0bc5081  创建消息数据库
 
 ## 本章原则
 
-这一章故意不要做 SSE。
-不要做 TTS。
-不要做 RAG。
-
-先做最普通的：
+暂时不要：
 
 ```text
-用户输入
+SSE
+LangGraph Tool
+Memory
+RAG
+TTS
+```
+
+先实现：
+
+```text
+用户消息
   ↓ POST
 Django
   ↓
 LLM
   ↓
-完整答案
+完整文本
   ↓ JSON
-浏览器
+Vue
 ```
 
-## LangChain 先只学 3 个东西
+## LangChain 只学最少概念
 
-```python
+```text
 HumanMessage
 SystemMessage
+AIMessage
 ChatOpenAI
+invoke()
 ```
-
-先理解：
-
-```python
-llm.invoke(messages)
-```
-
-再往后学 Agent。
 
 ## Message Model
 
-必须理解为什么聊天记录需要：
+理解为什么要保存：
 
 ```text
 friend
 user_message
+input
 output
 input_tokens
 output_tokens
@@ -724,7 +708,7 @@ total_tokens
 create_time
 ```
 
-## 验收
+## 动手任务
 
 输入：
 
@@ -732,15 +716,21 @@ create_time
 你好
 ```
 
-浏览器等待模型生成完，然后一次性看到完整回复。
+后端调用模型，等模型完整生成后一次性返回 JSON。
 
-只有这一章跑通，才进入 SSE。
+## 验收
+
+聊天可以工作，但你能明显感觉到：
+
+> 模型没生成完之前，页面一直没有回复。
+
+这个体验问题就是下一章引入 SSE 的原因。
 
 ---
 
-# Chapter 07：把普通聊天升级为 ChatGPT 式 SSE 流式输出
+# Chapter 07：SSE 流式聊天
 
-## 真实历史检查点
+## 真实检查点
 
 ```text
 b9ea1c3404b04413d638067de78c3ed4d7262fc3  实现文字交流的后端流式输出
@@ -750,26 +740,31 @@ ea419695f4d8e9e2cec97c4f92a03dc7d679e4df  实现聊天记录的流式加载（�
 7ba85a3b629a9fdb41307fb6427960ffe674c2b9  流式加载每次返回10条消息
 ```
 
-## 为什么普通 axios 不够？
-
-普通模式：
+## 普通 HTTP
 
 ```text
-请求 ───────────── 等 ─────────────> 完整响应
+Request
+  ↓
+等待完整结果
+  ↓
+Response
 ```
 
-流式模式：
+## SSE
 
 ```text
-请求
-  <─ token 1
-  <─ token 2
-  <─ token 3
-  <─ token 4
-  <─ [DONE]
+Request
+  ↓
+data chunk 1
+  ↓
+data chunk 2
+  ↓
+data chunk 3
+  ↓
+[DONE]
 ```
 
-## SSE 最小格式
+## SSE 最小协议
 
 ```text
 data: {"content":"你"}
@@ -782,17 +777,19 @@ data: [DONE]
 
 ```
 
-## 必须理解
-
-后端：
+## 后端重点
 
 ```python
 StreamingHttpResponse
+```
 
+以及生成器：
+
+```python
 yield "data: ...\n\n"
 ```
 
-前端：
+## 前端重点
 
 ```text
 fetchEventSource
@@ -801,7 +798,7 @@ onmessage
 onerror
 ```
 
-当前教学分支中的重点源码：
+教学化源码：
 
 ```text
 frontend/src/js/http/streamApi.js
@@ -809,26 +806,40 @@ frontend/src/components/character/chat_field/input_field/InputField.vue
 backend/web/views/friend/message/chat/chat.py
 ```
 
-这些文件已经加入逐段中文教学注释。
+## 动手任务
+
+先只流式文字，不做语音。
+
+让 AI 气泡：
+
+```text
+空字符串
+ ↓
+追加 chunk 1
+ ↓
+追加 chunk 2
+ ↓
+追加 chunk 3
+```
 
 ## 验收
 
-DevTools -> Network 中保持一个长连接，页面文字逐渐增长，而不是最后突然出现完整答案。
+DevTools → Network 中能看到长连接，页面逐段增长。
 
 ---
 
-# Chapter 08：系统提示词、多轮对话、Function Calling 与 LangGraph
+# Chapter 08：System Prompt、多轮上下文与 LangGraph Tool Calling
 
-## 真实历史检查点
+## 真实检查点
 
 ```text
 3bcc4a8c8e169475af6c78b2ac19752b62625bdf  添加系统提示词和多轮记忆对话
 72c4c3ae5efb950e7b4f08cded3a37238e961c78  实现function call
 ```
 
-## 从“聊天模型”升级成“Agent”
+## 从 LLM 变成 Agent
 
-普通模型：
+普通：
 
 ```text
 messages -> LLM -> answer
@@ -839,60 +850,52 @@ Agent：
 ```text
 messages
    ↓
-LLM
+agent / LLM
    ↓
-要不要调用工具？
-   ├─ 不需要 -> answer
-   └─ 需要
+需要 Tool？
+   ├─ 否 → END
+   └─ 是
        ↓
-      Tool
+     ToolNode
        ↓
     Tool result
        ↓
-      LLM
+     agent
        ↓
-     answer
+    final answer
 ```
 
-## 本章 LangGraph 关键词
+## LangGraph 必学关键词
 
 ```text
 StateGraph
 AgentState
 add_messages
-add_node
-add_edge
-add_conditional_edges
-ToolNode
+Node
+Edge
+Conditional Edge
 START
 END
+ToolNode
 ```
 
-## 当前真实代码
+## Tool 三层关系
 
-```text
-backend/web/views/friend/message/chat/graph.py
-```
+### 1. `@tool`
 
-重点理解：
+把普通 Python 函数描述成 Tool。
 
-```python
-llm.bind_tools(tools)
-```
+### 2. `llm.bind_tools(tools)`
 
-不是“执行工具”。
+把 Tool schema 告诉模型。
 
-它只是把工具描述告诉模型。
+它不负责执行函数。
 
-真正执行：
+### 3. `ToolNode(tools)`
 
-```python
-ToolNode(tools)
-```
+真正根据 `tool_calls` 执行 Python Tool。
 
-## 第一个练习 Tool
-
-自己写：
+## 第一个 Tool 练习
 
 ```python
 @tool
@@ -900,7 +903,11 @@ def get_time() -> str:
     ...
 ```
 
-不要一上来写复杂搜索 Agent。
+## 当前教学化源码
+
+```text
+backend/web/views/friend/message/chat/graph.py
+```
 
 ## 验收
 
@@ -910,40 +917,43 @@ def get_time() -> str:
 现在几点？
 ```
 
-确认模型真正产生 tool call，而不是凭语言模型记忆瞎猜时间。
+确认模型产生 Tool Call，而不是直接猜时间。
 
 ---
 
-# Chapter 09：长期记忆
+# Chapter 09：Long-term Memory
 
-## 真实历史检查点
+## 真实检查点
 
 ```text
 15a8a8427db9801f1fcc01da5d15cfdb97014111  添加长期记忆
 ```
 
-## 为什么需要长期记忆？
-
-假设 1000 轮聊天全部放进 prompt：
+## 为什么不能无限塞聊天历史？
 
 ```text
-成本越来越高
-上下文越来越长
-响应越来越慢
-可能超过模型 context window
+聊天越来越多
+  ↓
+Prompt 越来越长
+  ↓
+Token 成本增加
+  ↓
+速度下降
+  ↓
+最终可能超过 Context Window
 ```
 
-所以当前项目采用：
+## 当前 AiFriends 方案
 
 ```text
-最近 10 条原文
-       +
-Friend.memory 摘要
-       ↓
-本轮模型上下文
+最近 10 条 Message 原文
+        +
+Friend.memory 压缩摘要
+        ↓
+当前聊天上下文
 ```
 
-## 记忆更新
+## Memory 更新
 
 ```text
 旧 Friend.memory
@@ -952,12 +962,14 @@ Friend.memory 摘要
        ↓
 MemoryGraph
        ↓
+LLM 总结
+       ↓
 新的 Friend.memory
 ```
 
-当前代码每 5 条 Message 触发一次更新。
+当前每 5 条 Message 触发一次 `update_memory(friend)`。
 
-重点文件：
+## 教学化源码
 
 ```text
 backend/web/views/friend/message/memory/graph.py
@@ -967,81 +979,92 @@ backend/web/views/friend/message/chat/chat.py
 
 ## 动手实验
 
-连续告诉 AI：
+告诉 AI：
 
 ```text
 我叫小明。
-我最喜欢蓝色。
+我喜欢蓝色。
 我养了一只叫豆豆的猫。
 ```
 
-继续聊若干轮后检查 Django Admin 中的 `Friend.memory`。
-
-然后开启一个后续对话：
+经过多轮聊天后，在 Django Admin 中检查：
 
 ```text
-我最喜欢什么颜色？
+Friend.memory
 ```
 
-## 必须理解
+再问：
 
-长期记忆不是数据库“自动记住”。
+```text
+我的猫叫什么？
+```
 
-它本质上仍是一次 LLM 信息压缩任务。
+## 验收
+
+你能解释：
+
+> “数据库存聊天记录”和“LLM 具有长期记忆”为什么不是同一件事？
 
 ---
 
-# Chapter 10：RAG —— 给 Agent 一本它可以查的资料
+# Chapter 10：RAG 与 LanceDB
 
-## 真实历史检查点
+## 真实检查点
 
 ```text
 57f4c78c35313360065169c8ff008c77bba914a4  添加知识库
 4c099063991521cdb55e58171919d2b623110d77  添加创建向量数据库的代码
 ```
 
-## RAG 分两阶段
+## RAG 要分两阶段理解
 
-### 建库
+### A. 建库
 
 ```text
 data.txt
-  ↓ TextLoader
+  ↓
+TextLoader
+  ↓
 Document
-  ↓ RecursiveCharacterTextSplitter
+  ↓
+RecursiveCharacterTextSplitter
+  ↓
 Chunks
-  ↓ Embedding
+  ↓
+CustomEmbeddings
+  ↓
 Vectors
-  ↓ LanceDB
+  ↓
+LanceDB
 ```
 
-### 检索
+### B. 查询
 
 ```text
-用户问题
-  ↓ Embedding
+User Question
+  ↓
+Embedding
+  ↓
 Query Vector
-  ↓ LanceDB similarity_search
-Top-K 文本
-  ↓ Tool result
+  ↓
+LanceDB similarity_search(k=3)
+  ↓
+Top 3 Documents
+  ↓
+Tool Result
+  ↓
 LLM
 ```
 
-重点文件：
+## 为什么要 Chunk？
 
-```text
-backend/web/documents/utils/custom_embeddings.py
-backend/web/documents/utils/insert_documents.py
-backend/web/views/friend/message/chat/graph.py
-```
+用户问的是文档中的局部问题。
 
-## 先学 Chunk，不要先背“向量数据库”定义
+如果整份文档只有一个超大向量：
 
-思考：
-
-> 一本 300 页 PDF，用户只问其中一句，为什么不能把整本 PDF 每次都交给 LLM？
-
-因此需要先切小块。
+- 检索粒度很粗；
+- 很难准确命中某一小段；
+- 返回 LLM 的上下文也会过长。
 
 当前参数：
 
@@ -1050,115 +1073,108 @@ chunk_size=500
 chunk_overlap=50
 ```
 
-## Embedding 实验
+## 为什么要 Embedding？
 
-你不需要手算 1024 个浮点数。
-
-只需要建立概念：
+Embedding 把：
 
 ```text
-"Python 是编程语言"
-          ↓
-[0.123, -0.42, ...]
+"如何使用某项功能？"
 ```
 
-相似语义 -> 向量空间距离通常更近。
+转换成：
+
+```text
+[0.12, -0.31, ..., 0.09]
+```
+
+向量数据库比较的是向量相似度，而不是简单字符串完全匹配。
+
+## 教学化源码
+
+```text
+backend/web/documents/utils/custom_embeddings.py
+backend/web/documents/utils/insert_documents.py
+backend/web/views/friend/message/chat/graph.py
+```
+
+## 动手任务
+
+1. 在 `data.txt` 写入只有你知道的一段资料；
+2. 重新建 LanceDB；
+3. 在聊天中提问；
+4. 确认 Agent 调用了 `search_knowledge_base()`；
+5. 确认最终答案基于检索文本。
 
 ## 验收
 
-向 `data.txt` 写入一段只有知识库知道的资料。
-
-重新建库。
-
-然后在聊天中提问，确认：
+你能说清：
 
 ```text
-agent
-  ↓ tool_call
-search_knowledge_base
-  ↓
-LanceDB Top 3
-  ↓
-agent
-  ↓
-最终回答
+Loader
+Splitter
+Embedding
+VectorStore
+Retrieval
+LLM
 ```
+
+每一层分别负责什么。
 
 ---
 
-# Chapter 11：ASR —— 让浏览器说话而不是打字
+# Chapter 11：ASR —— 声音转文字
 
-## 真实历史检查点
+## 真实检查点
 
 ```text
 02cbc4f7567ebbed95eba483724611c35b6f6b1f  实现前端语音输入
 5c0f6473fefad53542280257399d830663c8683a  实现语音识别后端
 ```
 
-## ASR 是什么？
+## ASR
 
 ```text
 Automatic Speech Recognition
-自动语音识别
+声音 → 文字
 ```
-
-功能方向：
-
-```text
-声音 -> 文字
-```
-
-不是：
-
-```text
-文字 -> 声音
-```
-
-后者叫 TTS。
 
 ## 当前链路
 
 ```text
-Microphone
+Browser Microphone
   ↓
 PCM
-  ↓ HTTP 上传
+  ↓ HTTP
 ASRView
-  ↓ WebSocket
+  ↓
+WebSocket
+  ↓
 ASR Service
   ↓
-transcription
+transcription text
   ↓
-文字
-  ↓
-handleSend(text)
+InputField.handleSend(text)
 ```
 
-关键设计：
+## 最重要的工程思想
 
-语音识别完成后，不再创建第二套聊天逻辑。
-
-它最终仍调用同一个：
+键盘和语音不要实现两套聊天后端。
 
 ```text
-InputField.handleSend()
+Keyboard ─┐
+          ├─> handleSend() -> 同一个 Chat API
+ASR Text ─┘
 ```
 
-所以：
+## 验收
 
-```text
-键盘输入 ─┐
-          ├─> handleSend -> 同一个聊天接口
-语音输入 ─┘
-```
-
-这叫“复用业务链路”。
+说一句话后，先能看到正确文字，再由同一个聊天链发送给 AI。
 
 ---
 
-# Chapter 12：TTS —— AI 一边生成文字，一边开始说话
+# Chapter 12：TTS —— AI 边生成边说话
 
-## 真实历史检查点
+## 真实检查点
 
 ```text
 845dcb620d0ce2f77f50b8c8dc94b91de338a58b  实现语音合成后端
@@ -1166,59 +1182,57 @@ InputField.handleSend()
 88343a97f0d74570e10bfe3952c0192669876a61  实现音色的自由选择
 ```
 
-## TTS 是什么？
+## TTS
 
 ```text
 Text To Speech
-文字 -> 声音
+文字 → 声音
 ```
 
-## 最简单实现
-
-可以先做：
+## 最简单但延迟高的设计
 
 ```text
-LLM 完整回答
+LLM 生成完整文本
   ↓
-完整文本发送 TTS
+TTS 生成完整 MP3
   ↓
-等待完整 MP3
-  ↓
-播放
+前端播放
 ```
 
-但是用户会等很久。
+用户需要等两次完整过程。
 
-AiFriends 当前更进一步：
+## 当前 AiFriends 设计
 
 ```text
-LLM token/chunk 1 ──> 前端显示
-        └──────────> TTS
-                      ↓
-                   MP3 chunk ──> 前端播放
-
-LLM token/chunk 2 ──> 前端显示
-        └──────────> TTS
-                      ↓
-                   MP3 chunk ──> 前端播放
+LLM chunk
+  ├─> SSE content -> Browser text
+  └─> TTS WebSocket
+          ↓
+       MP3 bytes
+          ↓ Base64
+       Queue
+          ↓
+       SSE audio
+          ↓
+       Browser MediaSource
 ```
 
-## 为什么后端出现 asyncio + threading + Queue？
+## 为什么出现 Thread + asyncio + Queue？
 
-因为这里同时存在：
+当前代码同时连接：
 
 ```text
 同步 Django StreamingHttpResponse
-异步 LangGraph astream
-异步 WebSocket TTS
+异步 LangGraph astream()
+异步 TTS WebSocket
 ```
 
-当前实现用：
+所以使用：
 
 ```text
-后台 Thread
+Background Thread
   ↓
-asyncio.run(...)
+asyncio.run()
   ↓
 LLM + TTS async tasks
   ↓
@@ -1229,118 +1243,110 @@ Queue
 SSE
 ```
 
-## 为什么浏览器用 MediaSource？
+## 前端为什么要 MediaSource？
 
-因为收到的不是一个完整 MP3 URL。
-
-而是：
+因为收到的不是一个完整 mp3 文件 URL，而是：
 
 ```text
-chunk 1
-chunk 2
-chunk 3
+chunk1
+chunk2
+chunk3
 ...
 ```
 
-所以前端需要：
+前端处理：
 
 ```text
 Base64
-  ↓ atob
+ ↓ atob
 Uint8Array
-  ↓
+ ↓
 audioQueue
-  ↓
-SourceBuffer.appendBuffer
-  ↓
-Audio 播放
+ ↓
+SourceBuffer.appendBuffer()
+ ↓
+Audio
 ```
 
-重点文件：
+## 教学化源码
 
 ```text
 backend/web/views/friend/message/chat/chat.py
 frontend/src/components/character/chat_field/input_field/InputField.vue
 ```
 
+## 验收
+
+AI 还没有生成完全部文字时，浏览器已经开始播放前面的语音。
+
 ---
 
-# Chapter 13：最终整合 —— 从一条消息追踪整个系统
+# Chapter 13：毕业练习 —— 追踪完整请求链
 
-完成前 12 章以后，不要急着增加新功能。
-
-先完成下面这个终极练习。
-
-## 任务
+完成前面章节以后，用下面问题测试自己。
 
 用户输入：
 
 ```text
-请告诉我知识库中关于 XXX 的信息
+请根据知识库回答 XXX
 ```
 
-你必须能在纸上或 Markdown 中完整写出：
+你必须能独立回答：
 
-```text
-1. 哪个 Vue input 接收到文字？
-2. 哪个 ref 保存它？
-3. handleSend 做了什么？
-4. streamApi 发向哪个 URL？
-5. JWT 在哪加进 Header？
-6. Django 哪个 urlpatterns 匹配？
-7. 哪个 View 接收请求？
-8. 怎样校验 friend 属于当前 user？
+1. 哪个 Vue 组件接收输入？
+2. `v-model` 绑定哪个变量？
+3. `handleSend()` 做了什么？
+4. `streamApi()` 请求哪个 API？
+5. JWT 在哪里进入 Header？
+6. Django 哪个 URL rule 匹配？
+7. 哪个 APIView 接收请求？
+8. 如何确认 `friend_id` 属于当前用户？
 9. SystemPrompt 在哪里加入？
 10. Character.profile 在哪里加入？
 11. Friend.memory 在哪里加入？
-12. 最近聊天记录在哪里加入？
-13. CharGraph 怎么创建？
-14. LLM 怎么知道有哪些 tools？
-15. 为什么进入 ToolNode？
-16. search_knowledge_base 怎样连接 LanceDB？
-17. query 怎样变成 embedding？
-18. similarity_search(k=3) 返回什么？
-19. Tool result 怎样回到 agent？
-20. LLM 文本怎样变成 BaseMessageChunk？
-21. 文本怎样进入 Queue？
-22. 文本怎样进入 TTS WebSocket？
-23. MP3 bytes 怎样变成 Base64？
-24. event_stream 怎样 yield SSE？
-25. 前端 onmessage 怎样区分 content/audio？
-26. 文本怎样追加到 AI 气泡？
-27. Base64 怎样变回 Uint8Array？
-28. SourceBuffer 怎样连续播放？
-29. 最终 Message 怎样写进 SQLite？
-30. 什么时候触发 update_memory？
-```
+12. 最近 10 条 Message 在哪里加入？
+13. `CharGraph.create_app()` 创建了什么？
+14. `bind_tools()` 做了什么？
+15. `ToolNode` 做了什么？
+16. 为什么进入 `search_knowledge_base()`？
+17. 查询文本在哪里 Embedding？
+18. LanceDB 的 `similarity_search(k=3)` 返回什么？
+19. Tool result 怎样重新回到 Agent？
+20. LLM 的文本 chunk 怎样进入 Queue？
+21. 同一文本 chunk 怎样进入 TTS？
+22. TTS 的 bytes 为什么要 Base64？
+23. `event_stream()` 怎样 yield SSE？
+24. 前端怎样区分 `content` 和 `audio`？
+25. AI 气泡怎样不断追加文字？
+26. Base64 怎样恢复为 Uint8Array？
+27. SourceBuffer 怎样连续播放？
+28. 完整回复怎样写入 Message？
+29. token usage 保存在哪里？
+30. 什么条件触发 `update_memory(friend)`？
 
-如果这 30 个问题你能独立回答，你已经不再是在“照着教程复制代码”。
-
-你已经真正理解了 AiFriends。
+如果这些问题能不看答案全部讲清楚，你已经从“复制项目”进入了“理解系统”。
 
 ---
 
-# 5. 每章统一的学习模板
-
-以后你自己学任何项目，也推荐按下面方式。
+# 4. 每章统一使用这套学习方法
 
 ## Step 1：先说需求
 
-例如：
+不要说：
 
-> 我希望模型回复能边生成边显示。
+> 我要学习 SSE。
 
-而不是：
+先说：
 
-> 今天我要学 SSE API。
+> 模型要等 10 秒才显示答案，我希望它边生成边显示。
 
-技术应该从需求长出来。
+技术应该从需求出现。
 
 ---
 
-## Step 2：写最简单版本
+## Step 2：先做最简单版本
 
-例如先普通聊天：
+例如聊天：
 
 ```text
 POST -> LLM -> JSON
@@ -1348,10 +1354,10 @@ POST -> LLM -> JSON
 
 ---
 
-## Step 3：发现问题
+## Step 3：观察问题
 
 ```text
-模型 10 秒后才返回，体验不好。
+等待时间太长
 ```
 
 ---
@@ -1366,180 +1372,175 @@ SSE
 
 ## Step 5：观察新复杂度
 
+例如：
+
 ```text
-SSE 不能直接走普通 axios 拦截器怎么办？
-JWT 过期怎么重连？
+SSE 连接里的 JWT 过期怎么办？
 ```
 
 ---
 
-## Step 6：继续抽象
+## Step 6：抽象公共能力
 
-于是产生：
+于是出现：
 
 ```text
 streamApi.js
 ```
 
-这就是工程学习，而不是 API 背诵。
+这就是工程学习。
 
 ---
 
-# 6. 如何阅读一个真实 commit
+# 5. 如何阅读真实 Commit
 
-不要只看 commit 标题。
-
-执行：
+先：
 
 ```bash
 git show --stat <sha>
 ```
 
-先看改了哪些文件。
+回答：
 
-然后：
+> 改了哪些文件？
+
+再：
 
 ```bash
 git show <sha>
 ```
 
-阅读 diff 时：
+阅读 diff 时持续问：
 
-```text
-+ 绿色：新增
-- 红色：删除
-```
-
-问自己 4 个问题：
-
-1. 这个 commit 想解决什么用户问题？
-2. 为什么要修改这些文件？
-3. 数据从哪里进，最后到哪里？
-4. 如果删掉这一段，什么功能会坏？
+1. 这个 commit 解决什么用户问题？
+2. 为什么需要修改这些文件？
+3. 数据从哪里进入？
+4. 最终结果到哪里？
+5. 如果删掉新增代码，什么功能会坏？
 
 ---
 
-# 7. 推荐自己的 commit 记录方式
+# 6. 推荐自己的 Commit 粒度
 
-不要一章写完所有内容后只 commit 一次。
+不要一整章只 commit 一次。
 
-例如 SSE 章节：
+例如 SSE 章节可以写成：
 
 ```bash
-git commit -m "learn: return a basic Django response"
-git commit -m "learn: convert response to StreamingHttpResponse"
-git commit -m "learn: emit SSE data chunks"
-git commit -m "learn: receive SSE in Vue"
-git commit -m "learn: append streamed AI message"
+git commit -m "learn: create basic chat api"
+git commit -m "learn: convert chat response to streaming"
+git commit -m "learn: emit sse chunks"
+git commit -m "learn: receive sse in vue"
+git commit -m "learn: append streamed ai text"
 ```
 
-半年以后重新看，你会非常清楚自己是怎样学会的。
+这样以后能清楚看到思考过程。
 
 ---
 
-# 8. 不建议的学习方法
+# 7. 最常见的错误学习方式
 
-## 误区 1：复制最终代码，运行成功就算学会
+## 错误 1：复制最终代码，运行成功就算学会
 
-运行成功只说明：
+运行成功只说明代码能工作。
 
-> 代码能运行。
+真正学会的标准是：
 
-不代表：
-
-> 你能自己重新写出来。
+> 删除代码以后，你能根据需求重新写出来。
 
 ---
 
-## 误区 2：先学完整 LangChain 文档再做项目
+## 错误 2：先把 LangChain 所有 API 学完
 
 LangChain 很大。
 
-AiFriends 实际只用了其中一部分核心概念。
-
-先围绕当前需求学：
+AiFriends 当前真正核心的部分是：
 
 ```text
 Messages
 ChatOpenAI
 Tool
-Embedding
+Embeddings
 VectorStore
 ```
 
-再扩展。
+先围绕项目需求学这些。
 
 ---
 
-## 误区 3：LangGraph 一上来就学复杂多 Agent
+## 错误 3：一上来学多 Agent
 
-先把本项目的：
+先写懂：
 
 ```text
 START -> agent -> END
 ```
 
-看懂。
-
-然后再看：
+再写懂：
 
 ```text
 agent -> tools -> agent
 ```
 
-这两个都能自己写以后，再学多 Agent。
+然后再学习复杂图。
 
 ---
 
-## 误区 4：RAG = 向量数据库
+## 错误 4：认为 RAG = 向量数据库
 
-不完整。
-
-RAG 是一整条链：
+完整 RAG 是：
 
 ```text
-加载
-切块
+Load
+ ↓
+Chunk
+ ↓
 Embedding
-存储
-查询 Embedding
-检索
-把资料交给 LLM
-生成回答
+ ↓
+Store
+ ↓
+Query Embedding
+ ↓
+Retrieve
+ ↓
+Context
+ ↓
+Generate
 ```
 
-LanceDB 只是其中“存储 + 检索”的一层。
+LanceDB 只是中间的存储/检索层。
 
 ---
 
-# 9. 完整毕业作品要求
+# 8. 毕业后必须做自己的改造
 
-不要仅复制 AiFriends。
+不要最后得到一个“和原项目完全一样”的复制品就停止。
 
-最终给自己增加至少 3 个改造：
+至少增加 3 项自己的功能。
+
+## 方向 A：多模型
 
 例如：
 
-### 方向 A：多模型
-
 ```text
 DeepSeek
-GPT
-Claude-compatible provider
+GPT-compatible provider
+其他 OpenAI-compatible provider
 ```
 
-### 方向 B：更好的记忆
+## 方向 B：更细的记忆系统
 
-区分：
+从一个 `Friend.memory` 继续拆成：
 
 ```text
-用户画像记忆
-事件记忆
+用户长期画像
 偏好记忆
+人物关系
+重要事件
 短期工作记忆
 ```
 
-### 方向 C：可上传知识库
+## 方向 C：用户可上传知识库
 
 从固定：
 
@@ -1550,16 +1551,20 @@ data.txt
 升级成：
 
 ```text
-用户上传 PDF / TXT
-  ↓
-自动解析
-  ↓
-自动建库
+PDF / TXT 上传
+ ↓
+解析
+ ↓
+切块
+ ↓
+Embedding
+ ↓
+LanceDB
 ```
 
-### 方向 D：Agent Tools
+## 方向 D：更多 Tools
 
-新增：
+例如：
 
 ```text
 天气
@@ -1568,9 +1573,9 @@ data.txt
 数据库查询
 ```
 
-### 方向 E：工程化
+## 方向 E：工程化
 
-新增：
+例如：
 
 ```text
 Docker
@@ -1583,77 +1588,78 @@ CI/CD
 
 ---
 
-# 10. 最终检查表
+# 9. 毕业检查表
 
 ## 前端
 
-- [ ] 能独立解释 Vue `ref`
-- [ ] 能独立解释 props / emits
-- [ ] 能写 Vue Router
-- [ ] 能写 Pinia store
-- [ ] 能用 Axios 调 API
-- [ ] 能打开 DevTools Network 调试
-- [ ] 能处理 SSE
-- [ ] 能解释 MediaSource
+- [ ] 理解 Vue `ref`
+- [ ] 理解 props / emits
+- [ ] 会写 Router
+- [ ] 会写 Pinia store
+- [ ] 会调 REST API
+- [ ] 会用 Network 调试
+- [ ] 会处理 SSE
+- [ ] 理解 MediaSource
 
 ## Django
 
-- [ ] 理解 URL -> View -> Model
-- [ ] 会 migrations
-- [ ] 会 Django Admin
-- [ ] 会 DRF APIView
-- [ ] 会权限认证
-- [ ] 会 ORM 外键查询
+- [ ] 理解 URL → View → Model
+- [ ] 会 Migration
+- [ ] 会 Admin
+- [ ] 会 APIView
+- [ ] 理解 JWT 权限
+- [ ] 会 ORM ForeignKey 查询
 - [ ] 会 StreamingHttpResponse
 
-## AI / LangChain
+## LangChain
 
-- [ ] 理解 SystemMessage / HumanMessage / AIMessage
-- [ ] 会调用 ChatOpenAI-compatible API
+- [ ] 理解 System/Human/AI Message
+- [ ] 会调用 OpenAI-compatible LLM
 - [ ] 理解 token usage
 - [ ] 理解 Embedding
 - [ ] 理解 VectorStore
 
 ## LangGraph
 
-- [ ] 能自己写 StateGraph
-- [ ] 理解 State
-- [ ] 理解 Node
-- [ ] 理解 Edge
-- [ ] 理解 Conditional Edge
-- [ ] 会写 Tool
-- [ ] 理解 bind_tools
-- [ ] 理解 ToolNode
+- [ ] 会定义 State
+- [ ] 会定义 Node
+- [ ] 会连 Edge
+- [ ] 会写 Conditional Edge
+- [ ] 理解 `@tool`
+- [ ] 理解 `bind_tools()`
+- [ ] 理解 `ToolNode`
 
-## AI 应用能力
+## AI 应用
 
 - [ ] 理解短期上下文
 - [ ] 理解长期记忆压缩
 - [ ] 理解 RAG
 - [ ] 理解 ASR
 - [ ] 理解 TTS
-- [ ] 能追踪完整数据流
+- [ ] 能完整追踪一条聊天数据流
 
 ---
 
-# 11. 继续阅读
+# 10. 下一步阅读
 
-- [零基础完整教程](./BEGINNER_TUTORIAL.md)
-- [系统架构](./ARCHITECTURE.md)
+- [零基础完整运行与复刻教程](./BEGINNER_TUTORIAL.md)
+- [学习中心](./README.md)
+- [系统架构与请求链路](./ARCHITECTURE.md)
 - [常见报错排查](./TROUBLESHOOTING.md)
-- [学习地图](./README.md)
 - [项目首页](../README.md)
 
-如果你是第一次接触全栈开发，建议顺序：
+推荐顺序：
 
 ```text
-README
+项目 README
   ↓
 docs/README.md
   ↓
-本文件 COURSE_REBUILD.md
+COURSE_REBUILD.md
   ↓
-BEGINNER_TUTORIAL.md 对照具体操作
+BEGINNER_TUTORIAL.md（具体命令和操作）
   ↓
-直接阅读带中文教学注释的核心源码
+带中文教学注释的核心源码
+  ↓
+ARCHITECTURE.md（系统复盘）
 ```
