@@ -1,0 +1,17 @@
+[
+  {
+    "question": "AiFriends 使用什么向量数据库？",
+    "expected_keywords": ["LanceDB"],
+    "expected_source_contains": "data.txt"
+  },
+  {
+    "question": "AiFriends 的前端主要使用什么框架？",
+    "expected_keywords": ["Vue"],
+    "expected_source_contains": "data.txt"
+  },
+  {
+    "question": "AiFriends 如何实现长期记忆？",
+    "expected_keywords": ["memory", "记忆"],
+    "expected_source_contains": "data.txt"
+  }
+]
