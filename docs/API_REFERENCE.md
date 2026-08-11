@@ -1,211 +1,242 @@
-# AiFriends API Reference（新手版）
+# AiFriends API Reference（第四轮教学版）
 
-> 本文按当前 `backend/web/urls.py` 与对应 View 整理。
+> 本文以当前 `backend/web/urls.py` 和真实 View 为准。
 >
-> 它不是为了替代源码，而是让你在做前后端联调时快速回答：**请求发到哪里、用什么 Method、要不要登录、参数放哪里、返回什么类型。**
+> 学习目标不是背 URL，而是能回答：**谁发请求、是否认证、数据放哪里、正常/异常状态码是什么、返回 JSON 还是 SSE。**
 
 ---
 
-# 1. 先理解 5 个基础概念
+# 1. 本地 Base URL：第四轮为什么看起来“没有后端地址”？
 
-## 1.1 Base URL
+Vite 开发模式现在使用代理：
 
-本地 Vue 开发模式下，当前前端配置通常把后端指向：
+```text
+Browser http://localhost:5173
+        ↓ /api/... /media/...
+Vite proxy
+        ↓
+Django http://127.0.0.1:8000
+```
+
+所以前端开发代码可以直接写：
+
+```js
+api.get('/api/health/')
+```
+
+而不是每个组件都写死：
 
 ```text
 http://127.0.0.1:8000
 ```
 
-所以：
+这降低了第一次学习 CORS / Cookie host 的干扰。
+
+直接用 curl / Postman 请求 Django 时，仍然使用：
 
 ```text
-/api/user/account/login/
-```
-
-实际请求地址是：
-
-```text
-http://127.0.0.1:8000/api/user/account/login/
+http://127.0.0.1:8000
 ```
 
 ---
 
-## 1.2 普通 JSON API
+# 2. 当前 API 总表
 
-例如：
+| Method | Path | Auth | Request | Response | 作用 |
+|---|---|---|---|---|---|
+| GET | `/api/health/` | 否 | - | JSON | 健康状态 / AI mode |
+| POST | `/api/user/account/register/` | 否 | JSON | JSON + Cookie | 注册 |
+| POST | `/api/user/account/login/` | 否 | JSON | JSON + Cookie | 登录 |
+| POST | `/api/user/account/refresh_token/` | Cookie | empty | JSON + Cookie | 换 access |
+| POST | `/api/user/account/logout/` | Bearer | empty | JSON | 删除 refresh cookie |
+| GET | `/api/user/account/get_user_info/` | Bearer | - | JSON | 当前用户 |
+| POST | `/api/user/profile/update/` | Bearer | multipart | JSON | 更新资料 |
+| POST | `/api/create/character/create/` | Bearer | multipart | JSON | 创建 Character |
+| POST | `/api/create/character/update/` | Bearer | multipart | JSON | 更新自己的 Character |
+| POST | `/api/create/character/remove/` | Bearer | JSON | JSON | 删除自己的 Character |
+| GET | `/api/create/character/get_single/` | Bearer | query | JSON | 编辑页读取 Character |
+| GET | `/api/create/character/get_list/` | 视当前实现 | query | JSON | 用户 Character 列表 |
+| GET | `/api/create/character/voice/get_list/` | Bearer | - | JSON | Voice 列表 |
+| GET | `/api/homepage/index/` | 否 | query | JSON | 首页 / 搜索 |
+| POST | `/api/friend/get_or_create/` | Bearer | JSON | JSON | 创建/读取 Friend |
+| POST | `/api/friend/remove/` | Bearer | JSON | JSON | 删除 Friend |
+| GET | `/api/friend/get_list/` | Bearer | query | JSON | Friend 列表 |
+| POST | `/api/friend/message/chat/` | Bearer | JSON | **SSE** | AI Chat |
+| GET | `/api/friend/message/get_history/` | Bearer | query | JSON | 历史消息 |
+| POST | `/api/friend/message/asr/asr/` | Bearer | multipart | JSON | PCM → Text |
+
+---
+
+# 3. HTTP 状态码：第四轮开始不要只看 `result`
+
+项目早期很多业务错误仍返回 HTTP 200。工程进阶阶段开始逐步使用更准确的 HTTP status。
+
+当前认证/核心新增接口已经出现：
+
+```text
+200 OK
+201 Created
+400 Bad Request
+401 Unauthorized
+404 Not Found
+409 Conflict
+503 Service Unavailable
+```
+
+## 为什么前端既要看 status，又可能要看 JSON？
+
+HTTP status 回答：
+
+> 这是哪一类网络/API 结果？
+
+JSON 中的 `result/message/code` 回答：
+
+> 具体发生了什么业务问题？
+
+Chapter 15 会继续把其他旧 API 逐步重构成统一错误结构。
+
+---
+
+# 4. JWT 认证协议
+
+## 4.1 Access Token
+
+前端 Pinia 保存 access：
+
+```text
+frontend/src/stores/user.js
+```
+
+普通 API / SSE 都在 Header 带：
 
 ```http
-POST /api/friend/get_or_create/
-Content-Type: application/json
 Authorization: Bearer <access-token>
+```
+
+## 4.2 Refresh Token
+
+Refresh 放 HttpOnly Cookie。
+
+JavaScript 不直接读取内容；浏览器通过 Cookie 自动带到：
+
+```text
+POST /api/user/account/refresh_token/
+```
+
+第四轮后 Cookie 策略集中在：
+
+```text
+backend/web/views/user/account/cookies.py
+```
+
+开发 `DEBUG=true` 时：
+
+```text
+secure=false
+```
+
+生产 HTTPS + `DEBUG=false` 时：
+
+```text
+secure=true
+```
+
+## 4.3 普通 Axios 与 SSE 共用同一次 Refresh
+
+核心文件：
+
+```text
+frontend/src/js/http/authRefresh.js
+frontend/src/js/utils/singleFlight.js
+```
+
+并发：
+
+```text
+A → 401
+B → 401
+C → 401
+      ↓
+只启动 1 个 refresh Promise
+      ↓
+拿新 access → Pinia
+      ↓
+A/B/C 使用新 token 重试
+```
+
+旧版 SSE 曾存在“refresh 返回成功但没有把新 access 写回 Pinia”的问题，第四轮将 Axios/SSE 收敛到同一个 `refreshAccessToken()`。
+
+---
+
+# 5. Health API
+
+```http
+GET /api/health/
+```
+
+无需登录。
+
+Mock 模式示例：
+
+```json
+{
+  "status": "ok",
+  "database": "ok",
+  "ai_mode": "mock",
+  "features": {
+    "rag": false,
+    "asr": false,
+    "tts": false
+  },
+  "request_id": "..."
+}
+```
+
+Response Header 同时包含：
+
+```http
+X-Request-ID: ...
+```
+
+这个接口故意不返回：
+
+```text
+API_KEY
+数据库密码
+完整异常堆栈
+私人数据
+```
+
+数据库不可用时预期：
+
+```text
+HTTP 503
+status = degraded
+```
+
+---
+
+# 6. 注册
+
+```http
+POST /api/user/account/register/
+Content-Type: application/json
 ```
 
 Body：
 
 ```json
 {
-  "character_id": 1
-}
-```
-
-前端通常通过：
-
-```text
-frontend/src/js/http/api.js
-```
-
-发送。
-
----
-
-## 1.3 Multipart / 文件上传
-
-涉及图片或音频时使用 `FormData`：
-
-```js
-const formData = new FormData()
-formData.append('photo', file)
-```
-
-Django 中：
-
-```python
-request.data
-request.FILES
-```
-
-是两个需要同时理解的入口。
-
-典型接口：
-
-- 更新用户头像
-- 创建/更新 Character
-- ASR 音频上传
-
----
-
-## 1.4 JWT 认证
-
-受保护接口需要：
-
-```http
-Authorization: Bearer <access-token>
-```
-
-项目使用：
-
-```text
-access token  → 前端 Store，放 Authorization Header
-refresh token → HttpOnly Cookie，用于换新 access
-```
-
-普通请求由：
-
-```text
-frontend/src/js/http/api.js
-```
-
-统一处理。
-
-SSE 聊天由：
-
-```text
-frontend/src/js/http/streamApi.js
-```
-
-单独处理流式请求和 Token 刷新重连。
-
----
-
-## 1.5 SSE 不是普通 JSON Response
-
-聊天接口：
-
-```text
-POST /api/friend/message/chat/
-```
-
-返回：
-
-```http
-Content-Type: text/event-stream
-```
-
-事件类似：
-
-```text
-data: {"content":"你"}
-
-data: {"content":"好"}
-
-data: {"audio":"...base64..."}
-
-data: [DONE]
-
-```
-
-因此不能把它当普通 `axios.post(...).then(res => ...)` 的完整 JSON 响应来理解。
-
----
-
-# 2. API 总表
-
-| Method | Path | 登录 | 类型 | 作用 |
-|---|---|---:|---|---|
-| POST | `/api/user/account/login/` | 否 | JSON | 登录 |
-| POST | `/api/user/account/logout/` | 是 | JSON | 退出并删除 refresh cookie |
-| POST | `/api/user/account/register/` | 否 | JSON | 注册 |
-| POST | `/api/user/account/refresh_token/` | Cookie | JSON | 用 refresh 换 access |
-| GET | `/api/user/account/get_user_info/` | 是 | JSON | 获取当前用户资料 |
-| POST | `/api/user/profile/update/` | 是 | multipart | 更新用户名/简介/头像 |
-| POST | `/api/create/character/create/` | 是 | multipart | 创建角色 |
-| POST | `/api/create/character/update/` | 是 | multipart | 更新自己的角色 |
-| POST | `/api/create/character/remove/` | 是 | JSON | 删除自己的角色 |
-| GET | `/api/create/character/get_single/` | 是 | query | 获取自己的单个角色供编辑 |
-| GET | `/api/create/character/get_list/` | 视实现用途 | query | 获取角色列表 |
-| GET | `/api/create/character/voice/get_list/` | 是 | query | 获取可用音色 |
-| GET | `/api/homepage/index/` | 否 | query | 首页/搜索 Character |
-| POST | `/api/friend/get_or_create/` | 是 | JSON | 建立或获取 Friend |
-| POST | `/api/friend/remove/` | 是 | JSON | 删除自己的 Friend |
-| GET | `/api/friend/get_list/` | 是 | query | 好友列表 |
-| POST | `/api/friend/message/chat/` | 是 | JSON → SSE | AI 流式聊天 + TTS |
-| GET | `/api/friend/message/get_history/` | 是 | query | 分页获取历史消息 |
-| POST | `/api/friend/message/asr/asr/` | 是 | multipart | PCM 语音识别 |
-
----
-
-# 3. 用户认证 API
-
-## 3.1 注册
-
-```text
-POST /api/user/account/register/
-```
-
-### Body
-
-```json
-{
   "username": "alice",
-  "password": "123456"
+  "password": "secret123"
 }
 ```
 
-### 主要后端动作
+## 成功
 
 ```text
-检查用户名/密码
-  ↓
-检查 username 是否存在
-  ↓
-User.objects.create_user(...)
-  ↓
-UserProfile.objects.create(...)
-  ↓
-生成 JWT refresh/access
+HTTP 201 Created
 ```
-
-### 成功响应核心字段
 
 ```json
 {
@@ -218,129 +249,142 @@ UserProfile.objects.create(...)
 }
 ```
 
-同时 response 设置：
+同时设置 refresh HttpOnly Cookie。
+
+## 错误
+
+空输入：
 
 ```text
-refresh_token HttpOnly Cookie
+HTTP 400
 ```
 
-### 常见业务错误
+重复用户名：
 
 ```text
-用户名或密码不能为空
-用户名已存在
-系统异常，请稍后重试
+HTTP 409 Conflict
 ```
+
+## 为什么必须 `create_user()`？
+
+```python
+User.objects.create_user(...)
+```
+
+会 hash password。
+
+不要：
+
+```python
+User.objects.create(password='123456')
+```
+
+Chapter 14 自动测试会验证数据库里不是明文密码。
 
 ---
 
-## 3.2 登录
+# 7. 登录
 
-```text
+```http
 POST /api/user/account/login/
+Content-Type: application/json
 ```
 
-### Body
+Body：
 
 ```json
 {
   "username": "alice",
-  "password": "123456"
+  "password": "secret123"
 }
 ```
 
-### 核心逻辑
+核心：
 
 ```python
-user = authenticate(
-    username=username,
-    password=password,
-)
+user = authenticate(username=username, password=password)
 ```
 
-成功后生成 JWT，并与注册接口类似返回用户资料。
+成功：
 
-### 新手调试
+```text
+HTTP 200
+access JSON + refresh Cookie
+```
 
-如果 UI 提示登录失败：
+用户名/密码为空：
 
-1. Network 看 Request Payload
-2. 看 Response `result`
-3. 登录成功后检查 `access`
-4. 检查 Cookies 中 refresh_token
-5. 再看后续请求有没有 Authorization Header
+```text
+HTTP 400
+```
+
+用户名或密码错误：
+
+```text
+HTTP 401
+```
 
 ---
 
-## 3.3 退出
+# 8. Refresh
 
-```text
-POST /api/user/account/logout/
-```
-
-需要登录。
-
-后端主要动作：
-
-```text
-删除 refresh_token Cookie
-```
-
-前端同时需要清除 Pinia 中当前用户/access 状态。
-
----
-
-## 3.4 刷新 Access Token
-
-```text
+```http
 POST /api/user/account/refresh_token/
+Cookie: refresh_token=...
 ```
 
-前端无需在 JSON Body 中手工传 refresh token；当前设计从 Cookie 读取：
+Body 可以为空：
 
-```python
-request.COOKIES.get('refresh_token')
+```json
+{}
 ```
 
-### 成功
+成功：
 
 ```json
 {
   "result": "success",
-  "access": "<new-access-token>"
+  "access": "<new access>"
 }
 ```
 
-### 失败
+并轮换 refresh cookie。
 
-典型 HTTP Status：
-
-```text
-401
-```
-
-典型原因：
+缺少 / 过期：
 
 ```text
-refresh token 不存在
-refresh token 已过期/无效
+HTTP 401
 ```
 
 ---
 
-## 3.5 获取当前用户
-
-```text
-GET /api/user/account/get_user_info/
-```
-
-### Header
+# 9. Logout
 
 ```http
-Authorization: Bearer <access-token>
+POST /api/user/account/logout/
+Authorization: Bearer <access>
 ```
 
-### 成功
+成功：
+
+```json
+{
+  "result": "success"
+}
+```
+
+后端删除 refresh cookie，前端同时清 Pinia。
+
+---
+
+# 10. Get Current User
+
+```http
+GET /api/user/account/get_user_info/
+Authorization: Bearer <access>
+```
+
+成功：
 
 ```json
 {
@@ -352,623 +396,604 @@ Authorization: Bearer <access-token>
 }
 ```
 
-这个接口很适合页面刷新后的用户状态恢复。
+浏览器刷新后，Pinia 内存丢失时，`api.js` 可以先通过 refresh 恢复 access，再完成该请求。
 
 ---
 
-# 4. 用户资料 API
+# 11. Profile Update
 
-## 4.1 更新 Profile
-
-```text
+```http
 POST /api/user/profile/update/
+Authorization: Bearer <access>
+Content-Type: multipart/form-data
 ```
 
-需要登录。
-
-使用 `multipart/form-data`。
-
-### FormData
+FormData：
 
 ```text
-username    必填
-profile     必填
-photo       可选，新头像
+username
+profile
+photo?       optional
 ```
 
-### 成功
-
-```json
-{
-  "result": "success",
-  "user_id": 1,
-  "username": "new_name",
-  "profile": "new profile",
-  "photo": "/media/..."
-}
-```
-
-### 权限
-
-后端直接使用：
-
-```python
-request.user
-```
-
-因此不能通过上传一个 `user_id` 去修改别人资料。
+这个 API 仍然是 Chapter 15 很好的 Serializer 重构对象。
 
 ---
 
-# 5. Character API
+# 12. Character Create
 
-## 5.1 创建 Character
-
-```text
+```http
 POST /api/create/character/create/
+Authorization: Bearer <access>
+Content-Type: multipart/form-data
 ```
 
-需要登录；`multipart/form-data`。
-
-### FormData
+字段：
 
 ```text
-name              必填
-voice_id          必填（当前版本）
-profile           必填
-photo             必填
-background_image  必填
+name
+voice_id
+profile
+photo
+background_image
 ```
 
-### 核心关系
+数据流：
 
 ```text
-request.user
-   ↓
+Vue FormData
+ ↓
+request.data + request.FILES
+ ↓
 UserProfile
-   ↓ author
-Character
-   ↓ voice
+ ↓
 Voice
-```
-
-### 成功
-
-```json
-{
-  "result": "success"
-}
+ ↓
+Character.objects.create
+ ↓
+SQLite + media
 ```
 
 ---
 
-## 5.2 更新 Character
+# 13. Character Update
 
-```text
+```http
 POST /api/create/character/update/
+Authorization: Bearer <access>
+Content-Type: multipart/form-data
 ```
 
-需要登录；`multipart/form-data`。
-
-### FormData
+字段：
 
 ```text
-character_id      必填
-name              必填
-voice_id          必填
-profile           必填
-photo             可选
-background_image  可选
+character_id
+name
+voice_id
+profile
+photo?             optional
+background_image?  optional
 ```
 
-### 权限核心
+后端必须重新检查：
 
-应理解为：
-
-```python
-Character.objects.get(
-    id=character_id,
-    author__user=request.user,
-)
+```text
+Character.author.user == request.user
 ```
 
-也就是即使浏览器伪造其它 id，也不能编辑别人的 Character。
+这就是 Object-level Authorization。
 
 ---
 
-## 5.3 删除 Character
+# 14. Homepage
+
+```http
+GET /api/homepage/index/?items_count=0&search_query=...
+```
+
+无需登录。
+
+分页当前是 offset 风格：
 
 ```text
-POST /api/create/character/remove/
+items_count : items_count + 20
 ```
 
-### Body
-
-```json
-{
-  "character_id": 1
-}
-```
-
-权限同样必须约束当前登录用户。
-
----
-
-## 5.4 获取单个 Character
+搜索：
 
 ```text
-GET /api/create/character/get_single/?character_id=1
-```
-
-主要用于编辑页面加载当前角色。
-
-返回核心结构类似：
-
-```json
-{
-  "result": "success",
-  "character": {
-    "id": 1,
-    "name": "Alice",
-    "profile": "...",
-    "photo": "/media/...",
-    "background_image": "/media/...",
-    "voice_id": 1
-  },
-  "voices": [
-    {"id": 1, "name": "Voice A"}
-  ]
-}
+name icontains
+OR
+profile icontains
 ```
 
 ---
 
-## 5.5 获取 Voice 列表
+# 15. Friend Get or Create
 
-```text
-GET /api/create/character/voice/get_list/
-```
-
-成功：
-
-```json
-{
-  "result": "success",
-  "voices": [
-    {
-      "id": 1,
-      "name": "音色名称"
-    }
-  ]
-}
-```
-
-注意：前端一般只需要数据库 Voice 的 `id/name`；真正传给 TTS 的服务端 `voice_id` 保存在后端 Model 中。
-
----
-
-# 6. Homepage / 搜索
-
-## 6.1 首页列表
-
-```text
-GET /api/homepage/index/
-```
-
-### Query
-
-```text
-items_count=0
-search_query=
-```
-
-示例：
-
-```text
-/api/homepage/index/?items_count=0&search_query=Alice
-```
-
-### 分页
-
-后端每批当前按约 20 个 Character 读取。
-
-下一页让：
-
-```text
-items_count = 当前前端已经有的条数
-```
-
-### 搜索
-
-当前逻辑会在：
-
-```text
-Character.name
-Character.profile
-```
-
-中做 `icontains` 模糊匹配。
-
-### Character 响应结构核心
-
-```json
-{
-  "id": 1,
-  "name": "Alice",
-  "profile": "...",
-  "photo": "/media/...",
-  "background_image": "/media/...",
-  "author": {
-    "user_id": 1,
-    "username": "tfyf103",
-    "photo": "/media/..."
-  }
-}
-```
-
----
-
-# 7. Friend API
-
-## 7.1 Get or Create Friend
-
-```text
+```http
 POST /api/friend/get_or_create/
+Authorization: Bearer <access>
+Content-Type: application/json
 ```
 
-需要登录。
-
-### Body
+Body：
 
 ```json
 {
-  "character_id": 1
+  "character_id": 12
 }
 ```
 
-### 语义
+Friend 的业务含义：
 
 ```text
-当前用户与 Character 已存在 Friend？
-├── 是 → 返回已有关系
-└── 否 → 创建 Friend 后返回
+当前用户 × 某个 Character
 ```
 
-Friend 响应包含：
+同时也是：
 
 ```text
-friend.id
-friend.character
+长期记忆边界
+聊天历史边界
 ```
 
-其中 Character 又包含 author/photo/background/profile 等信息。
+Chapter 18 会继续学习数据库 `UniqueConstraint`，避免并发时产生重复 Friend。
 
 ---
 
-## 7.2 Friend List
+# 16. Friend List / Remove
 
-```text
+列表：
+
+```http
 GET /api/friend/get_list/?items_count=0
+Authorization: Bearer <access>
 ```
 
-需要登录。
+删除：
 
-当前查询核心：
-
-```text
-Friend.me == 当前用户
-order_by(-update_time)
-```
-
-因此 Friend 的 `update_time` 可以用来表达“最近互动”。
-
----
-
-## 7.3 Remove Friend
-
-```text
+```http
 POST /api/friend/remove/
+Authorization: Bearer <access>
 ```
 
-### Body
-
-```json
-{
-  "friend_id": 1
-}
-```
-
-必须限制：
+所有 Friend 私有操作都必须通过：
 
 ```text
-friend.me == 当前用户
+friend.me.user == request.user
 ```
+
+限制。
 
 ---
 
-# 8. Chat API（项目核心）
+# 17. Chat：这是最重要的 API
 
-## 8.1 AI Chat + SSE + TTS
-
-```text
+```http
 POST /api/friend/message/chat/
+Authorization: Bearer <access>
+Content-Type: application/json
 ```
 
-需要登录。
-
-### Request JSON
+Body：
 
 ```json
 {
-  "friend_id": 1,
+  "friend_id": 3,
   "message": "你好"
 }
 ```
 
-### 后端在返回流之前做什么？
+空消息：
 
 ```text
-1. 验证 message 非空
-2. 验证 Friend 属于 request.user
-3. CharGraph.create_app()
-4. HumanMessage(message)
-5. 加 SystemPrompt
-6. 加 Character.profile
-7. 加 Friend.memory
-8. 加最近历史 Message
+HTTP 400
 ```
 
-### SSE 文本事件
+Friend 不存在/不属于用户：
+
+```text
+HTTP 404
+```
+
+## Response 不是完整 JSON
+
+```http
+Content-Type: text/event-stream
+```
+
+事件：
 
 ```text
 data: {"content":"你"}
 
-```
+data: {"content":"好"}
 
-### SSE 音频事件
+data: {"audio":"...base64..."}
 
-```text
-data: {"audio":"<base64 mp3 bytes>"}
+data: {"error":"..."}
 
-```
-
-### 结束
-
-```text
 data: [DONE]
 
 ```
 
-### 结束以后后端还做什么？
+---
 
-保存：
+# 18. Chat 的 AI_MODE 行为
 
-```text
-Message.friend
-Message.user_message
-Message.input
-Message.output
-Message.input_tokens
-Message.output_tokens
-Message.total_tokens
+## Mock
+
+```env
+AI_MODE=mock
 ```
 
-并在当前实现中按一定消息数量触发：
+Chat 不创建真实 `CharGraph`，本地生成确定性回复。
+
+但仍然经过：
 
 ```text
-update_memory(friend)
+JWT
+Friend ownership
+SystemPrompt / history assembly
+StreamingHttpResponse
+SSE
+Vue onmessage
+Message DB
 ```
 
-### Tool Calling
+所以它非常适合 Chapter 00–07 与 CI。
 
-当前 `CharGraph` 工具包括：
+## Text
+
+```env
+AI_MODE=text
+```
+
+真实 LLM + SSE，但默认：
 
 ```text
-get_time
-search_knowledge_base
+RAG off
+ASR off
+TTS off
 ```
 
-如果 LLM 产生 tool_calls：
+## Full
+
+默认完整：
 
 ```text
-agent → tools → agent
+LLM
+RAG Tool
+ASR
+TTS
 ```
+
+可继续用 Feature Flag 单独覆盖。
 
 ---
 
-## 8.2 获取历史 Message
+# 19. Chat 的 SSE Refresh
+
+请求建立时 access 过期：
 
 ```text
-GET /api/friend/message/get_history/
+SSE HTTP 401
+ ↓
+refreshAccessToken()
+ ↓
+Pinia 写入新 access
+ ↓
+旧 SSE reject
+ ↓
+重新 startFetch()
+ ↓
+重新构建 Authorization Header
 ```
 
-需要登录。
+这点与“让 fetch-event-source 自己用旧 headers 自动重试”不同。
 
-### Query
+---
+
+# 20. Chat Cancellation
+
+前端：
 
 ```text
-friend_id=1
+AbortController
+```
+
+传给：
+
+```text
+streamApi(... signal)
+```
+
+用户 Stop：
+
+```text
+controller.abort()
+ ↓
+SSE 连接关闭
+ ↓
+Django generator finally
+ ↓
+cancel_event.set()
+ ↓
+worker 尽快停止 LLM/TTS chunk
+```
+
+注意：第三方模型服务是否能做到“立刻终止远端计算”，还取决于 provider/API 行为。这是 Chapter 17 的工程讨论点。
+
+---
+
+# 21. Chat Message Persistence
+
+正常完成后保存：
+
+```text
+friend
+user_message
+input
+output
+input_tokens
+output_tokens
+total_tokens
+```
+
+目前用户取消时不会走正常完成保存路径。
+
+Chapter 17 Challenge：设计：
+
+```text
+partial=true
+cancel_reason
+```
+
+等字段。
+
+---
+
+# 22. History
+
+```http
+GET /api/friend/message/get_history/?friend_id=3&last_message_id=0
+Authorization: Bearer <access>
+```
+
+首次：
+
+```text
 last_message_id=0
 ```
 
-语义：
+继续向上翻：
 
 ```text
-last_message_id = 0
-→ 获取最新一批
-
-last_message_id > 0
-→ 获取 id 更小的历史记录
+pk < last_message_id
 ```
 
-响应中每条核心：
+每次最多 10 条 Message 记录。
 
-```json
-{
-  "id": 123,
-  "user_message": "...",
-  "output": "..."
-}
-```
-
-前端再把一条数据库 Message 展开为两个 UI Message：
+后端额外限制：
 
 ```text
-user bubble
-ai bubble
+friend__me__user=request.user
 ```
+
+避免读取其他用户历史。
 
 ---
 
-# 9. ASR API
+# 23. ASR
 
-## 9.1 Speech to Text
-
-```text
+```http
 POST /api/friend/message/asr/asr/
+Authorization: Bearer <access>
+Content-Type: multipart/form-data
 ```
 
-需要登录；`multipart/form-data`。
-
-### FormData
+字段：
 
 ```text
-audio = PCM file/blob
+audio = PCM file
 ```
 
-### 当前后端期望的语音服务参数核心
+如果：
+
+```env
+ENABLE_ASR=false
+```
+
+返回：
 
 ```text
-sample_rate: 16000
-format: pcm
-model: gummy-realtime-v1
+HTTP 503
 ```
-
-### 成功
 
 ```json
 {
-  "result": "success",
-  "text": "识别出来的文字"
+  "result": "ASR 未启用。请在 .env 中设置 ENABLE_ASR=true。"
 }
 ```
 
-前端把这个 text 重新交给普通聊天 `handleSend`，因此不会维护第二套 AI 对话业务。
+这样文本学习不会因为没有 Speech Account 莫名失败。
 
 ---
 
-# 10. 哪些能力不是 HTTP API？
+# 24. TTS 为什么没有单独 HTTP Endpoint？
 
-## 10.1 Long-term Memory
-
-不是浏览器直接调用的 endpoint。
-
-触发于后端聊天结束后的内部逻辑：
+TTS 是 Chat 内部并行任务：
 
 ```text
-Message count 达到条件
-   ↓
-update_memory(friend)
-   ↓
-MemoryGraph
-   ↓
-Friend.memory
+LLM chunk
+ ├─ Queue → SSE content
+ └─ TTS WebSocket
+       ↓
+     MP3 bytes
+       ↓ Base64
+     Queue → SSE audio
 ```
+
+如果：
+
+```env
+ENABLE_TTS=false
+```
+
+Chat 直接走 `text_sender()`，不会连接 WSS。
+
+如果 Character 没有 Voice，也自动退化到 text-only。
 
 ---
 
-## 10.2 RAG 建库
+# 25. RAG 不是一个直接给浏览器调用的 API
 
-`insert_documents()` 是离线/后台建库逻辑，不是当前面向浏览器的 REST endpoint：
+它目前被封装为 LangGraph Tool：
 
 ```text
-data.txt
- ↓ TextLoader
-split
- ↓ Embedding
-LanceDB
+search_knowledge_base(query)
 ```
 
-在线查询则由 `search_knowledge_base` Tool 在 LangGraph 内部触发。
+只有：
+
+```env
+ENABLE_RAG=true
+```
+
+才注册进 Agent Tool List。
+
+这使 text 模式不需要先创建 LanceDB。
 
 ---
 
-## 10.3 TTS WebSocket
+# 26. Request ID
 
-浏览器没有直接连接 TTS 服务。
-
-当前结构：
+第四轮加入 middleware：
 
 ```text
-Browser
-  ↕ SSE
-Django
-  ↕ WebSocket
-TTS Service
+backend/web/middleware.py
 ```
 
-这样第三方服务的 API Key 保留在后端。
+客户端可以主动发送：
 
----
+```http
+X-Request-ID: my-debug-id
+```
 
-# 11. 调试 API 的固定顺序
+否则服务端自动生成。
 
-每次 API “不工作”，严格按这个顺序：
+Response：
+
+```http
+X-Request-ID: <same-id>
+```
+
+以后日志中可以用它把：
 
 ```text
-1. 浏览器有没有发请求？
-2. URL 对吗？
-3. Method 对吗？
-4. Body/Query/FormData 对吗？
-5. Authorization 有吗？
-6. HTTP Status 是什么？
-7. Response 是什么？
-8. Django 终端有没有 Traceback？
-9. View 是否进入？
-10. ORM 查询是否命中？
-11. 外部 LLM/ASR/TTS/RAG 是否成功？
+HTTP
+LLM
+RAG
+TTS
+error
 ```
 
-不要看到一句“系统异常”就从头乱改整个项目。
+串成同一请求。
 
 ---
 
-# 12. curl 思维练习
+# 27. 用 curl 学 API
 
-即使你主要用 Vue，也应该学会把前端与后端问题分开。
-
-例如一个不需要登录的首页请求：
+## Health
 
 ```bash
-curl "http://127.0.0.1:8000/api/homepage/index/?items_count=0&search_query="
+curl http://127.0.0.1:8000/api/health/
 ```
 
-如果 curl 能成功，而 Vue 失败，问题更可能在：
-
-```text
-前端 URL
-CORS
-Axios 配置
-状态处理
-```
-
-而不是 Django 核心业务。
-
-对于需要 JWT 的接口，可用类似：
+## Register
 
 ```bash
-curl \
-  -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
-  "http://127.0.0.1:8000/api/user/account/get_user_info/"
+curl -i \
+  -X POST \
+  -H "Content-Type: application/json" \
+  -d '{"username":"alice","password":"secret123"}' \
+  http://127.0.0.1:8000/api/user/account/register/
 ```
 
-> 不要把真实 token 提交进 Git、Issue、截图或教程。
+Windows PowerShell 建议使用 `Invoke-RestMethod` 或在 DevTools 中学习，不必纠结 shell 引号差异。
 
 ---
 
-# 13. 源码索引
+# 28. 用 DevTools 学 API
 
-路由总表：
+F12 → Network。
+
+每条请求至少看：
+
+```text
+Request URL
+Method
+Status
+Request Headers
+Request Payload / Form Data
+Response Headers
+Response / EventStream
+```
+
+认证问题再打开：
+
+```text
+Application → Cookies
+```
+
+---
+
+# 29. 常见分层诊断
+
+## 没有 Network 请求
+
+前端事件/状态问题。
+
+## 400
+
+输入 validation / request body。
+
+## 401
+
+access / refresh / Authorization。
+
+## 404
+
+URL 或对象/ownership。
+
+## 409
+
+业务冲突，例如用户名重复。
+
+## 500
+
+先看 Django traceback。
+
+## 503
+
+某项依赖能力未准备，例如 ASR disabled / health DB degraded。
+
+## SSE 200 但无 chunk
+
+继续查：
+
+```text
+AI_MODE
+worker
+LLM
+Queue
+TTS
+```
+
+---
+
+# 30. API 与源码索引
 
 ```text
 backend/web/urls.py
@@ -978,30 +1003,22 @@ backend/web/urls.py
 
 ```text
 backend/web/views/user/account/
-```
-
-资料：
-
-```text
-backend/web/views/user/profile/
-```
-
-Character：
-
-```text
-backend/web/create/character/
-```
-
-Friend：
-
-```text
-backend/web/views/friend/
+frontend/src/js/http/api.js
+frontend/src/js/http/authRefresh.js
+frontend/src/js/http/streamApi.js
 ```
 
 Chat：
 
 ```text
-backend/web/views/friend/message/chat/
+backend/web/views/friend/message/chat/chat.py
+backend/web/views/friend/message/chat/graph.py
+```
+
+AI Config：
+
+```text
+backend/web/ai/config.py
 ```
 
 Memory：
@@ -1010,16 +1027,48 @@ Memory：
 backend/web/views/friend/message/memory/
 ```
 
-ASR：
-
-```text
-backend/web/views/friend/message/asr/
-```
-
 RAG：
 
 ```text
-backend/web/documents/
+backend/web/documents/utils/
 ```
 
-做实验时建议：先看本文确定接口契约，再打开对应源码理解“为什么这样实现”。
+Health / Request ID：
+
+```text
+backend/web/views/health.py
+backend/web/middleware.py
+```
+
+前端聊天：
+
+```text
+InputField.vue
+Microphone.vue
+```
+
+---
+
+# 31. 下一阶段：OpenAPI / Swagger
+
+当前本文是手工维护的教学版 API Reference。
+
+Chapter 15 后可以继续加入：
+
+```text
+Serializer
+OpenAPI schema
+Swagger UI
+错误码表
+请求/响应 example
+```
+
+然后比较：
+
+```text
+自动生成 API 文档
+vs
+面向学习者的解释文档
+```
+
+两者不是互相替代：机器 schema 负责精确，教学文档负责解释“为什么”。
