@@ -14,7 +14,7 @@ AiFriends 使用 **Vue 3 + Django + DRF + JWT + LangChain + LangGraph + LanceDB 
 
 它不是“只调用一次大模型 API”的示例。项目覆盖浏览器 UI、认证、数据库、流式协议、Agent、RAG、Memory、ASR/TTS，以及自动测试、数据约束、安全、CI、构建和部署思维。
 
-> **国际化状态：核心课程已经完成中英文双轨。** 英文用户现在可以独立完成 **Chapter 00–20**，并使用 English Quick Start、Architecture、Engineering Course、API Reference、Database/ER 和 Troubleshooting，不需要依赖中文正文才能完成核心学习路径。
+> **国际化状态：核心课程 + 高价值工程资料已经形成中英文双轨。** 英文用户现在不仅能独立完成 **Chapter 00–20**，还可使用 English Git-history Rebuild、Architecture、API/ER/Troubleshooting、双语术语基线、真实截图/GIF 和 Browser E2E；CI 会检查核心双语结构与关键源码路径漂移。
 
 ---
 
@@ -28,10 +28,10 @@ AiFriends 使用 **Vue 3 + Django + DRF + JWT + LangChain + LangGraph + LanceDB 
 | 在线体验 | **[真实部署可直接访问](https://app8056.acapp.acwing.com.cn/)** |
 | 入门门槛 | `AI_MODE=mock` 可 **零 API Key** 跑通核心 Web/SSE 链路 |
 | 课程 | Chapter **00–20**，中英文 Labs 均完整覆盖 |
-| 自动反馈 | Django tests + Node tests + structural grader + GitHub Actions |
+| 自动反馈 | Django tests + Node tests + Browser E2E + structural grader + i18n/source drift + GitHub Actions |
 | AI 能力 | LangGraph Agent / Tool Calling / Memory / RAG / ASR / TTS |
 | 工程能力 | Serializer / cancellation / migration / Health / Request-ID / Docker learning image |
-| 英文参考 | Quick Start / Architecture / Engineering / API / ER / Troubleshooting |
+| 英文参考 | Quick Start / Git History / Architecture / Engineering / API / ER / Troubleshooting |
 | 安全入口 | [SECURITY.md](./SECURITY.md) |
 | 贡献入口 | [CONTRIBUTING.md](./CONTRIBUTING.md) |
 
@@ -72,6 +72,12 @@ AiFriends 使用 **Vue 3 + Django + DRF + JWT + LangChain + LangGraph + LanceDB 
 [![AiFriends live public profile](./docs/assets/live-demo/public-profile.png)](https://app8056.acapp.acwing.com.cn/user/space/6)
 
 > 截图是 **2026-08-11 的真实线上快照**，公开角色、用户资料和部署版本之后可能变化。采集方法和验证范围见 [Live Demo Verification](./docs/LIVE_DEMO.md)。
+
+## 真实 walkthrough GIF
+
+![AiFriends real production walkthrough](./docs/assets/live-demo/walkthrough.gif)
+
+该 GIF 只由上面的真实线上 PNG 可复现合成，不是生成式 UI。视觉规范与贡献规则见 [Screenshots & GIF Guide](./docs/SCREENSHOTS.md)。
 
 ---
 
@@ -172,12 +178,16 @@ Architecture / API / Database / Troubleshooting
 
 - 🌍 [English Learning Hub](./docs/README_EN.md)
 - 🚀 [English Quick Start](./docs/QUICK_START_EN.md)
+- 🧭 [English Git-history Rebuild](./docs/COURSE_REBUILD_EN.md)
 - 🧪 [English Labs：Chapter 00–20](./labs/en/README.md)
 - 🧠 [English Architecture Guide](./docs/ARCHITECTURE_EN.md)
 - 🏗️ [English Engineering Course](./docs/ENGINEERING_COURSE_EN.md)
 - 🔌 [English API Reference](./docs/API_REFERENCE_EN.md)
 - 🗄️ [English Database / ER Guide](./docs/DATABASE_ER_EN.md)
 - 🧯 [English Troubleshooting](./docs/TROUBLESHOOTING_EN.md)
+- 🌐 [Bilingual Engineering Glossary](./docs/BILINGUAL_GLOSSARY.md)
+- 🖼️ [Screenshots & GIF Guide](./docs/SCREENSHOTS.md)
+- 🧪 [English Browser E2E](./e2e/README.md)
 
 `COURSE_REBUILD` 等真实历史工程考古资料仍可能以中文为主，但已经不影响英文用户完成完整核心课程。
 
@@ -472,12 +482,15 @@ PR 的 GitHub Actions 会在干净环境运行：
 
 ```text
 Python compile
+Internationalization/documentation drift check
+Live-demo GIF drift check
 Chapter 00–20 grader
 Migration drift check
 Django check/tests
 npm ci
 VAD setup
 Frontend quality/tests/build
+Chromium Browser E2E in AI_MODE=mock
 Docker learning image build
 ```
 
@@ -663,18 +676,19 @@ Chapter 20 继续区分“可复现教学容器”和“真正生产部署”。
 - [x] English Database / ER Guide
 - [x] English Troubleshooting Guide
 - [x] 明确欢迎 bilingual documentation contributions
-- [ ] 按价值逐步翻译 `COURSE_REBUILD` / 历史工程考古等辅助资料
-- [ ] 自动化检查中英文文档漂移
-- [x] 首批中英文真实线上截图 / Live Demo
-- [ ] 每章截图 / GIF / Expected Result
-- [ ] 统一中英文工程术语与可访问性表达
+- [x] English `COURSE_REBUILD` / 真实 Git 历史工程考古
+- [x] 自动化检查核心双语文档与关键源码路径结构性漂移
+- [x] 首批中英文真实线上截图 + 可复现 walkthrough GIF
+- [ ] 高价值章节继续增加截图 / GIF / Expected Result
+- [x] 双语工程术语基线与贡献规范
+- [ ] 持续优化可访问性表达
 
 ## Learning Quality
 
 - [ ] `course/chXX-start` / `course/chXX-solution` 稳定教学标签
 - [ ] Bug Museum：把真实历史 Bug 变成 Debug Lab
 - [ ] 更细粒度 behavioral grader
-- [ ] Mock 模式 Browser E2E
+- [x] Mock 模式 Browser E2E（注册 / 受保护路由 / 刷新恢复）
 - [ ] 配套视频索引
 
 ## Backend / Security

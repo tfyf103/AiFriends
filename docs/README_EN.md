@@ -2,7 +2,7 @@
 
 🌐 **Language:** [简体中文](./README.md) | **English**
 
-> This is the English navigation hub for learning AiFriends. The English track now covers the **complete Chapter 00–20 lab curriculum** plus the core architecture, API, database, engineering, and troubleshooting references.
+> This is the English navigation hub for learning AiFriends. The English track now covers the **complete Chapter 00–20 lab curriculum**, real Git-history engineering archaeology, core architecture/API/database references, bilingual terminology, real screenshots/GIFs, and a Browser E2E example.
 
 AiFriends has two learning stages:
 
@@ -14,7 +14,7 @@ Chapter 14–20
 Turn an AI demo into a more reliable engineering project
 ```
 
-The code, tests, grader, CI, security policy, and contribution workflow are shared by Chinese and English learners.
+The code, tests, grader, CI, security policy, terminology baseline, and contribution workflow are shared by Chinese and English learners.
 
 ---
 
@@ -108,25 +108,46 @@ TROUBLESHOOTING_EN
 source code + tests + CI
 ```
 
+## E. I want to understand how AiFriends actually evolved
+
+Use the real Git history:
+
+```text
+COURSE_REBUILD_EN
+  ↓
+git show --stat <historical-sha>
+  ↓
+git show <historical-sha>
+  ↓
+compare historical design with current main
+```
+
+Start with [Rebuild AiFriends from Scratch — Real Git History](./COURSE_REBUILD_EN.md).
+
 ---
 
 # 2. Complete English documentation
 
 | Resource | Purpose |
 |---|---|
-| [README_EN](../README_EN.md) | Project overview, maintenance, security, contribution |
+| [README_EN](../README_EN.md) | Project overview, live demo, maintenance, security, contribution |
 | [QUICK_START_EN](./QUICK_START_EN.md) | Zero-API-key first run with `AI_MODE=mock` |
+| [COURSE_REBUILD_EN](./COURSE_REBUILD_EN.md) | Real Git-history engineering archaeology and rebuild path |
 | [ARCHITECTURE_EN](./ARCHITECTURE_EN.md) | End-to-end architecture and request/data flow |
 | [English Labs 00–20](../labs/en/README.md) | Complete hands-on curriculum |
 | [ENGINEERING_COURSE_EN](./ENGINEERING_COURSE_EN.md) | Engineering Chapters 14–20 overview |
 | [API_REFERENCE_EN](./API_REFERENCE_EN.md) | Current HTTP/SSE/JWT/API behavior |
 | [DATABASE_ER_EN](./DATABASE_ER_EN.md) | Models, relations, constraints, storage boundaries |
 | [TROUBLESHOOTING_EN](./TROUBLESHOOTING_EN.md) | Layered debugging guide |
-| [GRADING](./GRADING.md) | doctor / grader / tests / CI model (code/commands are language-neutral) |
+| [BILINGUAL_GLOSSARY](./BILINGUAL_GLOSSARY.md) | Canonical Chinese/English engineering terminology |
+| [SCREENSHOTS](./SCREENSHOTS.md) | Real screenshot/GIF gallery and contribution rules |
+| [LIVE_DEMO](./LIVE_DEMO.md) | Real production screenshot verification |
+| [Browser E2E](../e2e/README.md) | English-first Chromium E2E example in Mock mode |
+| [GRADING](./GRADING.md) | doctor / grader / tests / CI model |
 | [SECURITY](../SECURITY.md) | Vulnerability reporting and security scope |
 | [CONTRIBUTING](../CONTRIBUTING.md) | Contribution workflow and checks |
 
-Some auxiliary deep-dive prose such as historical rebuild notes remains Chinese-first, but an English learner can now complete the full Chapter 00–20 path and use the core technical references without relying on Chinese documentation.
+Historical archaeology is now available in English. A few auxiliary notes can still be Chinese-first, but the maintained learning, engineering, visual, testing, and Git-history paths no longer require Chinese prose.
 
 ---
 
@@ -171,7 +192,7 @@ AiFriends supports:
 
 ## `mock`
 
-Best for first run and CI:
+Best for first run, Browser E2E, and CI:
 
 ```env
 AI_MODE=mock
@@ -237,6 +258,20 @@ python scripts/grade.py --chapter 13
 python scripts/grade.py --chapter 20
 ```
 
+## Bilingual/source drift
+
+```bash
+python scripts/check_i18n.py
+```
+
+This detects structural drift such as missing paired documents/Labs, moved source sentinels, missing visual assets, and broken important relative links. It does **not** claim to judge semantic translation quality.
+
+## Live-demo GIF drift
+
+```bash
+python scripts/build_demo_gif.py --check
+```
+
 ## Backend behavior tests
 
 ```bash
@@ -251,18 +286,29 @@ cd frontend
 npm run check
 ```
 
+## Browser E2E
+
+```bash
+npm install --prefix e2e
+npm exec --prefix e2e -- playwright install chromium
+node e2e/browser-smoke.mjs
+```
+
 ## Repository CI
 
 Pull requests run:
 
 ```text
 Python compile
+internationalization/documentation drift check
+live-demo GIF drift check
 Chapter 00–20 grader
 migration drift check
 Django check/tests
 npm ci
 VAD setup
 frontend quality/tests/build
+Chromium Browser E2E in AI_MODE=mock
 learning Docker image build
 ```
 
@@ -300,32 +346,27 @@ Use [English Troubleshooting](./TROUBLESHOOTING_EN.md) for detailed failure case
 
 ---
 
-# 8. Translation status
+# 8. Internationalization quality status
 
-Core English learning coverage is now complete:
+The major internationalization milestones are now implemented:
 
 - [x] English project landing page
 - [x] English Learning Hub
 - [x] English Quick Start
 - [x] English Architecture Guide
-- [x] Chapters 00–13 English Labs
-- [x] Chapters 14–20 English Engineering Labs
+- [x] Complete Chapters 00–20 English Labs
 - [x] English Engineering Course overview
 - [x] English API Reference
 - [x] English Database / ER Guide
 - [x] English Troubleshooting Guide
+- [x] English Git-history `COURSE_REBUILD` archaeology
+- [x] Bilingual engineering terminology baseline
+- [x] Real bilingual screenshots + reproducible walkthrough GIF
+- [x] Structural bilingual/source drift check in CI
+- [x] English-first Browser E2E example in Mock mode
 - [x] English contribution path
 
-Remaining internationalization work is now quality/maintenance work rather than missing core curriculum, for example:
-
-```text
-translate historical COURSE_REBUILD archaeology
-translate every auxiliary reference
-keep bilingual docs synchronized with code
-add screenshots/GIFs in both languages
-improve terminology consistency
-add English browser E2E examples
-```
+Internationalization is now an ongoing maintenance discipline rather than a one-time translation project. Useful future work includes keeping terminology aligned as features evolve, adding focused real-runtime visuals to high-value Labs, improving accessibility language, and extending E2E coverage when new user-visible flows become stable.
 
 English documentation contributions remain welcome through [CONTRIBUTING.md](../CONTRIBUTING.md).
 

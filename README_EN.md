@@ -14,7 +14,7 @@ AiFriends uses **Vue 3 + Django + DRF + JWT + LangChain + LangGraph + LanceDB + 
 
 This is not a “call one LLM API and print the answer” demo. It connects browser UI, authentication, persistence, streaming protocols, agents, RAG, long-term memory, ASR/TTS, automated tests, data integrity, security boundaries, CI, and build workflows in one repository.
 
-> **English documentation status:** the core learning path is now fully internationalized. English learners can complete **Chapters 00–20** and use dedicated English Quick Start, Architecture, Engineering Course, API Reference, Database/ER, and Troubleshooting guides without relying on Chinese prose for the core curriculum.
+> **English documentation status:** the core curriculum and high-value maintainer path are now internationalized. English learners can complete **Chapters 00–20**, study real Git-history engineering archaeology, use the maintained architecture/API/database references, follow a bilingual terminology baseline, inspect real screenshots/GIFs, and run a Browser E2E example. CI guards core bilingual/source structure against silent drift.
 
 ---
 
@@ -28,10 +28,10 @@ This is not a “call one LLM API and print the answer” demo. It connects brow
 | Live demo | **[Open the real deployment](https://app8056.acapp.acwing.com.cn/)** |
 | First-run barrier | `AI_MODE=mock` runs the core Web/SSE flow with **zero API keys** |
 | Curriculum | Chapters **00–20**, fully available as English Labs |
-| Automated feedback | Django tests + Node tests + structural grader + GitHub Actions |
+| Automated feedback | Django tests + Node tests + Browser E2E + structural grader + i18n/source drift + GitHub Actions |
 | AI stack | LangGraph Agent / Tool Calling / Memory / RAG / ASR / TTS |
 | Engineering stack | Serializers / cancellation / migrations / Health / Request-ID / Docker learning image |
-| English references | Quick Start / Architecture / Engineering / API / ER / Troubleshooting |
+| English references | Quick Start / Git History / Architecture / Engineering / API / ER / Troubleshooting |
 | Security | [SECURITY.md](./SECURITY.md) |
 | Contributing | [CONTRIBUTING.md](./CONTRIBUTING.md) |
 
@@ -72,6 +72,12 @@ The deployed homepage loads real public Character cards and profiles, demonstrat
 [![AiFriends live public profile](./docs/assets/live-demo/public-profile.png)](https://app8056.acapp.acwing.com.cn/user/space/6)
 
 > Screenshots are real production snapshots captured on **2026-08-11**. Public Characters, profile data, and deployed assets can evolve over time. See [Live Demo Verification](./docs/LIVE_DEMO.md) for the capture method and scope.
+
+## Real walkthrough GIF
+
+![AiFriends real production walkthrough](./docs/assets/live-demo/walkthrough.gif)
+
+The GIF is reproducibly built only from the real production PNGs above; it is not generated UI. See the [Screenshots & GIF Guide](./docs/SCREENSHOTS.md) for visual-evidence rules.
 
 ---
 
@@ -143,12 +149,16 @@ Contribute fixes, tests, evaluations, docs, or translations
 
 - 🌍 [English Learning Hub](./docs/README_EN.md)
 - 🚀 [English Quick Start](./docs/QUICK_START_EN.md)
+- 🧭 [English Git-history Rebuild](./docs/COURSE_REBUILD_EN.md)
 - 🧪 [English Labs: Chapter 00–20](./labs/en/README.md)
 - 🧠 [English Architecture Guide](./docs/ARCHITECTURE_EN.md)
 - 🏗️ [English Engineering Course: Chapter 14–20](./docs/ENGINEERING_COURSE_EN.md)
 - 🔌 [English API Reference](./docs/API_REFERENCE_EN.md)
 - 🗄️ [English Database / ER Guide](./docs/DATABASE_ER_EN.md)
 - 🧯 [English Troubleshooting Guide](./docs/TROUBLESHOOTING_EN.md)
+- 🌐 [Bilingual Engineering Glossary](./docs/BILINGUAL_GLOSSARY.md)
+- 🖼️ [Screenshots & GIF Guide](./docs/SCREENSHOTS.md)
+- 🧪 [Browser E2E example](./e2e/README.md)
 - ✅ [Grading & Automated Feedback](./docs/GRADING.md)
 - 🛡️ [Security Policy](./SECURITY.md)
 - 🤝 [Contributing Guide](./CONTRIBUTING.md)
@@ -164,7 +174,7 @@ Contribute fixes, tests, evaluations, docs, or translations
 - 🗄️ [数据库 ER 图](./docs/DATABASE_ER.md)
 - 🧯 [排错手册](./docs/TROUBLESHOOTING.md)
 
-`COURSE_REBUILD` and some historical/auxiliary deep-dive material may remain Chinese-first. That does not block the complete English Chapter 00–20 learning path.
+Real Git-history engineering archaeology is now available in both languages through `COURSE_REBUILD.md` and `COURSE_REBUILD_EN.md`. Remaining internationalization work is ongoing maintenance quality rather than a missing core learning path.
 
 ---
 
@@ -429,12 +439,15 @@ Pull requests run GitHub Actions for:
 
 ```text
 Python compile
+internationalization/documentation drift check
+live-demo GIF drift check
 Chapter 00–20 grader
 migration drift
 Django check/tests
 npm ci
 VAD setup
 frontend quality/tests/build
+Chromium Browser E2E in AI_MODE=mock
 learning Docker image build
 ```
 
@@ -615,18 +628,19 @@ Never commit real secrets, JWTs, private conversations, or local private knowled
 - [x] English Database / ER Guide
 - [x] English Troubleshooting Guide
 - [x] Explicitly welcome bilingual documentation contributions
-- [ ] Translate historical `COURSE_REBUILD` / auxiliary archaeology where useful
-- [ ] Keep bilingual docs synchronized automatically where possible
-- [x] First real bilingual Live Demo screenshots
-- [ ] Add per-chapter screenshots / GIFs / expected results
-- [ ] Improve terminology consistency and accessibility
+- [x] English `COURSE_REBUILD` / real Git-history engineering archaeology
+- [x] Structural CI guard for core bilingual docs and important source sentinels
+- [x] First real bilingual Live Demo screenshots + reproducible walkthrough GIF
+- [ ] Add focused screenshots / GIFs / expected results to more high-value chapters
+- [x] Bilingual engineering terminology baseline and contribution rules
+- [ ] Continue accessibility-language improvements
 
 ## Learning Quality
 
 - [ ] Stable `course/chXX-start` / `course/chXX-solution` tags
 - [ ] Bug Museum based on real historical defects
 - [ ] More behavioral graders
-- [ ] Browser E2E in Mock mode
+- [x] Browser E2E in Mock mode (registration / protected route / reload restoration)
 - [ ] Video index
 
 ## Backend / Security

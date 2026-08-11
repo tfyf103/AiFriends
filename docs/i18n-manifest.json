@@ -1,0 +1,44 @@
+{
+  "document_pairs": [
+    {"zh": "README.md", "en": "README_EN.md"},
+    {"zh": "docs/README.md", "en": "docs/README_EN.md"},
+    {"zh": "docs/ARCHITECTURE.md", "en": "docs/ARCHITECTURE_EN.md"},
+    {"zh": "docs/ENGINEERING_COURSE.md", "en": "docs/ENGINEERING_COURSE_EN.md"},
+    {"zh": "docs/API_REFERENCE.md", "en": "docs/API_REFERENCE_EN.md"},
+    {"zh": "docs/DATABASE_ER.md", "en": "docs/DATABASE_ER_EN.md"},
+    {"zh": "docs/TROUBLESHOOTING.md", "en": "docs/TROUBLESHOOTING_EN.md"},
+    {"zh": "docs/COURSE_REBUILD.md", "en": "docs/COURSE_REBUILD_EN.md"}
+  ],
+  "source_sentinels": [
+    {"path": "frontend/src/js/http/streamApi.js", "contains": "fetchEventSource"},
+    {"path": "frontend/src/components/character/chat_field/input_field/InputField.vue", "contains": "AbortController"},
+    {"path": "backend/web/ai/config.py", "contains": "AI_MODE"},
+    {"path": "backend/web/documents/retrieval.py", "contains": "retrieve"},
+    {"path": "backend/web/views/friend/message/chat/graph.py", "contains": "ToolNode"},
+    {"path": "backend/web/management/commands/doctor.py", "contains": "BaseCommand"},
+    {"path": "scripts/eval_rag.py", "contains": "argparse"},
+    {"path": "scripts/grade.py", "contains": "chapter"}
+  ],
+  "required_assets": [
+    "docs/assets/live-demo/homepage.png",
+    "docs/assets/live-demo/login.png",
+    "docs/assets/live-demo/register.png",
+    "docs/assets/live-demo/public-profile.png",
+    "docs/assets/live-demo/walkthrough.gif"
+  ],
+  "required_glossary_terms": [
+    "Character",
+    "Friend",
+    "Message",
+    "Mock mode",
+    "Tool Calling",
+    "Long-term Memory",
+    "RAG",
+    "SSE",
+    "ASR",
+    "TTS",
+    "Request ID",
+    "Browser E2E",
+    "documentation drift"
+  ]
+}

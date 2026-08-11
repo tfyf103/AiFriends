@@ -14,7 +14,7 @@ Chapter 14–20
 把 AI Demo 升级成可靠工程项目
 ```
 
-> **英文核心课程现已完整覆盖 Chapter 00–20。** English learners can use dedicated Quick Start / Architecture / Engineering Course / API / Database / Troubleshooting documents and complete the full Labs path independently.
+> **英文核心课程与高价值工程资料现已形成完整路径。** English learners can use dedicated Quick Start / Git-history Rebuild / Architecture / Engineering Course / API / Database / Troubleshooting documents, complete Chapter 00–20 independently, and use the same visual/testing/CI quality gates as Chinese learners.
 
 ---
 
@@ -46,6 +46,8 @@ README_EN
 English Learning Hub
  ↓
 QUICK_START_EN
+ ↓
+COURSE_REBUILD_EN
  ↓
 AI_MODE=mock
  ↓
@@ -108,6 +110,25 @@ Chapter 14 Testing
 20 CI / Deploy / Observability
 ```
 
+## E. 想沿真实 Git 历史做工程考古
+
+中文：[`COURSE_REBUILD.md`](./COURSE_REBUILD.md)  
+English：[`COURSE_REBUILD_EN.md`](./COURSE_REBUILD_EN.md)
+
+用法：
+
+```text
+真实 historical commit
+ ↓
+git show --stat
+ ↓
+git show
+ ↓
+理解当时为什么需要新能力
+ ↓
+再对照当前 main 的工程化实现
+```
+
 ---
 
 # 2. 核心资料
@@ -132,6 +153,7 @@ Chapter 14 Testing
 |---|---|
 | [English Learning Hub](./README_EN.md) | Full English navigation |
 | [English Quick Start](./QUICK_START_EN.md) | Zero-API-key first run |
+| [English Git-history Rebuild](./COURSE_REBUILD_EN.md) | Real project archaeology and rebuild path |
 | [English Labs 00–20](../labs/en/README.md) | Complete hands-on curriculum |
 | [English Architecture Guide](./ARCHITECTURE_EN.md) | Current end-to-end architecture |
 | [English Engineering Course](./ENGINEERING_COURSE_EN.md) | Chapters 14–20 overview |
@@ -139,6 +161,15 @@ Chapter 14 Testing
 | [English Database / ER Guide](./DATABASE_ER_EN.md) | Relations, constraints, storage boundaries |
 | [English Troubleshooting](./TROUBLESHOOTING_EN.md) | Current layered debugging guide |
 | [README_EN](../README_EN.md) | International project landing page |
+
+## 双语质量资源
+
+| Resource | Purpose |
+|---|---|
+| [Bilingual Glossary](./BILINGUAL_GLOSSARY.md) | 统一 Character/Friend/RAG/SSE 等中英文工程术语 |
+| [Screenshots & GIF Guide](./SCREENSHOTS.md) | 真实截图/GIF 规范、视觉证据与贡献规则 |
+| [Live Demo Verification](./LIVE_DEMO.md) | 线上截图真实性与只读验证记录 |
+| [Browser E2E](../e2e/README.md) | Chromium + Vue + Django + SQLite 的真实端到端示例 |
 
 ---
 
@@ -264,6 +295,31 @@ python scripts/grade.py --chapter 7
 python scripts/grade.py --chapter 20
 ```
 
+## 双语文档 / 源码漂移检查
+
+```bash
+python scripts/check_i18n.py
+```
+
+它检查：
+
+```text
+中英文核心文档配对
+Chapter 00–20 双语 Labs 覆盖
+重要源码路径/关键标识是否仍存在
+Live Demo 视觉资产是否齐全
+双语术语基线
+重要相对链接是否失效
+```
+
+它只做**结构性漂移检测**，不会假装机器可以判断整篇翻译语义是否完全等价。
+
+## Live Demo GIF 同步
+
+```bash
+python scripts/build_demo_gif.py --check
+```
+
 ## Backend tests
 
 ```bash
@@ -277,6 +333,16 @@ python manage.py test web
 cd frontend
 npm run check
 ```
+
+## Browser E2E
+
+```bash
+npm install --prefix e2e
+npm exec --prefix e2e -- playwright install chromium
+node e2e/browser-smoke.mjs
+```
+
+Browser E2E 使用临时 SQLite + `AI_MODE=mock`，不会访问线上生产数据库，也不需要外部模型密钥。
 
 ---
 
@@ -379,6 +445,9 @@ web/tests.py
 .github/workflows/ci.yml
 scripts/grade.py
 scripts/eval_rag.py
+scripts/check_i18n.py
+scripts/build_demo_gif.py
+e2e/browser-smoke.mjs
 ```
 
 ---
@@ -457,11 +526,16 @@ ASR/TTS
 
 # 11. 真实历史 Commit 怎么使用？
 
-`COURSE_REBUILD.md` 的价值是：
+中英文都保留了真实 Git 检查点：
+
+- 中文：[COURSE_REBUILD](./COURSE_REBUILD.md)
+- English：[COURSE_REBUILD_EN](./COURSE_REBUILD_EN.md)
+
+它们的价值是：
 
 > 看一个真实项目如何逐步增加需求与复杂度。
 
-但历史版本可能包含当时的 bug。
+但历史版本可能包含当时的 bug 或旧 provider 选择。
 
 因此：
 
@@ -469,15 +543,16 @@ ASR/TTS
 历史 commit = 工程考古
 当前测试 = 当前参考行为
 Labs 验收 = 学习目标
+当前 docs/source = 维护中的工程实现
 ```
 
-不要把每一个历史版本都当标准答案。
+不要把每一个历史版本都当成今天的最佳实践。
 
 ---
 
-# 12. 国际化状态
+# 12. 国际化质量状态
 
-核心路径已经完成：
+核心覆盖与第一轮质量机制已经完成：
 
 - [x] 中英文项目首页
 - [x] English Learning Hub
@@ -488,14 +563,14 @@ Labs 验收 = 学习目标
 - [x] English API Reference
 - [x] English Database / ER Guide
 - [x] English Troubleshooting
+- [x] **English `COURSE_REBUILD` 真实 Git 历史工程考古**
+- [x] **双语工程术语基线**
+- [x] **真实中英文截图 + 可复现 walkthrough GIF**
+- [x] **双语文档 / 关键源码路径结构性漂移 CI 检查**
+- [x] **英文优先 Browser E2E 示例**
 - [x] 中英文贡献入口
 
-后续国际化已经从“补缺失课程”转成“持续质量维护”：
-
-- [ ] 按价值翻译 `COURSE_REBUILD` / 历史工程考古等辅助资料
-- [ ] 自动检查双语文档与代码漂移
-- [ ] 中英文截图 / GIF / Expected Result
-- [ ] 术语一致性和可访问性优化
+后续国际化不再是“缺哪篇就翻哪篇”，而是持续维护：新功能出现时同步术语、源码路径、视觉证据和 E2E；高价值 Lab 再逐步增加真实运行截图/GIF 与可访问性说明。
 
 原则：**双语文档首先要与当前代码一致，其次才是追求文字覆盖率。**
 
@@ -516,7 +591,7 @@ DevTools / 日志观察
  ↓
 修复
  ↓
-grader / test / build
+grader / test / build / E2E / docs drift
  ↓
 commit
  ↓
@@ -530,6 +605,7 @@ Network
 Traceback
 Test
 CI
+E2E
 Metric
 ```
 
