@@ -13,7 +13,7 @@ AiFriends uses **Vue 3 + Django + DRF + JWT + LangChain + LangGraph + LanceDB + 
 
 This is not a “call one LLM API and print the answer” demo. It connects browser UI, authentication, persistence, streaming protocols, agents, RAG, long-term memory, ASR/TTS, automated tests, data integrity, security boundaries, CI, and build workflows in one repository.
 
-> **English documentation status:** the project now has a complete English landing page, an [English Learning Hub](./docs/README_EN.md), a zero-API-key [Quick Start](./docs/QUICK_START_EN.md), a current [Architecture Guide](./docs/ARCHITECTURE_EN.md), and full English Labs for Chapters **00 / 06 / 07 / 08 / 10 / 13**. The remaining deep course chapters are still Chinese-first and will be translated incrementally.
+> **English documentation status:** the core learning path is now fully internationalized. English learners can complete **Chapters 00–20** and use dedicated English Quick Start, Architecture, Engineering Course, API Reference, Database/ER, and Troubleshooting guides without relying on Chinese prose for the core curriculum.
 
 ---
 
@@ -23,13 +23,13 @@ This is not a “call one LLM API and print the answer” demo. It connects brow
 | --- | --- |
 | License | **MIT** |
 | Maintenance | **Active development**, primarily maintained by `@tfyf103` |
-| Languages | Chinese + English landing pages, English core learning path, remaining deep course content Chinese-first |
+| Languages | **Chinese + English** project and core learning paths |
 | First-run barrier | `AI_MODE=mock` runs the core Web/SSE flow with **zero API keys** |
-| Curriculum | Chapters **00–20**, from beginner foundations to engineering practices |
-| English labs | Full translations for **00 / 06 / 07 / 08 / 10 / 13** |
+| Curriculum | Chapters **00–20**, fully available as English Labs |
 | Automated feedback | Django tests + Node tests + structural grader + GitHub Actions |
 | AI stack | LangGraph Agent / Tool Calling / Memory / RAG / ASR / TTS |
-| Engineering stack | Serializers / cancellation / migration checks / Health / Request-ID / Docker learning image |
+| Engineering stack | Serializers / cancellation / migrations / Health / Request-ID / Docker learning image |
+| English references | Quick Start / Architecture / Engineering / API / ER / Troubleshooting |
 | Security | [SECURITY.md](./SECURITY.md) |
 | Contributing | [CONTRIBUTING.md](./CONTRIBUTING.md) |
 
@@ -69,64 +69,64 @@ Speech
 Persistence / Tests / CI / Security
 ```
 
-AiFriends is designed to bridge that engineering gap with a **code-first, reproducible, experiment-driven learning path with automated feedback**.
+AiFriends bridges that engineering gap with a **code-first, reproducible, experiment-driven learning path with automated feedback**.
 
-The tutorial and the maintained application live in the same repository. Learners inspect the real runtime path, real Git history, real tests, real data migrations, and real CI instead of switching to a separate toy implementation.
+The tutorial and maintained application live in the same repository. Learners inspect real runtime paths, Git history, tests, data migrations, CI, security boundaries, and deployment trade-offs instead of switching to a separate toy implementation.
 
-The project started from the Chinese AI learning community and is now building a durable bilingual learning path for developers worldwide.
+The project started in the Chinese AI learning community and now offers a complete English core curriculum for developers worldwide.
 
 ---
 
-# 🌱 Recommended English learning path
+# 🌍 English learning path
 
 ```text
-README_EN.md: understand the project
-   ↓
+README_EN
+  ↓
 English Learning Hub
-   ↓
+  ↓
 English Quick Start
-   ↓
-AI_MODE=mock: run it with zero API keys
-   ↓
-Chapter 00: reproducible environment
-   ↓
-Chapter 06: minimal LLM boundary
-   ↓
-Chapter 07: SSE streaming + cancellation
-   ↓
-Chapter 08: LangGraph + Tool Calling
-   ↓
-Chapter 10: RAG + retrieval evaluation
-   ↓
-Chapter 13: full-system capstone
-   ↓
-English Architecture Guide
-   ↓
-Contribute fixes, tests, evaluations, or translations
+  ↓
+AI_MODE=mock
+  ↓
+Chapter 00 → 01 → 02 → 03 → 04 → 05
+  ↓
+Chapter 06 → 07 → 08 → 09 → 10 → 11 → 12
+  ↓
+Chapter 13 Full-System Capstone
+  ↓
+Chapter 14 → 15 → 16 → 17 → 18 → 19 → 20
+  ↓
+Architecture / API / Database / Troubleshooting
+  ↓
+Contribute fixes, tests, evaluations, docs, or translations
 ```
 
 ## English-first resources
 
 - 🌍 [English Learning Hub](./docs/README_EN.md)
 - 🚀 [English Quick Start](./docs/QUICK_START_EN.md)
+- 🧪 [English Labs: Chapter 00–20](./labs/en/README.md)
 - 🧠 [English Architecture Guide](./docs/ARCHITECTURE_EN.md)
-- 🧪 [English Core Labs](./labs/en/README.md)
+- 🏗️ [English Engineering Course: Chapter 14–20](./docs/ENGINEERING_COURSE_EN.md)
+- 🔌 [English API Reference](./docs/API_REFERENCE_EN.md)
+- 🗄️ [English Database / ER Guide](./docs/DATABASE_ER_EN.md)
+- 🧯 [English Troubleshooting Guide](./docs/TROUBLESHOOTING_EN.md)
+- ✅ [Grading & Automated Feedback](./docs/GRADING.md)
 - 🛡️ [Security Policy](./SECURITY.md)
 - 🤝 [Contributing Guide](./CONTRIBUTING.md)
 
-## Complete Chinese-first curriculum
+## Chinese resources
 
-The following materials cover the full Chapter 00–20 curriculum. Chapters without a dedicated English translation remain Chinese-first, while code paths and commands are shared:
-
-- 📘 [Learning Center / 学习中心](./docs/README.md)
-- 🚀 [Beginner Tutorial / 完整运行与复刻教程](./docs/BEGINNER_TUTORIAL.md)
-- 🧭 [Rebuild from Git History / 沿真实 Git 历史重建](./docs/COURSE_REBUILD.md)
-- 🧪 [Labs: Chapter 00–20](./labs/README.md)
-- 🏗️ [Engineering Course: Chapter 14–20](./docs/ENGINEERING_COURSE.md)
-- ✅ [Grading & Automated Feedback](./docs/GRADING.md)
+- 📘 [中文学习中心](./docs/README.md)
+- 🚀 [零基础完整教程](./docs/BEGINNER_TUTORIAL.md)
+- 🧭 [沿真实 Git 历史重建](./docs/COURSE_REBUILD.md)
+- 🧪 [中文 Labs: Chapter 00–20](./labs/README.md)
+- 🏗️ [工程进阶课程](./docs/ENGINEERING_COURSE.md)
 - 🔌 [API Reference](./docs/API_REFERENCE.md)
-- 🗄️ [Database ER Guide](./docs/DATABASE_ER.md)
-- 🧯 [Troubleshooting](./docs/TROUBLESHOOTING.md)
+- 🗄️ [数据库 ER 图](./docs/DATABASE_ER.md)
+- 🧯 [排错手册](./docs/TROUBLESHOOTING.md)
+
+`COURSE_REBUILD` and some historical/auxiliary deep-dive material may remain Chinese-first. That does not block the complete English Chapter 00–20 learning path.
 
 ---
 
@@ -136,18 +136,18 @@ The following materials cover the full Chapter 00–20 curriculum. Chapters with
 
 - Create custom AI characters.
 - Configure name, avatar, chat background, personality, and world setting.
-- Assign different voices to different characters.
-- Maintain an independent Friend relationship between each user and character.
+- Assign voices to Characters.
+- Maintain an independent Friend relationship between each user and Character.
 
 ## 💬 Streaming Chat
 
-- JWT login and token refresh.
+- JWT login and refresh.
 - SSE text streaming.
-- Persistent message history.
+- Persistent Message history.
 - Recent conversations as short-term context.
 - Token-usage persistence.
-- `AbortController` to actually terminate the browser SSE request.
-- Backend cancellation events to stop generation workers as early as possible.
+- `AbortController` to terminate the browser stream.
+- Backend cancellation events to stop workers as early as possible.
 
 ## 🧠 Long-term Memory
 
@@ -161,11 +161,9 @@ MemoryGraph
 new long-term summary
 ```
 
-Character identity and user-specific memory are separated:
-
 ```text
-Character.profile = who the character is
-Friend.memory     = what this character remembers about this user
+Character.profile = who the Character is
+Friend.memory     = what this Character remembers about this user
 ```
 
 ## 🧰 LangGraph Agent / Tool Calling
@@ -182,10 +180,7 @@ Tool needed?
             agent
 ```
 
-Example tools include:
-
-- current time;
-- LanceDB knowledge-base retrieval.
+Example tools include current-time lookup and LanceDB knowledge retrieval.
 
 ## 📚 RAG
 
@@ -205,7 +200,7 @@ source-aware evidence
     Agent
 ```
 
-Retrieval is separated from agent orchestration so it can be evaluated independently. This makes it possible to distinguish **retrieval failures** from **generation failures**.
+Retrieval is separated from Agent orchestration so it can be evaluated independently. This lets maintainers distinguish **retrieval failures** from **generation failures**.
 
 ## 🎙️ Voice
 
@@ -214,21 +209,19 @@ Retrieval is separated from agent orchestration so it can be evaluated independe
 - WebSocket ASR.
 - Parallel LLM text and TTS flow.
 - MP3 bytes → Base64 → SSE.
-- Continuous browser playback with MediaSource / SourceBuffer.
+- Browser playback with MediaSource / SourceBuffer.
 
 ---
 
 # ⭐ Three AI runtime modes
 
-AiFriends lets learners understand the system before fighting with third-party model services.
-
-| Mode | External services required | Best for learning |
+| Mode | External services | Best for |
 | --- | --- | --- |
 | `mock` | None | Vue / Django / JWT / Friend / SSE / DB / CI |
 | `text` | Chat model | LLM / LangGraph / Tools / Memory |
 | `full` | Chat + Embedding + Speech | RAG / ASR / TTS end-to-end |
 
-## 1. `mock` — recommended first run
+## `mock` — recommended first run
 
 ```env
 AI_MODE=mock
@@ -237,15 +230,9 @@ ENABLE_ASR=false
 ENABLE_TTS=false
 ```
 
-You do **not** need:
+No `API_KEY`, `API_BASE`, or `WSS_URL` is required for the core learning path.
 
-```text
-API_KEY
-API_BASE
-WSS_URL
-```
-
-But the request still travels through the real application layers:
+The request still goes through real application layers:
 
 ```text
 Vue
@@ -261,7 +248,7 @@ SSE
 Message database
 ```
 
-## 2. `text`
+## `text`
 
 ```env
 AI_MODE=text
@@ -270,19 +257,17 @@ API_BASE=...
 CHAT_MODEL=...
 ```
 
-Use this mode to learn a real LLM and LangGraph flow without making ASR/TTS a prerequisite for successful chat.
+Use a real LLM without making speech a prerequisite.
 
-## 3. `full`
+## `full`
 
-Enables Chat + RAG + ASR + TTS.
-
-For backward compatibility, existing deployments without `AI_MODE` still default to `full`. New learners copying `.env.example` start from `mock`.
+Enable the full Chat + RAG + ASR + TTS path, subject to feature flags and provider configuration.
 
 ---
 
 # 🚀 Quick Start
 
-> For the maintained step-by-step version, use **[docs/QUICK_START_EN.md](./docs/QUICK_START_EN.md)**.
+For the maintained step-by-step guide, use **[docs/QUICK_START_EN.md](./docs/QUICK_START_EN.md)**.
 
 ## 1. Clone
 
@@ -309,13 +294,11 @@ macOS / Linux:
 source .venv/bin/activate
 ```
 
-Install dependencies:
-
 ```bash
 pip install -r requirements.txt
 ```
 
-## 3. Environment configuration
+## 3. Environment
 
 Windows:
 
@@ -329,16 +312,9 @@ macOS / Linux:
 cp .env.example .env
 ```
 
-For your first run, keep:
+Keep the first run in Mock mode.
 
-```env
-AI_MODE=mock
-ENABLE_RAG=false
-ENABLE_ASR=false
-ENABLE_TTS=false
-```
-
-## 4. Start Django
+## 4. Django
 
 ```bash
 cd backend
@@ -348,33 +324,9 @@ python manage.py doctor
 python manage.py runserver
 ```
 
-### `seed_demo`
+## 5. Vue
 
-Idempotently creates the minimum learning data:
-
-```text
-Demo Voice
-Reply SystemPrompt
-Memory SystemPrompt
-```
-
-### `doctor`
-
-Checks what the current AI mode actually requires:
-
-```text
-Python
-Database
-API configuration
-SystemPrompt
-Voice
-LanceDB
-VAD assets
-```
-
-## 5. Start Vue
-
-Open a new terminal:
+Open another terminal:
 
 ```bash
 cd frontend
@@ -382,9 +334,9 @@ npm ci
 npm run dev
 ```
 
-In development, Vite proxies `/api` and `/media`, reducing first-run CORS and cookie-host friction.
+Vite proxies `/api` and `/media` during development.
 
-## 6. Send the first message
+## 6. First message
 
 ```text
 Register
@@ -397,50 +349,23 @@ Add Friend
   ↓
 Send message
   ↓
-Receive a streaming [Mock mode] reply
+Receive streaming Mock reply
 ```
 
-Once this works, move gradually to `text` and then `full`.
-
----
-
-# 🎙️ Before learning voice features
-
-```bash
-cd frontend
-npm run setup:vad
-```
-
-This prepares the browser VAD / ONNX Runtime static assets from npm dependencies.
-
-Then enable features one at a time:
-
-```env
-ENABLE_ASR=true
-ENABLE_TTS=true
-```
-
-If the environment becomes confusing, run:
-
-```bash
-cd backend
-python manage.py doctor
-```
+Then move gradually to `text`, RAG, ASR, TTS, and `full`.
 
 ---
 
 # ✅ Automated feedback
 
-AiFriends currently provides four feedback layers.
-
-## Level 1 — Environment
+## Environment
 
 ```bash
 cd backend
 python manage.py doctor
 ```
 
-## Level 2 — Course structural grader
+## Structural grader
 
 ```bash
 python scripts/grade.py --chapter 7
@@ -448,50 +373,36 @@ python scripts/grade.py --chapter 13
 python scripts/grade.py --chapter 20
 ```
 
-## Level 3 — Behavior tests
-
-Backend:
+## Backend tests
 
 ```bash
 cd backend
 python manage.py test web
 ```
 
-Frontend:
-
-```bash
-cd frontend
-npm test
-```
-
-## Level 4 — Build / CI
+## Frontend checks
 
 ```bash
 cd frontend
 npm run check
 ```
 
-Pull requests run GitHub Actions in a clean environment:
+Pull requests run GitHub Actions for:
 
 ```text
 Python compile
 Chapter 00–20 grader
-Migration drift check
-Django system check
-Backend tests
+migration drift
+Django check/tests
 npm ci
 VAD setup
-Frontend quality check
-Frontend unit tests
-Vite production build
-Docker learning image build
+frontend quality/tests/build
+learning Docker image build
 ```
-
-See [GRADING.md](./docs/GRADING.md) for the full grading model.
 
 ---
 
-# 🔥 How does one chat message cross the system?
+# 🔥 One chat message across the system
 
 ```text
 InputField.vue
@@ -506,10 +417,7 @@ MessageChatView
   ↓
 Friend ownership
   ↓
-SystemPrompt
-+ Character.profile
-+ Friend.memory
-+ recent Message
+SystemPrompt + Character.profile + Friend.memory + recent Message
   ↓
 AI_MODE
   ├─ mock → deterministic local stream
@@ -524,29 +432,23 @@ AI_MODE
                 source evidence
   ↓
 content chunk
-  ├──────────────→ SSE text
-  └→ optional TTS WebSocket
-                   ↓
-                MP3 bytes
-                   ↓ Base64
-                 SSE audio
+  ├→ SSE text
+  └→ optional TTS WebSocket → MP3 → Base64 → SSE audio
   ↓
-Vue onmessage
-  ├─ message bubble
-  └─ MediaSource
+Vue UI / MediaSource
   ↓
 Message persistence
   ↓
 periodic Memory update
 ```
 
-For the maintained English explanation, see **[ARCHITECTURE_EN.md](./docs/ARCHITECTURE_EN.md)**.
+Deep dive: [English Architecture Guide](./docs/ARCHITECTURE_EN.md).
 
 ---
 
-# 📚 Two-stage curriculum
+# 📚 Chapter 00–20 curriculum
 
-## Chapters 00–13 — build it first
+## Stage 1 — Build it
 
 ```text
 00 Environment
@@ -557,50 +459,33 @@ For the maintained English explanation, see **[ARCHITECTURE_EN.md](./docs/ARCHIT
 05 Friend
 06 Basic LLM Chat
 07 SSE
-08 LangGraph / Tool
-09 Memory
+08 LangGraph / Tool Calling
+09 Long-Term Memory
 10 RAG
 11 ASR
-12 TTS
-13 Full Pipeline
-```
-
-Goal: **build a complete AI web application independently.**
-
-The current English core track covers:
-
-```text
-00 Environment
-06 Basic LLM Chat
-07 SSE Streaming
-08 LangGraph / Tool Calling
-10 RAG + LanceDB
+12 Streaming TTS
 13 Full-System Capstone
 ```
 
-Start from [English Labs](./labs/en/README.md).
-
-## Chapters 14–20 — make it reliable
+## Stage 2 — Engineer it
 
 ```text
 14 Testing / TDD
 15 DRF / Serializer / HTTP Status
-16 Config / Feature Flag / Provider
-17 Async / Cancellation
-18 Constraint / Transaction / Security
+16 Config / Feature Flags / Providers
+17 Async / Streaming / Cancellation
+18 Constraints / Transactions / Security
 19 RAG / Memory Evaluation
 20 CI / Build / Deploy / Observability
 ```
 
-Goal: **upgrade a working AI demo into software that can be verified and maintained.**
-
-The complete Chapter 00–20 lab set remains available at [Labs](./labs/README.md), with untranslated chapters currently Chinese-first.
+All chapters are available in [English Labs](./labs/en/README.md).
 
 ---
 
 # 🛡️ Security & maintenance
 
-AiFriends has security-sensitive surfaces across:
+AiFriends spans security-sensitive surfaces:
 
 ```text
 JWT / refresh cookies
@@ -613,14 +498,12 @@ Third-party AI endpoints
 Dependency supply chain
 ```
 
-Security is treated as part of maintenance, not as an appendix to the course.
+- Follow [SECURITY.md](./SECURITY.md) for suspected vulnerabilities.
+- Follow [CONTRIBUTING.md](./CONTRIBUTING.md) for normal bugs, tests, docs, and improvements.
+- CI uses Mock mode so contributors do not need real model credentials.
+- `/api/health/`, `X-Request-ID`, migration checks, tests, and learning Docker improve diagnosability and regression protection.
 
-- Follow **[SECURITY.md](./SECURITY.md)** for vulnerability reports. Do not publicly disclose an unpatched vulnerability.
-- Follow **[CONTRIBUTING.md](./CONTRIBUTING.md)** for normal bugs, tests, docs, and engineering improvements.
-- CI uses `mock` mode by default, so contributors do not need to submit real API credentials or spend external-model credits.
-- `/api/health/`, `X-Request-ID`, migration drift checks, behavior tests, and the Docker learning build improve diagnosability and regression protection.
-
-> `Dockerfile.learning`, SQLite, Django `runserver`, and development settings are **learning references**, not production-security guarantees. Production deployments still need WSGI/ASGI, HTTPS, PostgreSQL, persistent storage, proper secret management, rate limits, metrics/tracing, and related hardening.
+> `Dockerfile.learning`, SQLite, Django `runserver`, and development settings are **learning references**, not production-security guarantees.
 
 ---
 
@@ -634,33 +517,16 @@ python scripts/eval_rag.py \
   --k 3
 ```
 
-The runner evaluates retrieval separately:
+This evaluates retrieval separately from generation and checks expected evidence/source behavior.
 
-```text
-Question
-  ↓
-Embedding
-  ↓
-Top-k Retrieval
-  ↓
-Expected keywords / source
-```
+Learn more in:
 
-This helps distinguish:
-
-```text
-Retrieval failed
-vs
-Evidence was retrieved but the LLM used it poorly
-```
-
-That separation is one of the core engineering ideas in Chapter 19 and is also taught in the English [Chapter 10 RAG Lab](./labs/en/chapter-10-rag.md).
+- [Chapter 10 RAG](./labs/en/chapter-10-rag.md)
+- [Chapter 19 RAG / Memory Evaluation](./labs/en/chapter-19-rag-memory-eval.md)
 
 ---
 
 # 🐳 Learning Docker
-
-Use the learning image as a clean-environment reproducibility check:
 
 ```bash
 docker build -f Dockerfile.learning -t aifriends:learning .
@@ -673,7 +539,7 @@ or:
 docker compose -f compose.learning.yml up --build
 ```
 
-It intentionally still uses Django `runserver`. Chapter 20 discusses the boundary between a learning image and a production deployment.
+Chapter 20 explains why the learning image is different from a production deployment.
 
 ---
 
@@ -683,68 +549,50 @@ Useful contributions include:
 
 - reproducible bug fixes;
 - authentication / authorization / upload / streaming / RAG security improvements;
-- regression tests;
-- first-run diagnostics and developer tooling;
-- fixes for source/documentation drift;
+- regression tests and browser E2E;
+- first-run diagnostics;
+- documentation/source drift fixes;
 - labs and debugging exercises;
 - accessibility / performance / CI / observability / deployment improvements;
 - RAG / Memory evaluation cases;
-- **English documentation improvements and translations.**
+- **English and Chinese documentation synchronization and translation quality improvements.**
 
 Read [CONTRIBUTING.md](./CONTRIBUTING.md) before opening a large PR.
 
-Minimum checks:
-
-```bash
-python scripts/grade.py --chapter 20
-
-cd backend
-python manage.py makemigrations --check --dry-run
-python manage.py check
-python manage.py test web
-
-cd ../frontend
-npm run check
-npm test
-npm run build
-```
-
-Never commit:
-
-```text
-real API keys / JWTs / Django secrets
-.env
-private conversations
-db.sqlite3
-runtime LanceDB data
-```
+Never commit real secrets, JWTs, private conversations, or local private knowledge-base data.
 
 ---
 
 # 🗺️ Roadmap
 
-The next stage focuses on learning quality, supply-chain security, broader international accessibility, and production thinking rather than simply adding more beginner content.
-
 ## Internationalization / Learning Experience
 
 - [x] Chinese + English repository landing pages
 - [x] English Learning Hub
-- [x] Native English Quick Start
-- [x] Current English Architecture Guide
-- [x] Full English high-value labs: 00 / 06 / 07 / 08 / 10 / 13
-- [x] Explicitly welcome English documentation and translation contributions
-- [ ] Translate remaining Chapters 01–05 / 09 / 11–12
-- [ ] Translate Engineering Chapters 14–20
-- [ ] Full English API / database / troubleshooting references
+- [x] English Quick Start
+- [x] English Architecture Guide
+- [x] **Complete English Chapter 00–20 Labs**
+- [x] English Engineering Course overview
+- [x] English API Reference
+- [x] English Database / ER Guide
+- [x] English Troubleshooting Guide
+- [x] Explicitly welcome bilingual documentation contributions
+- [ ] Translate historical `COURSE_REBUILD` / auxiliary archaeology where useful
+- [ ] Keep bilingual docs synchronized automatically where possible
+- [ ] Add bilingual screenshots / GIFs / expected results
+- [ ] Improve terminology consistency and accessibility
+
+## Learning Quality
+
 - [ ] Stable `course/chXX-start` / `course/chXX-solution` tags
 - [ ] Bug Museum based on real historical defects
-- [ ] Expected screenshots / GIFs for each chapter
 - [ ] More behavioral graders
+- [ ] Browser E2E in Mock mode
 - [ ] Video index
 
 ## Backend / Security
 
-- [ ] Migrate more legacy APIs to Serializers and unified error structures
+- [ ] Migrate more legacy APIs to Serializers and unified errors
 - [ ] File upload MIME / size / image validation
 - [ ] Systematic object-level permissions
 - [ ] Refresh-token blacklist / revoke strategy
@@ -757,8 +605,7 @@ The next stage focuses on learning quality, supply-chain security, broader inter
 - [ ] Provider Adapter
 - [ ] Structured RAG source events + frontend citation UI
 - [ ] Generation / Faithfulness evaluation
-- [ ] Structured Memory
-- [ ] Memory conflict resolution
+- [ ] Structured Memory + provenance/conflict handling
 - [ ] Prompt Injection / Tool permission tests
 - [ ] Token / latency dashboard
 
@@ -769,7 +616,7 @@ The next stage focuses on learning quality, supply-chain security, broader inter
 - [ ] Persistent media / object storage
 - [ ] PostgreSQL production configuration
 - [ ] Structured logging / metrics / tracing
-- [ ] Route-level lazy loading / code splitting
+- [ ] Route-level lazy loading / code splitting / bundle budget
 
 ---
 
