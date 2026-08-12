@@ -43,8 +43,8 @@ def validate_image_upload(upload, *, max_bytes=MAX_IMAGE_BYTES):
         image.verify()
     except ImageUploadError:
         raise
-    except (UnidentifiedImageError, OSError, ValueError) as exc:
-        raise ImageUploadError('只支持有效的 JPEG、PNG 或 WebP 图片') from exc
+    except (Image.DecompressionBombError, UnidentifiedImageError, OSError, ValueError) as exc:
+        raise ImageUploadError('只支持有效且尺寸安全的 JPEG、PNG 或 WebP 图片') from exc
     finally:
         upload.seek(0)
 
