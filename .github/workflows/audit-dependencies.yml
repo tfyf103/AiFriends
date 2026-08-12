@@ -11,9 +11,6 @@ permissions:
 jobs:
   frontend-audit:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: frontend
     steps:
       - uses: actions/checkout@v6
         with:
@@ -23,18 +20,28 @@ jobs:
           node-version: '22'
           cache: npm
           cache-dependency-path: frontend/package-lock.json
-      - run: npm ci
-      - name: Apply compatible audit fixes to lockfile
+      - name: Install frontend dependencies
+        working-directory: frontend
+        run: npm ci
+      - name: Apply compatible frontend audit fixes to lockfile
+        working-directory: frontend
         run: npm audit fix --package-lock-only
-      - name: Verify no high-severity advisories remain
+      - name: Verify frontend audit
+        working-directory: frontend
         run: npm audit --audit-level=high
-      - name: Commit lockfile if changed
+      - name: Generate deterministic Browser E2E lockfile
+        working-directory: e2e
+        run: npm install --package-lock-only
+      - name: Verify Browser E2E audit
+        working-directory: e2e
+        run: npm audit --audit-level=high
+      - name: Commit dependency locks if changed
         run: |
-          if git diff --quiet -- package-lock.json; then
+          if git diff --quiet -- frontend/package-lock.json e2e/package-lock.json; then
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add package-lock.json
-          git commit -m "fix: update vulnerable frontend dependencies"
+          git add frontend/package-lock.json e2e/package-lock.json
+          git commit -m "fix: lock audited JavaScript dependencies"
           git push origin HEAD:agent/full-project-audit-fixes
