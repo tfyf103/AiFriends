@@ -15,8 +15,9 @@ jobs:
         with:
           ref: agent/product-experience-intro
       - name: Insert evidence-based product experience sections
-        shell: python
+        shell: bash
         run: |
+          python - <<'PY'
           from pathlib import Path
 
           zh_path = Path('README.md')
@@ -180,6 +181,7 @@ The core product is therefore not “one prompt, one answer.” It is a loop whe
 
           zh_path.write_text(zh, encoding='utf-8')
           en_path.write_text(en, encoding='utf-8')
+          PY
       - name: Commit synchronized README changes
         run: |
           git config user.name "github-actions[bot]"
