@@ -169,6 +169,7 @@ git show
 | [Bilingual Glossary](./BILINGUAL_GLOSSARY.md) | 统一 Character/Friend/RAG/SSE 等中英文工程术语 |
 | [Screenshots & GIF Guide](./SCREENSHOTS.md) | 真实截图/GIF 规范、视觉证据与贡献规则 |
 | [Live Demo Verification](./LIVE_DEMO.md) | 线上截图真实性与只读验证记录 |
+| [Product Experience / 实际产品体验](./PRODUCT_EXPERIENCE.md) | 从真实用户旅程理解 Character、Friend、Chat、Memory/RAG/Voice，并区分线上/E2E/源码/配置证据 |
 | [Browser E2E](../e2e/README.md) | Chromium + Vue + Django + SQLite 的真实端到端示例 |
 
 ---

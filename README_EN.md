@@ -81,6 +81,72 @@ The GIF is reproducibly built only from the real production PNGs above; it is no
 
 ---
 
+# 🧭 Product experience: what does a user actually do?
+
+> **This section is organized by product behavior, not framework names.** See [Product Experience](./docs/PRODUCT_EXPERIENCE.md) for the complete user journey, evidence matrix, and the distinction between production-observed, Browser-E2E-verified, source-implemented, and configuration-dependent capabilities.
+
+From a user's perspective, AiFriends is closer to a lightweight **AI Character community + persistent companion system** than to a blank chatbot box:
+
+```text
+Browse / search public Characters
+          ↓
+Open a creator space
+          ↓
+Register / sign in
+          ↓
+Click a Character
+          ↓
+Create or reuse a Friend relationship
+          ↓
+Open that Character's visual chat space
+          ↓
+Text / optional voice input
+          ↓
+SSE streaming text + optional streaming audio
+          ↓
+Persist Messages
+          ↓
+Return later to the same relationship / Memory / Tools / RAG
+```
+
+## User-visible behavior
+
+| User action | Product behavior | Evidence |
+| --- | --- | --- |
+| **Discover Characters** | Public Character cards, search, incremental loading, persona and creator information | **Production observed** |
+| **Open creator space** | Public profile plus the Characters created by that user | **Production observed** |
+| **Register / sign in** | JWT + refresh cookie; protected routes and auth restoration after reload | **Production + Browser E2E** |
+| **Start a conversation** | Clicking a Character creates or reuses a Friend relationship rather than a disposable chat | **Source implemented** |
+| **Manage companions** | `/friend` is the persistent Friend/companion list and can reopen or remove relationships | **Browser E2E + Source** |
+| **Character-specific chat** | Chat modal uses the Character background, loads Message history, and streams reply deltas | **Source implemented** |
+| **Stop generation** | `AbortController` terminates the active SSE request and cancellation propagates toward backend work | **Source implemented** |
+| **Create Characters** | Avatar, name, persona, Voice and chat background, with later update/remove controls | **Source implemented** |
+| **Maintain creator identity** | Edit avatar, username and profile used by public creator spaces | **Source implemented** |
+| **Memory / Agents / RAG / Voice** | Runtime intelligence behind the same chat UX rather than separate showcase pages | **Source implemented + Config-dependent** |
+
+### A key product distinction: `Character` is not `Friend`
+
+```text
+Character.profile = who this AI persona is
+Friend             = the persistent User–Character relationship
+Friend.memory      = what this Character remembers about this User
+```
+
+The core product is therefore not “one prompt, one answer.” It is a loop where a user can **discover a persona, establish continuity, return to the same relationship, accumulate history/memory, and also publish their own Characters**.
+
+### How AI capabilities surface in the product
+
+- **Streaming**: the answer appears incrementally instead of after full generation;
+- **Memory**: returning to the same Friend can preserve relationship state;
+- **Tool Calling**: the agent can invoke time or knowledge tools behind the conversation;
+- **RAG**: retrieval enriches answers with external evidence instead of exposing a vector-database UI;
+- **ASR / TTS**: configured speech providers enable microphone input and continuous spoken replies;
+- **`mock` / `text` / `full`**: one maintained product UI progressively enables real models, retrieval and speech instead of maintaining three unrelated demos.
+
+> **Evidence boundary:** production screenshots prove the public deployment; Browser E2E proves maintained authenticated cross-layer behavior; source proves maintained capabilities; whether RAG/ASR/TTS are enabled on a particular production visit still depends on deployment feature flags and providers.
+
+---
+
 # Why AiFriends?
 
 Many AI tutorials stop here:

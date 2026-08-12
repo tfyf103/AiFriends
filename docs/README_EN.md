@@ -142,6 +142,7 @@ Start with [Rebuild AiFriends from Scratch — Real Git History](./COURSE_REBUIL
 | [BILINGUAL_GLOSSARY](./BILINGUAL_GLOSSARY.md) | Canonical Chinese/English engineering terminology |
 | [SCREENSHOTS](./SCREENSHOTS.md) | Real screenshot/GIF gallery and contribution rules |
 | [LIVE_DEMO](./LIVE_DEMO.md) | Real production screenshot verification |
+| [PRODUCT_EXPERIENCE](./PRODUCT_EXPERIENCE.md) | Evidence-based real-user journey from Character discovery to Friend, Chat, Memory/RAG/Voice |
 | [Browser E2E](../e2e/README.md) | English-first Chromium E2E example in Mock mode |
 | [GRADING](./GRADING.md) | doctor / grader / tests / CI model |
 | [SECURITY](../SECURITY.md) | Vulnerability reporting and security scope |
