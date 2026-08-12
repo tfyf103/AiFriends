@@ -1,6 +1,7 @@
 import logging
 
 from django.contrib.auth.models import User
+from django.db import transaction
 from django.utils.timezone import now
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -50,8 +51,12 @@ class UpdateProfileView(APIView):
         user.username = username
 
         try:
-            user.save(update_fields=['username'])
-            user_profile.save()
+            # Keep User.username and UserProfile metadata consistent if a database
+            # write fails. File storage itself is external to the transaction, so old
+            # media is removed only after the transaction commits successfully.
+            with transaction.atomic():
+                user.save(update_fields=['username'])
+                user_profile.save()
         except Exception:
             logger.exception('Profile update failed for user_id=%s', user.id)
             return Response({
