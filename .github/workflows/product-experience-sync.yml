@@ -15,5 +15,16 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: agent/product-experience-intro
-      - name: Verify temporary sync runner
-        run: echo "temporary README sync runner is available"
+      - name: Synchronize product experience sections
+        run: python scripts/sync_product_experience_readme.py
+      - name: Commit synchronized README changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if git diff --quiet; then
+            echo "README sections already synchronized"
+            exit 0
+          fi
+          git add README.md README_EN.md
+          git commit -m "docs: describe real product experience"
+          git push origin HEAD:agent/product-experience-intro
