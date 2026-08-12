@@ -5,6 +5,9 @@ on:
     branches:
       - agent/full-project-audit-fixes
 
+permissions:
+  contents: write
+
 jobs:
   frontend-audit:
     runs-on: ubuntu-latest
@@ -13,11 +16,25 @@ jobs:
         working-directory: frontend
     steps:
       - uses: actions/checkout@v6
+        with:
+          ref: agent/full-project-audit-fixes
       - uses: actions/setup-node@v6
         with:
           node-version: '22'
           cache: npm
           cache-dependency-path: frontend/package-lock.json
       - run: npm ci
-      - name: Print npm audit report
-        run: npm audit --json || true
+      - name: Apply compatible audit fixes to lockfile
+        run: npm audit fix --package-lock-only
+      - name: Verify no high-severity advisories remain
+        run: npm audit --audit-level=high
+      - name: Commit lockfile if changed
+        run: |
+          if git diff --quiet -- package-lock.json; then
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add package-lock.json
+          git commit -m "fix: update vulnerable frontend dependencies"
+          git push origin HEAD:agent/full-project-audit-fixes
