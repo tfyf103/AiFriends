@@ -27,7 +27,7 @@
     "@vitejs/plugin-vue": "^6.0.6",
     "daisyui": "^5.5.20",
     "vite": "^8.0.8",
-    "vite-plugin-vue-devtools": "^8.1.1"
+    "vite-plugin-vue-devtools": "^8.2.1"
   },
   "engines": {
     "node": "^20.19.0 || >=22.12.0"
