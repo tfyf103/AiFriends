@@ -25,6 +25,6 @@ jobs:
             echo "README sections already synchronized"
             exit 0
           fi
-          git add README.md README_EN.md
+          git add README.md README_EN.md docs/README.md docs/README_EN.md
           git commit -m "docs: describe real product experience"
           git push origin HEAD:agent/product-experience-intro
