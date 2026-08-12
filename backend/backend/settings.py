@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework_simplejwt.token_blacklist',
     'web',
     'corsheaders',
 ]
@@ -100,8 +101,11 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-if DEBUG:
-    STATICFILES_DIRS = [BASE_DIR / 'static']
+# A clean source checkout has no generated Vite output yet. Only register the
+# development static directory after it exists so `manage.py check` stays clean.
+_dev_static_dir = BASE_DIR / 'static'
+if DEBUG and _dev_static_dir.is_dir():
+    STATICFILES_DIRS = [_dev_static_dir]
 
 MEDIA_URL = os.getenv('MEDIA_URL', '/media/')
 MEDIA_ROOT = Path(os.getenv('MEDIA_ROOT', BASE_DIR / 'media'))
