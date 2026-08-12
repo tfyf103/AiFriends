@@ -67,7 +67,7 @@ typer-slim==0.20.0
 tzdata==2026.2
 uuid_utils==0.16.1
 wcwidth==0.8.1
-websockets==15.0.1
+websockets==17.0.1
 wheel==0.46.3
 xxhash==3.7.0
 yarl==1.24.2
