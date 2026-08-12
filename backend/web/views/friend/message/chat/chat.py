@@ -100,8 +100,8 @@ class MessageChatView(APIView):
             chunk = reply[start:start + 6]
             yield f"data: {json.dumps({'content': chunk}, ensure_ascii=False)}\n\n"
 
-        yield 'data: [DONE]\n\n'
         self.save_message(friend, message, inputs, reply, {})
+        yield 'data: [DONE]\n\n'
 
     async def text_sender(self, app, inputs, mq, cancel_event):
         """Real LLM streaming without TTS. This is the default path for AI_MODE=text."""
@@ -242,8 +242,11 @@ class MessageChatView(APIView):
             cancel_event.set()
 
         if completed:
-            yield 'data: [DONE]\n\n'
+            # Persistence must happen before [DONE]. A client is allowed to close the
+            # stream as soon as it sees the completion marker; saving afterwards made
+            # the final message vulnerable to disconnect timing.
             self.save_message(friend, message, inputs, final_output, final_usage)
+            yield 'data: [DONE]\n\n'
 
             if Message.objects.filter(friend=friend).count() % 5 == 0:
                 update_memory(friend)
