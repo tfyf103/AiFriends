@@ -331,9 +331,9 @@ Success:
 }
 ```
 
-The refresh cookie is rotated according to the current JWT/cookie configuration.
+The refresh cookie is rotated according to the current JWT/cookie configuration. SimpleJWT token blacklisting is enabled: **the refresh credential used for a successful rotation is immediately revoked and cannot be replayed to mint another access token.**
 
-Missing/invalid/expired refresh credentials result in an authentication failure rather than a successful empty response.
+Missing, invalid, expired, or revoked refresh credentials result in an authentication failure rather than a successful empty response.
 
 ---
 
@@ -352,9 +352,7 @@ Success example:
 }
 ```
 
-The backend removes the refresh cookie and the frontend clears its user/access state.
-
-> Current project cleanup removes the cookie. Full refresh-token blacklist/revocation integration remains a separate hardening step.
+The backend first blacklists the current refresh token, then removes the refresh cookie; the frontend clears its user/access state. Deleting a browser cookie alone is not credential revocation, so server-side blacklisting is part of the logout contract.
 
 ---
 
@@ -397,6 +395,8 @@ profile
 photo?  optional
 ```
 
+Avatar uploads are verified before storage. Only real JPEG / PNG / WebP images are accepted, with an 8 MB byte limit and a 25-million-pixel limit. Username + UserProfile metadata writes are kept in one database transaction.
+
 This endpoint remains a useful Chapter 15 Serializer/error-contract refactoring target.
 
 ---
@@ -429,6 +429,8 @@ request.data + request.FILES
 resolve authenticated UserProfile
   ↓
 resolve Voice
+  ↓
+validate image bytes / dimensions
   ↓
 Character.objects.create(...)
   ↓
@@ -731,7 +733,7 @@ output_tokens
 total_tokens
 ```
 
-Current code intentionally distinguishes normal completion from cancelled streams.
+Current code intentionally distinguishes normal completion from cancelled streams. On normal completion, Message persistence happens **before** the SSE `[DONE]` marker so a client closing immediately after completion cannot race the final database write.
 
 A future design may add:
 
@@ -764,7 +766,7 @@ Older-page request:
 pk < last_message_id
 ```
 
-The backend scopes history by the authenticated user so another user's Friend history cannot be read by changing the ID.
+The backend scopes history by the authenticated user so another user's Friend history cannot be read by changing the ID. Invalid/negative cursors return HTTP 400; a missing or inaccessible Friend returns HTTP 404.
 
 ---
 
@@ -790,7 +792,7 @@ ENABLE_ASR=false
 
 the endpoint returns a clear service-unavailable response instead of trying to open a missing provider WebSocket.
 
-This is intentional feature isolation: text learning should not fail because the learner has no speech account.
+This is intentional feature isolation: text learning should not fail because the learner has no speech account. When ASR is enabled, PCM uploads are bounded to **5 MB before reading into memory**; oversized audio returns HTTP 413 and upstream speech-provider failures return HTTP 502.
 
 ---
 

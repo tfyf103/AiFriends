@@ -48,7 +48,7 @@ http://127.0.0.1:8000
 | POST | `/api/user/account/register/` | 否 | JSON | JSON + Cookie | 注册 |
 | POST | `/api/user/account/login/` | 否 | JSON | JSON + Cookie | 登录 |
 | POST | `/api/user/account/refresh_token/` | Cookie | empty | JSON + Cookie | 换 access |
-| POST | `/api/user/account/logout/` | Bearer | empty | JSON | 删除 refresh cookie |
+| POST | `/api/user/account/logout/` | Bearer | empty | JSON | 撤销 refresh token + 删除 Cookie |
 | GET | `/api/user/account/get_user_info/` | Bearer | - | JSON | 当前用户 |
 | POST | `/api/user/profile/update/` | Bearer | multipart | JSON | 更新资料 |
 | POST | `/api/create/character/create/` | Bearer | multipart | JSON | 创建 Character |
@@ -80,6 +80,8 @@ http://127.0.0.1:8000
 401 Unauthorized
 404 Not Found
 409 Conflict
+413 Payload Too Large
+502 Bad Gateway
 503 Service Unavailable
 ```
 
@@ -348,9 +350,9 @@ Body 可以为空：
 }
 ```
 
-并轮换 refresh cookie。
+并轮换 refresh cookie。当前启用了 SimpleJWT token blacklist：**本次已经使用过的旧 refresh token 会立即进入 blacklist，不能再次重放换取 access。**
 
-缺少 / 过期：
+缺少 / 过期 / 已撤销：
 
 ```text
 HTTP 401
@@ -373,7 +375,7 @@ Authorization: Bearer <access>
 }
 ```
 
-后端删除 refresh cookie，前端同时清 Pinia。
+后端会先将当前 refresh token 加入 blacklist，再删除 refresh cookie；前端同时清 Pinia。仅删除 Cookie 不等于撤销凭证，所以服务端 blacklist 是 logout 安全语义的一部分。
 
 ---
 
@@ -416,6 +418,8 @@ profile
 photo?       optional
 ```
 
+上传头像会在写入前校验真实图片内容，只接受 JPEG / PNG / WebP，单张最多 8 MB、最多 2500 万像素；数据库中的用户名与 UserProfile 元数据使用事务保持一致。
+
 这个 API 仍然是 Chapter 15 很好的 Serializer 重构对象。
 
 ---
@@ -448,6 +452,8 @@ request.data + request.FILES
 UserProfile
  ↓
 Voice
+ ↓
+图片格式 / 大小 / 像素校验
  ↓
 Character.objects.create
  ↓
@@ -743,6 +749,8 @@ total_tokens
 
 目前用户取消时不会走正常完成保存路径。
 
+正常完成路径会先 `Message.objects.create(...)`，然后才发送 SSE `[DONE]`，避免客户端收到完成标记立即断开时丢失最后一条消息。
+
 Chapter 17 Challenge：设计：
 
 ```text
@@ -773,7 +781,7 @@ last_message_id=0
 pk < last_message_id
 ```
 
-每次最多 10 条 Message 记录。
+每次最多 10 条 Message 记录。`last_message_id` 非整数/负数返回 HTTP 400；Friend 不存在或不属于当前用户返回 HTTP 404。
 
 后端额外限制：
 
@@ -817,7 +825,7 @@ HTTP 503
 }
 ```
 
-这样文本学习不会因为没有 Speech Account 莫名失败。
+这样文本学习不会因为没有 Speech Account 莫名失败。启用 ASR 后，PCM 上传在读取前限制为最多 **5 MB**；超过限制返回 HTTP 413，第三方 ASR Provider 调用失败返回 HTTP 502。
 
 ---
 
