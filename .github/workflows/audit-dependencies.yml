@@ -1,0 +1,23 @@
+name: Temporary dependency audit
+
+on:
+  push:
+    branches:
+      - agent/full-project-audit-fixes
+
+jobs:
+  frontend-audit:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci
+      - name: Print npm audit report
+        run: npm audit --json || true
