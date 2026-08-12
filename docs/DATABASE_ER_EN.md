@@ -218,7 +218,7 @@ TTS provider
 
 ### Important current behavior
 
-TTS is optional. The maintained chat path can run text-only when TTS is disabled, and a missing Voice should not make text chat impossible when speech is not required.
+TTS is optional. The maintained chat path can run text-only when TTS is disabled, and a missing Voice should not make text chat impossible when speech is not required. `Character.voice` uses `on_delete=SET_NULL`: retiring/deleting a Voice clears the Character voice reference instead of cascade-deleting user-authored Characters, Friends, or Message history.
 
 ---
 

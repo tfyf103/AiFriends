@@ -195,7 +195,7 @@ voice_id
 TTS Service
 ```
 
-当前工程化实现中 TTS 是可选能力；关闭 TTS 时，没有有效 Voice 也不应阻断纯文本聊天。
+当前工程化实现中 TTS 是可选能力；关闭 TTS 时，没有有效 Voice 也不应阻断纯文本聊天。`Character.voice` 使用 `on_delete=SET_NULL`：删除/下线一个 Voice 只会把相关 Character 的 `voice_id` 置空，**不会级联删除用户创建的 Character、Friend 或 Message 历史**。
 
 ---
 

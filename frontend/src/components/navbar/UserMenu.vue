@@ -1,11 +1,11 @@
 <script setup>
-import {useUserStore} from "@/stores/user.js";
-import UserSpaceIcon from "@/components/navbar/icons/UserSpaceIcon.vue";
-import ProfileIndex from "@/views/user/profile/ProfileIndex.vue";
-import UserProfileIcon from "@/components/navbar/icons/UserProfileIcon.vue";
-import UserLogoutIcon from "@/components/navbar/icons/UserLogoutIcon.vue";
-import api from "@/js/http/api.js";
-import {useRouter} from "vue-router";
+import { useRouter } from 'vue-router'
+
+import api from '@/js/http/api.js'
+import UserLogoutIcon from '@/components/navbar/icons/UserLogoutIcon.vue'
+import UserProfileIcon from '@/components/navbar/icons/UserProfileIcon.vue'
+import UserSpaceIcon from '@/components/navbar/icons/UserSpaceIcon.vue'
+import { useUserStore } from '@/stores/user.js'
 
 const user = useUserStore()
 const router = useRouter()
@@ -20,15 +20,12 @@ async function handleLogout() {
     const res = await api.post('/api/user/account/logout/')
     if (res.data.result === 'success') {
       user.logout()
-      await router.push({
-        name: 'homepage-index'
-      })
+      await router.push({ name: 'homepage-index' })
     }
-  } catch (err) {
-
+  } catch (error) {
+    console.error('退出登录失败:', error)
   }
 }
-
 </script>
 
 <template>
@@ -64,17 +61,14 @@ async function handleLogout() {
         </RouterLink>
       </li>
       <li>
-      </li>
-      <li>
-        <a @click="handleLogout" class="text-sm font-bold py-3">
+        <button type="button" @click="handleLogout" class="text-sm font-bold py-3">
           <UserLogoutIcon />
           退出登录
-        </a>
+        </button>
       </li>
     </ul>
   </div>
 </template>
 
 <style scoped>
-
 </style>

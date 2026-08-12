@@ -9,9 +9,15 @@
 
 import SendIcon from '@/components/character/icons/SendIcon.vue'
 import MicIcon from '@/components/character/icons/MicIcon.vue'
-import { onUnmounted, ref, useTemplateRef } from 'vue'
+import { defineAsyncComponent, onUnmounted, ref, useTemplateRef } from 'vue'
 import streamApi from '@/js/http/streamApi.js'
-import Microphone from '@/components/character/chat_field/input_field/Microphone.vue'
+
+// VAD/ONNX is one of the heaviest browser dependencies. Do not make every homepage
+// visitor download it: fetch the microphone implementation only after voice mode is
+// actually opened.
+const Microphone = defineAsyncComponent(
+  () => import('@/components/character/chat_field/input_field/Microphone.vue'),
+)
 
 const props = defineProps(['friendId'])
 const emit = defineEmits(['pushBackMessage', 'addToLastMessage'])
@@ -118,7 +124,6 @@ async function handleSend(event, audioMessage) {
   const content = (audioMessage || message.value).trim()
   if (!content) return
 
-  // 同一输入框只保留一条活跃聊天流。
   abortActiveStream()
   activeController = new AbortController()
 
