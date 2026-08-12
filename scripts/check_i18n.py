@@ -164,6 +164,7 @@ def main() -> int:
         ROOT / "docs" / "BILINGUAL_GLOSSARY.md",
         ROOT / "docs" / "SCREENSHOTS.md",
         ROOT / "docs" / "LIVE_DEMO.md",
+        ROOT / "docs" / "PRODUCT_EXPERIENCE.md",
         ROOT / "e2e" / "README.md",
     ]
     check_links(pair_docs + lab_docs + important_docs, errors)
