@@ -20,6 +20,26 @@ jobs:
           node-version: '22'
           cache: npm
           cache-dependency-path: frontend/package-lock.json
+      - name: Apply chat persistence ordering fix
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('backend/web/views/friend/message/chat/chat.py')
+          text = path.read_text(encoding='utf-8')
+
+          mock_old = """        yield 'data: [DONE]\\n\\n'\n        self.save_message(friend, message, inputs, reply, {})\n"""
+          mock_new = """        self.save_message(friend, message, inputs, reply, {})\n        yield 'data: [DONE]\\n\\n'\n"""
+          if mock_old in text:
+              text = text.replace(mock_old, mock_new, 1)
+
+          real_old = """        if completed:\n            yield 'data: [DONE]\\n\\n'\n            self.save_message(friend, message, inputs, final_output, final_usage)\n\n            if Message.objects.filter(friend=friend).count() % 5 == 0:\n                update_memory(friend)\n"""
+          real_new = """        if completed:\n            # Persistence must happen before [DONE]. A client is allowed to close the\n            # stream as soon as it sees the completion marker; saving afterwards made\n            # the final message vulnerable to disconnect timing.\n            self.save_message(friend, message, inputs, final_output, final_usage)\n            yield 'data: [DONE]\\n\\n'\n\n            if Message.objects.filter(friend=friend).count() % 5 == 0:\n                update_memory(friend)\n"""
+          if real_old in text:
+              text = text.replace(real_old, real_new, 1)
+
+          path.write_text(text, encoding='utf-8')
+          PY
       - name: Install frontend dependencies
         working-directory: frontend
         run: npm ci
@@ -35,13 +55,13 @@ jobs:
       - name: Verify Browser E2E audit
         working-directory: e2e
         run: npm audit --audit-level=high
-      - name: Commit dependency locks if changed
+      - name: Commit audited fixes if changed
         run: |
-          if git diff --quiet -- frontend/package-lock.json e2e/package-lock.json; then
+          if git diff --quiet -- backend/web/views/friend/message/chat/chat.py frontend/package-lock.json e2e/package-lock.json; then
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add frontend/package-lock.json e2e/package-lock.json
-          git commit -m "fix: lock audited JavaScript dependencies"
+          git add backend/web/views/friend/message/chat/chat.py frontend/package-lock.json e2e/package-lock.json
+          git commit -m "fix: persist chat before completion and lock dependencies"
           git push origin HEAD:agent/full-project-audit-fixes
