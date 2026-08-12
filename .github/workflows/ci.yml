@@ -23,8 +23,9 @@ jobs:
         run: pip install -r requirements.txt
       - name: Python dependency security audit
         run: |
-          python -m pip install --disable-pip-version-check pip-audit==2.10.1
-          pip-audit -r requirements.txt
+          python -m venv /tmp/aifriends-pip-audit
+          /tmp/aifriends-pip-audit/bin/python -m pip install --disable-pip-version-check pip-audit==2.10.1
+          /tmp/aifriends-pip-audit/bin/pip-audit -r requirements.txt
       - name: Compile Python
         run: python -m compileall -q backend scripts
       - name: Internationalization and documentation drift
