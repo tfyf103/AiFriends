@@ -88,7 +88,7 @@ jobs:
       - name: Install frontend dependencies
         run: npm ci --prefix frontend
       - name: Install Browser E2E dependencies
-        run: npm install --prefix e2e
+        run: npm ci --prefix e2e
       - name: Install Playwright Chromium
         run: npm exec --prefix e2e -- playwright install --with-deps chromium
       - name: Browser E2E smoke test
