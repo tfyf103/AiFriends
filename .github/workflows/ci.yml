@@ -100,7 +100,7 @@ jobs:
         run: node e2e/browser-smoke.mjs
       - name: Upload Browser E2E screenshot
         if: always()
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: browser-e2e-screenshot
           path: e2e/artifacts/
